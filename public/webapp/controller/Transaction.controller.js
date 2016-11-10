@@ -330,7 +330,7 @@ sap.ui.define([
 				do {
 					mPayload.idlancamento = $.now();
 				}
-				while (sLastId == $.now());
+				while (sLastId === mPayload.idlancamento);
 
 				sLastId = mPayload.idlancamento;
 
