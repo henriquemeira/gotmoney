@@ -1,16 +1,15 @@
 sap.ui.define([
     "sap/ui/core/UIComponent",
     "sap/ui/Device",
+    "sap/ui/model/BindingMode",
     "sap/ui/model/json/JSONModel"
-], function(UIComponent, Device, JSONModel) {
+], function(UIComponent, Device, BindingMode, JSONModel) {
     "use strict";
 
     return UIComponent.extend("com.mlauffer.gotmoneyappui5.Component", {
-
         metadata: {
             manifest: "json"
         },
-
 
         /**
          * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
@@ -40,20 +39,13 @@ sap.ui.define([
 
 
         setModels : function() {
-            // set invoice model - local
-            //var oConfig = this.getMetadata().getConfig();
-            //var sNamespace = this.getMetadata().getManifestEntry("sap.app").id;
-
-            // Main model
-            //var oModel = new JSONModel(jQuery.sap.getModulePath(sNamespace, oConfig.appData));
-            var oModel = new JSONModel();
-            oModel.setDefaultBindingMode(sap.ui.model.BindingMode.OneWay);
+            var oModel = this.getModel();
+            oModel.setDefaultBindingMode(BindingMode.OneWay);
             oModel.iSizeLimit = 1000;
-            this.setModel(oModel);
 
             // Account Types Model
             oModel = new JSONModel();
-            oModel.setDefaultBindingMode(sap.ui.model.BindingMode.OneWay);
+            oModel.setDefaultBindingMode(BindingMode.OneWay);
             //var url = "../../../accounttyperest/";
             //oModel.loadData(url, {}, true, "GET", false, true);
             this.setModel(oModel, "accTypes");

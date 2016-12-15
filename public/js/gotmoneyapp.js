@@ -1,17 +1,18 @@
 //SAP OpenUI5
-sap.ui.require([
-    "sap/m/Shell",
-    "sap/ui/core/ComponentContainer"
-], function (Shell, ComponentContainer) {
-    new Shell({
-        appWidthLimited: false,
-        app: new ComponentContainer({
-            height: "100%",
-            name: "com.mlauffer.gotmoneyappui5"
-        })
-    }).placeAt("content");
+sap.ui.getCore().attachInit(function() {
+    sap.ui.require([
+        "sap/m/Shell",
+        "sap/ui/core/ComponentContainer"
+    ], function (Shell, ComponentContainer) {
+        new Shell({
+            appWidthLimited: false,
+            app: new ComponentContainer({
+                height: "100%",
+                name: "com.mlauffer.gotmoneyappui5"
+            })
+        }).placeAt("content");
+    });
 });
-
 
 //GOOGLE
 var Google = {auth2: null}; // The Sign-In object.
