@@ -154,10 +154,10 @@ sap.ui.define([
                 dataType: 'json',
                 method: 'GET'
             })
-            .success(function () {
+            .done(function () {
                 connected = true;
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 connected = false;
                 if (bRedirect) {
                     MessageBox.error(that.getResourceBundle().getText("Error.userNotConnected"), {
@@ -183,7 +183,7 @@ sap.ui.define([
                 method: 'GET',
                 async: false
             })
-            .success(function (response, textStatus, jqXHR) {//success(function(oResult) {
+            .done(function (response, textStatus, jqXHR) {//success(function(oResult) {
                 var oData = {
                     User: response[0]
                 };
@@ -193,7 +193,7 @@ sap.ui.define([
                 oModel.setData(oData);
                 oModel.updateBindings();
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 bError = true;
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
             });
@@ -208,11 +208,11 @@ sap.ui.define([
                 dataType: 'json',
                 method: 'GET'
             })
-            .success(function (response, textStatus, jqXHR) {//success(function(oResult) {
+            .done(function (response, textStatus, jqXHR) {//success(function(oResult) {
                 oModel.getData().User.Category = response;
                 oModel.updateBindings();
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 bError = true;
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
             });
@@ -223,11 +223,11 @@ sap.ui.define([
                 dataType: 'json',
                 method: 'GET'
             })
-            .success(function (response, textStatus, jqXHR) {//success(function(oResult) {
+            .done(function (response, textStatus, jqXHR) {//success(function(oResult) {
                 oModel.getData().User.Account = response;
                 oModel.updateBindings();
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 bError = true;
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
             });
@@ -238,11 +238,11 @@ sap.ui.define([
                 dataType: 'json',
                 method: 'GET'
             })
-            .success(function (response, textStatus, jqXHR) {//success(function(oResult) {
+            .done(function (response, textStatus, jqXHR) {//success(function(oResult) {
                 oModel.getData().User.Transaction = response;
                 oModel.updateBindings();
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 bError = true;
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
             });

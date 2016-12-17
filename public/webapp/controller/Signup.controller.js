@@ -149,8 +149,8 @@ sap.ui.define([
 				dataType: 'json',
 				method: 'POST'
 			})
-			.success(jQuery.proxy(that._newDone(mPayload), this))
-			.error(jQuery.proxy(that._ajaxFail, this));
+			.done(jQuery.proxy(that._newDone(mPayload), this))
+			.fail(jQuery.proxy(that._ajaxFail, this));
 		},
 
 

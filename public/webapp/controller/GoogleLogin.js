@@ -59,10 +59,10 @@ sap.ui.define([
                 dataType: 'json',
                 method: 'POST'
             })
-            .success(function (response, textStatus, jqXHR) {
+            .done(function (response, textStatus, jqXHR) {
                 that._oViewController._loginDone();
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 that._oViewController._ajaxFail(jqXHR, textStatus, errorThrown);
             });
         },

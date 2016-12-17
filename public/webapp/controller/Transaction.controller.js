@@ -77,8 +77,8 @@ sap.ui.define([
 						dataType: 'json',
 						method: 'DELETE'
 					})
-					.success(jQuery.proxy(that._deleteDone(sPath), this))
-					.error(jQuery.proxy(that._ajaxFail, this));
+					.done(jQuery.proxy(that._deleteDone(sPath), this))
+					.fail(jQuery.proxy(that._ajaxFail, this));
 				}
 			}, that.getResourceBundle().getText("Delete.title"));
 		},
@@ -153,8 +153,8 @@ sap.ui.define([
 				dataType: 'json',
 				method: 'POST'
 			})
-			.success(jQuery.proxy(that._newDone(mPayload), this))
-			.error(jQuery.proxy(that._ajaxFail, this));
+			.done(jQuery.proxy(that._newDone(mPayload), this))
+			.fail(jQuery.proxy(that._ajaxFail, this));
 		},
 
 
@@ -178,8 +178,8 @@ sap.ui.define([
 				dataType: 'json',
 				method: 'PUT'
 			})
-			.success(jQuery.proxy(that._editDone(mPayload, oContext), this))
-			.error(jQuery.proxy(that._ajaxFail, this));
+			.done(jQuery.proxy(that._editDone(mPayload, oContext), this))
+			.fail(jQuery.proxy(that._ajaxFail, this));
 		},
 
 

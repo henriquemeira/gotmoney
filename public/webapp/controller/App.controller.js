@@ -144,10 +144,10 @@ sap.ui.define([
                 //username: Fragment.byId("Login", "email").getValue(),
                 //password: Fragment.byId("Login", "pwd").getValue()
             })
-            .success(function () {
+            .done(function () {
                 that._loginDone();
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
             });
         },
@@ -184,10 +184,10 @@ sap.ui.define([
                 dataType: 'json',
                 method: 'PUT'
             })
-            .success(function () {
+            .done(function () {
                 MessageBox.show(that.getResourceBundle().getText("Success.passwordRecovery"));
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
             });
 
@@ -218,10 +218,10 @@ sap.ui.define([
                 dataType: 'json',
                 method: 'DELETE'
             })
-            .success(function () {
+            .done(function () {
                 that._logoffDone();
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
             });
         },

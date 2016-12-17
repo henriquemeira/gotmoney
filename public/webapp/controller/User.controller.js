@@ -158,8 +158,8 @@ sap.ui.define([
 				dataType: 'json',
 				method: 'PUT'
 			})
-			.success(jQuery.proxy(that._editDone(mPayload, oContext), this))
-			.error(jQuery.proxy(that._ajaxFail, this));
+			.done(jQuery.proxy(that._editDone(mPayload, oContext), this))
+			.fail(jQuery.proxy(that._ajaxFail, this));
 
 			/*try {
 				oModel.setProperty("nome", mPayload.nome, oContext);
