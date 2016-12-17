@@ -39,7 +39,7 @@ sap.ui.define([
             sap.ui.getCore().getMessageManager().registerObject(this.getView(), true);
         },
 
-        onAfterRendering: function () {
+        onAfterRendering: function() {
             if (this.checkUserConnected()) {
                 this._loadBackendData();
                 this._toogleButtonsVisible();
