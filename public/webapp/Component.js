@@ -39,9 +39,17 @@ sap.ui.define([
 
 
         setModels : function() {
+            var oData = {
+                User: {
+                    Account: [],
+                    Category: [],
+                    Transaction: []
+                }
+            };
             var oModel = this.getModel();
             oModel.setDefaultBindingMode(BindingMode.OneWay);
             oModel.iSizeLimit = 1000;
+            oModel.setData(oData);
 
             // Account Types Model
             oModel = new JSONModel();

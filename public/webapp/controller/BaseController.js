@@ -154,103 +154,132 @@ sap.ui.define([
                 dataType: 'json',
                 method: 'GET'
             })
-            .done(function () {
-                connected = true;
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                connected = false;
-                if (bRedirect) {
-                    MessageBox.error(that.getResourceBundle().getText("Error.userNotConnected"), {
-                        onClose: function (sAction) {
-                            that.getRouter().navTo("index");
-                        }
-                    });
-                }
-            });
+                .done(function () {
+                    connected = true;
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    connected = false;
+                    if (bRedirect) {
+                        MessageBox.error(that.getResourceBundle().getText("Error.userNotConnected"), {
+                            onClose: function (sAction) {
+                                that.getRouter().navTo("index");
+                            }
+                        });
+                    }
+                });
             return connected;
         },
 
         _loadBackendData: function () {
-            var baseAjaxURL = this.getAjaxBaseURL();
-            var that = this;
-            var bError = false;
-            var oModel = this.getView().getModel();
-            $.ajax({
-                //url: baseAjaxURL + "user/00000001407174213418",
-                url: baseAjaxURL + "user/" + $.now(),
-                contentType: 'application/json',
-                dataType: 'json',
-                method: 'GET',
-                async: false
-            })
-            .done(function (response, textStatus, jqXHR) {//success(function(oResult) {
-                var oData = {
-                    User: response[0]
-                };
-                oData.User.Account = [];
-                oData.User.Category = [];
-                oData.User.Transaction = [];
-                oModel.setData(oData);
-                oModel.updateBindings();
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                bError = true;
-                that._ajaxFail(jqXHR, textStatus, errorThrown);
-            });
-
-            if (bError) {
-                return;
+            if (window.Promise) {
+                var that = this;
+                Promise.all([this._loadAccount(), this._loadCategory(), this._loadTransaction(), this._loadUser()])
+                    .then(function() {
+                        that.getView().getModel().updateBindings();
+                    })
+                    .catch(function() {
+                        console.dir('Promise error...');
+                    });
+            } else {
+                MessageBox.error(this.getResourceBundle().getText("Error.notSupportPromise"));
             }
 
-            $.ajax({
-                url: baseAjaxURL + "category/",
-                contentType: 'application/json',
-                dataType: 'json',
-                method: 'GET'
-            })
-            .done(function (response, textStatus, jqXHR) {//success(function(oResult) {
-                oModel.getData().User.Category = response;
-                oModel.updateBindings();
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                bError = true;
-                that._ajaxFail(jqXHR, textStatus, errorThrown);
-            });
-
-            $.ajax({
-                url: baseAjaxURL + "account/",
-                contentType: 'application/json',
-                dataType: 'json',
-                method: 'GET'
-            })
-            .done(function (response, textStatus, jqXHR) {//success(function(oResult) {
-                oModel.getData().User.Account = response;
-                oModel.updateBindings();
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                bError = true;
-                that._ajaxFail(jqXHR, textStatus, errorThrown);
-            });
-
-            $.ajax({
-                url: baseAjaxURL + "transactions/",
-                contentType: 'application/json',
-                dataType: 'json',
-                method: 'GET'
-            })
-            .done(function (response, textStatus, jqXHR) {//success(function(oResult) {
-                oModel.getData().User.Transaction = response;
-                oModel.updateBindings();
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                bError = true;
-                that._ajaxFail(jqXHR, textStatus, errorThrown);
-            });
-
             // Account Types Model
-            var url = baseAjaxURL + "accounttype/";
+            var url = this.getAjaxBaseURL() + "accounttype/";
             this.getView().getModel("accTypes").loadData(url, {}, true, "GET", false, true);
+        },
 
+        _loadUser: function() {
+            var that = this;
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: '/user/' + $.now(),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    method: 'GET'
+                })
+                    .done(function(response) {
+                        var user = that.getView().getModel().getData().User;
+                        user.active = response.active;
+                        user.alert = response.alert;
+                        user.datacriacao = response.datacriacao;
+                        user.datanascimento = response.datanascimento;
+                        user.email = response.email;
+                        user.facebook = response.facebook;
+                        user.google = response.google;
+                        user.iduser = response.iduser;
+                        user.lastchange = response.lastchange;
+                        user.lastsync = response.lastsync;
+                        user.nome = response.nome;
+                        user.sexo = response.sexo;
+                        user.twitter = response.twitter;
+                        return resolve();
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrown) {
+                        that._ajaxFail(jqXHR, textStatus, errorThrown);
+                        return reject();
+                    });
+            });
+        },
+
+        _loadCategory: function() {
+            var that = this;
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: '/category/',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    method: 'GET'
+                })
+                    .done(function (response) {
+                        that.getView().getModel().getData().User.Category = response;
+                        return resolve();
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        that._ajaxFail(jqXHR, textStatus, errorThrown);
+                        return reject();
+                    });
+            });
+        },
+
+        _loadAccount: function() {
+            var that = this;
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: '/account/',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    method: 'GET'
+                })
+                    .done(function (response) {
+                        that.getView().getModel().getData().User.Account = response;
+                        return resolve();
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        that._ajaxFail(jqXHR, textStatus, errorThrown);
+                        return reject();
+                    });
+            });
+        },
+
+        _loadTransaction: function() {
+            var that = this;
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: '/transactions/',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    method: 'GET'
+                })
+                    .done(function (response) {
+                        that.getView().getModel().getData().User.Transaction = response;
+                        return resolve();
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        that._ajaxFail(jqXHR, textStatus, errorThrown);
+                        return reject();
+                    });
+            });
         }
     });
 });

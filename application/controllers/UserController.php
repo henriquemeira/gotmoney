@@ -100,8 +100,9 @@ class UserController extends Extra_RESTController
             Extra_ErrorREST::setNotFound($this->getResponse());
             return;
         }
-
-        $this->getResponse()->setHttpResponseCode(200)->setBody(Zend_Json::encode($consumidor));
+        $user = $consumidor->current();
+        unset($user->passwd);
+        $this->getResponse()->setHttpResponseCode(200)->setBody(Zend_Json::encode($user));
     }
 
 
