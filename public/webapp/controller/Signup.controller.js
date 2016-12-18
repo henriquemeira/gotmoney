@@ -142,7 +142,7 @@ sap.ui.define([
 			mPayload.iduser = $.now();
 
 			$.ajax({
-				url: this.getAjaxBaseURL() + "/user",
+				url: "/user",
 				async: false,
 				contentType: 'application/json',
 				data: JSON.stringify(mPayload),

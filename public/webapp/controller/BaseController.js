@@ -58,16 +58,6 @@ sap.ui.define([
 
 
         /**
-         * Convenience method for getting the AJAX base URL
-         * @public
-         * @returns {string} AJAX base URL
-         */
-        getAjaxBaseURL: function () {
-            return "../../../";
-        },
-
-
-        /**
          * Convenience method for getting the last part of a Binding Path.
          * @public
          * @returns {string} the last part of a Binding Path
@@ -148,7 +138,7 @@ sap.ui.define([
             var that = this;
             var connected = false;
             $.ajax({
-                url: this.getAjaxBaseURL() + "session/" + $.now(),
+                url: "/session/" + $.now(),
                 async: false,
                 contentType: 'application/json',
                 dataType: 'json',
@@ -185,8 +175,7 @@ sap.ui.define([
             }
 
             // Account Types Model
-            var url = this.getAjaxBaseURL() + "accounttype/";
-            this.getView().getModel("accTypes").loadData(url, {}, true, "GET", false, true);
+            this.getView().getModel("accTypes").loadData("/accounttype/", {}, true, "GET", false, true);
         },
 
         _loadUser: function() {

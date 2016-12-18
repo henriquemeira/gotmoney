@@ -71,7 +71,7 @@ sap.ui.define([
 					var oModel = that.getView().getModel();
 
 					$.ajax({
-						url: that.getAjaxBaseURL() + "transactions/" + oModel.getData().User.Transaction[that.extractIdFromPath(sPath)].idlancamento,
+						url: "/transactions/" + oModel.getData().User.Transaction[that.extractIdFromPath(sPath)].idlancamento,
 						async: false,
 						contentType: 'application/json',
 						dataType: 'json',
@@ -145,7 +145,7 @@ sap.ui.define([
 			};
 
 			$.ajax({
-				url: this.getAjaxBaseURL() + "transactions",
+				url: "/transactions",
 				async: false,
 				contentType: 'application/json',
 				//data: { "data" : mPayload },
@@ -172,7 +172,7 @@ sap.ui.define([
 			}*/
 
 			$.ajax({
-				url: this.getAjaxBaseURL() + "transactions/" + mPayload.idlancamento,
+				url: "/transactions/" + mPayload.idlancamento,
 				async: false,
 				data: mPayload,
 				dataType: 'json',

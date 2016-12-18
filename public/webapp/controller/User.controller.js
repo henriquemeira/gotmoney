@@ -152,7 +152,7 @@ sap.ui.define([
 			mPayload.iduser = oModel.getProperty("iduser", oContext);
 
 			$.ajax({
-				url: this.getAjaxBaseURL() + "user/" + mPayload.iduser,
+				url: "/user/" + mPayload.iduser,
 				async: false,
 				data: mPayload,
 				dataType: 'json',

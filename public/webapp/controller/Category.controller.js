@@ -68,7 +68,7 @@ sap.ui.define([
                     var oModel = that.getView().getModel();
 
                     $.ajax({
-                        url: that.getAjaxBaseURL() + "category/" + oModel.getData().User.Category[that.extractIdFromPath(sPath)].idcategoria,
+                        url: "/category/" + oModel.getData().User.Category[that.extractIdFromPath(sPath)].idcategoria,
                         async: false,
                         contentType: 'application/json',
                         dataType: 'json',
@@ -132,7 +132,7 @@ sap.ui.define([
             mPayload.idcategoria = $.now();
 
             $.ajax({
-                url: this.getAjaxBaseURL() + "category",
+                url: "/category",
                 async: false,
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),
@@ -153,7 +153,7 @@ sap.ui.define([
             mPayload.idcategoria = oModel.getProperty("idcategoria", oContext);
 
             $.ajax({
-                url: this.getAjaxBaseURL() + "category/" + mPayload.idcategoria,
+                url: "/category/" + mPayload.idcategoria,
                 async: false,
                 //contentType: ,
                 data: mPayload,

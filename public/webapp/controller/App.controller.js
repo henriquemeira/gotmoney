@@ -135,7 +135,7 @@ sap.ui.define([
             };
 
             $.ajax({
-                url: this.getAjaxBaseURL() + "session/",
+                url: "/session/",
                 async: false,
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),
@@ -179,7 +179,7 @@ sap.ui.define([
                 email: Fragment.byId("Recovery", "email").getValue()
             };
             $.ajax({
-                url: this.getAjaxBaseURL() + "session/" + $.now(),
+                url: "/session/" + $.now(),
                 data: mPayload,
                 dataType: 'json',
                 method: 'PUT'
@@ -212,7 +212,7 @@ sap.ui.define([
         onLogoff: function () {
             var that = this;
             $.ajax({
-                url: this.getAjaxBaseURL() + "session/",
+                url: "/session/",
                 async: false,
                 contentType: 'application/json',
                 dataType: 'json',

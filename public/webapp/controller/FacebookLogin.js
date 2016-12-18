@@ -56,7 +56,7 @@ sap.ui.define([
             };
 
             $.ajax({
-                url: this._oViewController.getAjaxBaseURL() + "session/",
+                url: "/session/",
                 async: false,
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),

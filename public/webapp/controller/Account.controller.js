@@ -66,7 +66,7 @@ sap.ui.define([
                     var oModel = that.getView().getModel();
 
                     $.ajax({
-                        url: that.getAjaxBaseURL() + "account/" + oModel.getData().User.Account[that.extractIdFromPath(sPath)].idconta,
+                        url: "/account/" + oModel.getData().User.Account[that.extractIdFromPath(sPath)].idconta,
                         async: false,
                         contentType: 'application/json',
                         dataType: 'json',
@@ -136,7 +136,7 @@ sap.ui.define([
             mPayload.idconta = $.now();
 
             $.ajax({
-                url: this.getAjaxBaseURL() + "account",
+                url: "/account",
                 async: false,
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),
@@ -156,7 +156,7 @@ sap.ui.define([
             mPayload.idconta = oModel.getProperty("idconta", oContext);
 
             $.ajax({
-                url: this.getAjaxBaseURL() + "account/" + mPayload.idconta,
+                url: "/account/" + mPayload.idconta,
                 //contentType: ,
                 async: false,
                 data: mPayload,
