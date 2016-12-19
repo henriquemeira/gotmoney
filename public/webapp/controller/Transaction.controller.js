@@ -205,6 +205,7 @@ sap.ui.define([
 				oModel.setProperty("valor", mPayload.valor, oContext);
 				oModel.setProperty("datalancamento", mPayload.datalancamento, oContext);
 				oModel.setProperty("datavencimento", mPayload.datavencimento, oContext);
+                oModel.setProperty("tag", mPayload.tag, oContext);
                 this.onFinishBackendOperation();
                 MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
@@ -246,11 +247,7 @@ sap.ui.define([
 			mPayload.valor = oView.byId("amount").getValue();
 			mPayload.tipo = oView.byId("type").getSelectedKey();
 			mPayload.datalancamento = oView.byId("startdate").getValue();
-			//mPayload.datalancamento = formatter.dateMySQLFormat(oView.byId("startdate").getDateValue());
 			mPayload.datavencimento = oView.byId("duedate").getValue();
-			//mPayload.datavencimento = formatter.dateMySQLFormat(oView.byId("duedate").getDateValue());
-			//tag = null,
-
 			mPayload.tag = oView.byId("category").getSelectedKeys();
 			return mPayload;
 		},
@@ -281,7 +278,7 @@ sap.ui.define([
 			var sLastId;
 			mPayloadReference.idlancamento = $.now();
 
-			for(var i=0; i < sSplit; i++) {
+			for(var i = 0; i < sSplit; i++) {
 				var mPayload;
 				mPayload = $.extend(true, {}, mPayloadReference);
 				var oDueDate = new Date(oStartDate.getFullYear(), oStartDate.getMonth(), oStartDate.getDate());
