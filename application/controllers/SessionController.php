@@ -11,7 +11,6 @@ class SessionController extends Extra_RESTController
     {
 		Zend_Auth::getInstance()->clearIdentity();
 		if (!$this->isValidHttpMethod(self::HTTP_METHOD_POST)) { return; }
-		//$this->convertPayloadToBackendFormat($this->getRequest()->getPost());
 		$this->convertPayloadToBackendFormat(Zend_Json::decode($this->getRequest()->getRawBody()));
 		$usersession = false;
 
@@ -112,7 +111,7 @@ class SessionController extends Extra_RESTController
 		Zend_Session::regenerateId();
 		if (!$this->isValidHttpMethod(self::HTTP_METHOD_PUT)) { return; }
 
-		$this->convertPayloadToBackendFormat($this->getRequest()->getParams());
+		$this->convertPayloadToBackendFormat(Zend_Json::decode($this->getRequest()->getRawBody()));
 
 		$this->_form->removeElement('iduser');
 		$this->_form->removeElement('nome');

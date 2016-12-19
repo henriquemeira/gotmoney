@@ -1,5 +1,5 @@
 <mvc:View controllerName="com.mlauffer.gotmoneyappui5.controller.TransactionList"
-	xmlns:mvc="sap.ui.core.mvc" xmlns:u="sap.ui.unified" xmlns="sap.m">
+	xmlns:mvc="sap.ui.core.mvc" xmlns:u="sap.ui.unified" xmlns="sap.m" busyIndicatorDelay="0">
 	<Page id="transactionListPage"
 		title="{i18n>Transaction.listTitle}" showNavButton="true" navButtonPress="onNavBack">
 		<u:CalendarMonthInterval id="calendar"

@@ -3,10 +3,11 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/ui/core/Fragment",
     "sap/ui/core/ValueState",
+    "sap/ui/unified/ShellHeadUserItem",
     "com/mlauffer/gotmoneyappui5/controller/BaseController",
     "com/mlauffer/gotmoneyappui5/controller/FacebookLogin",
     "com/mlauffer/gotmoneyappui5/controller/GoogleLogin"
-], function (MessageBox, MessageToast, Fragment, ValueState, BaseController, FacebookLogin, GoogleLogin) {
+], function (MessageBox, MessageToast, Fragment, ValueState, ShellHeadUserItem, BaseController, FacebookLogin, GoogleLogin) {
     "use strict";
 
     return BaseController.extend("com.mlauffer.gotmoneyappui5.controller.App", {
@@ -127,6 +128,7 @@ sap.ui.define([
 
 
         onSystemLogin: function () {
+            this._oDialogLogin.setBusy(true);
             var that = this;
             var mPayload = {
                 login: "system",
@@ -136,7 +138,6 @@ sap.ui.define([
 
             $.ajax({
                 url: "/session/",
-                async: false,
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),
                 dataType: 'json',
@@ -148,18 +149,20 @@ sap.ui.define([
                 that._loginDone();
             })
             .fail(function (jqXHR, textStatus, errorThrown) {
+                that._oDialogLogin.setBusy(false);
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
             });
         },
 
         onCloseLogin: function () {
+            this._oDialogLogin.setBusy(false);
             this._oDialogLogin.close();
+            this.getView().setBusy(false);
         },
 
         onAfterCloseLogin: function () {
             Fragment.byId("Login", "email").setValue();
             Fragment.byId("Login", "pwd").setValue();
-            //oEvent.getSource().destroy();
         },
 
         onRecovery: function () {
@@ -174,35 +177,38 @@ sap.ui.define([
         },
 
         onResetPassword: function () {
+            this._oDialogRecovery.setBusy(true);
             var that = this;
             var mPayload = {
                 email: Fragment.byId("Recovery", "email").getValue()
             };
             $.ajax({
                 url: "/session/" + $.now(),
-                data: mPayload,
+                contentType: 'application/json',
+                data: JSON.stringify(mPayload),
                 dataType: 'json',
                 method: 'PUT'
             })
             .done(function () {
                 MessageBox.show(that.getResourceBundle().getText("Success.passwordRecovery"));
+                that.onCloseRecovery();
             })
             .fail(function (jqXHR, textStatus, errorThrown) {
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
+                that.onCloseRecovery();
             });
-
-            this.onCloseRecovery();
         },
 
 
         onCloseRecovery: function () {
             Fragment.byId("Recovery", "email").setValue();
+            this._oDialogRecovery.setBusy(false);
             this._oDialogRecovery.close();
+            this.getView().setBusy(false);
         },
 
         onAfterCloseRecovery: function () {
             Fragment.byId("Recovery", "email").setValue();
-            //oEvent.getSource().destroy();
         },
 
         onSignup: function () {
@@ -210,10 +216,10 @@ sap.ui.define([
         },
 
         onLogoff: function () {
+            this.getView().setBusy(true);
             var that = this;
             $.ajax({
                 url: "/session/",
-                async: false,
                 contentType: 'application/json',
                 dataType: 'json',
                 method: 'DELETE'
@@ -271,13 +277,14 @@ sap.ui.define([
         _logoffDone: function () {
             this._toogleShellOverlay();
             this._toogleButtonsVisible();
+            this.getView().setBusy(false);
             this.getRouter().navTo("index");
             MessageToast.show(this.getResourceBundle().getText("Success.logoff"));
         },
 
 
         _createShellUserButton: function () {
-            var oUser = new sap.ui.unified.ShellHeadUserItem({
+            var oUser = new ShellHeadUserItem({
                 image: "sap-icon://person-placeholder",
                 username: "{/User/nome}",
                 press: $.proxy(this.onUserItemPressed, this)

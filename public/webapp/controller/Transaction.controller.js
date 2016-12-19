@@ -47,7 +47,7 @@ sap.ui.define([
 
 			// Validate input fields
 			oValidator.validate(this.getView().byId("transactionForm"));
-			if (oValidator.isValid() === false) {
+			if (!oValidator.isValid()) {
 				return;
 			}
 
@@ -72,7 +72,6 @@ sap.ui.define([
 
 					$.ajax({
 						url: "/transactions/" + oModel.getData().User.Transaction[that.extractIdFromPath(sPath)].idlancamento,
-						async: false,
 						contentType: 'application/json',
 						dataType: 'json',
 						method: 'DELETE'
@@ -140,15 +139,11 @@ sap.ui.define([
 			//mPayload.idlancamento = $.now();
 
 			var mPayload = this._createRepetition(this.getView().byId("occurrence").getSelectedKey());
-			var data = {
-				data: mPayload
-			};
+			var data = { data: mPayload };
 
 			$.ajax({
 				url: "/transactions",
-				async: false,
 				contentType: 'application/json',
-				//data: { "data" : mPayload },
 				data: JSON.stringify(data),
 				dataType: 'json',
 				method: 'POST'
@@ -173,9 +168,9 @@ sap.ui.define([
 
 			$.ajax({
 				url: "/transactions/" + mPayload.idlancamento,
-				async: false,
-				data: mPayload,
-				dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(mPayload),
+                dataType: 'json',
 				method: 'PUT'
 			})
 			.done(jQuery.proxy(that._editDone(mPayload, oContext), this))
@@ -184,30 +179,25 @@ sap.ui.define([
 
 
 		_newDone : function(mPayload) {
-			var oView = this.getView();
-
 			try {
+                var oView = this.getView();
 				$.each(mPayload, function(i, item){
 					console.dir(item);
 					oView.getModel().getData().User.Transaction.push(item);
 				});
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
 			} catch (e) {
 				this.saveLog('E', e.message);
 				MessageBox.error(e.message);
-				return;
 			}
-
-			this.onFinishBackendOperation();
-			MessageToast.show(this.getResourceBundle().getText("Success.save"));
-			this.getView().setBusy(false);
 		},
 
 
 		_editDone : function(mPayload, oContext) {
-			var oModel = this.getView().getModel();
-
 			try {
+                var oModel = this.getView().getModel();
 				oModel.setProperty("idconta", mPayload.idconta, oContext);
 				oModel.setProperty("tipo", mPayload.tipo, oContext);
 				oModel.setProperty("idstatus", mPayload.idstatus, oContext);
@@ -215,32 +205,26 @@ sap.ui.define([
 				oModel.setProperty("valor", mPayload.valor, oContext);
 				oModel.setProperty("datalancamento", mPayload.datalancamento, oContext);
 				oModel.setProperty("datavencimento", mPayload.datavencimento, oContext);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
 			} catch (e) {
 				this.saveLog('E', e.message);
 				MessageBox.error(e.message);
-				return;
 			}
-
-			this.onFinishBackendOperation();
-			MessageToast.show(this.getResourceBundle().getText("Success.save"));
-			this.getView().setBusy(false);
 		},
 
 
 		_deleteDone : function(sPath) {
 			try {
 				this.getView().getModel().getData().User.Transaction.splice(this.extractIdFromPath(sPath), 1);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.delete"));
 
 			} catch (e) {
 				this.saveLog('E', e.message);
 				MessageBox.error(e.message);
-				return;
 			}
-
-			this.onFinishBackendOperation();
-			MessageToast.show(this.getResourceBundle().getText("Success.delete"));
-			this.getView().setBusy(false);
 		},
 
 

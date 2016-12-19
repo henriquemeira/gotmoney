@@ -1,5 +1,5 @@
 <mvc:View controllerName="com.mlauffer.gotmoneyappui5.controller.TransactionListLate"
-          xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+          xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" busyIndicatorDelay="0">
     <Page id="transactionListPage"
           title="{i18n>Transaction.lates}" showNavButton="true" navButtonPress="onNavBack">
         <Table id="transactionTable" items="{path:'/User/Transaction'}" updateFinished="onUpdateFinished">

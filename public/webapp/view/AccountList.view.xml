@@ -1,5 +1,5 @@
 <mvc:View controllerName="com.mlauffer.gotmoneyappui5.controller.AccountList"
-	xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+	xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" busyIndicatorDelay="0">
 	<Page title="{i18n>Account.title}" showNavButton="true" navButtonPress="onNavBack">
 		<List items="{/User/Account}">
 			<StandardListItem title="{descricao}" type="Navigation"

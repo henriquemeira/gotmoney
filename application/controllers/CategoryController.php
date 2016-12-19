@@ -101,7 +101,7 @@ class CategoryController extends Extra_RESTController
         if (!$this->isValidHttpMethod(self::HTTP_METHOD_PUT)) { return; }
         if (!$this->isValidSession()) { return; }
 
-        $this->convertPayloadToBackendFormat($this->getRequest()->getParams());
+        $this->convertPayloadToBackendFormat(Zend_Json::decode($this->getRequest()->getRawBody()));
 
         if (!$this->isValidInput()) { return; }
 

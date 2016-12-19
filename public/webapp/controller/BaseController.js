@@ -54,6 +54,7 @@ sap.ui.define([
         onFinishBackendOperation: function () {
             this.getView().getModel().updateBindings();
             this.onNavBack();
+            this.getView().setBusy(false);
         },
 
 

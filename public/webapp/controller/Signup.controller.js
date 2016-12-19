@@ -54,7 +54,7 @@ sap.ui.define([
 
 			// Validate input fields
 			oValidator.validate(oView.byId("userForm"));
-			if (oValidator.isValid() === false) {
+			if (!oValidator.isValid()) {
 				return;
 			}
 
@@ -76,7 +76,6 @@ sap.ui.define([
 			} else {
 				this._saveNew(oEvent);
 			}
-			this.getView().setBusy(false);
 		},
 
 		onFacebookLogin : function() {
@@ -130,8 +129,9 @@ sap.ui.define([
 
 		_loginDone : function() {
 			this._loadBackendData();
-			sap.ui.getCore().byId("__component0---rootApp").getController()._toogleButtonsVisible();
-			this.getRouter().navTo("home");
+            this.getOwnerComponent().byId("rootApp").getController()._toogleButtonsVisible();
+            this.getView().setBusy(false);
+            this.getRouter().navTo("home");
 			MessageToast.show(this.getResourceBundle().getText("Success.login"));
 		},
 
@@ -143,7 +143,6 @@ sap.ui.define([
 
 			$.ajax({
 				url: "/user",
-				async: false,
 				contentType: 'application/json',
 				data: JSON.stringify(mPayload),
 				dataType: 'json',
@@ -157,17 +156,15 @@ sap.ui.define([
 		_newDone : function(mPayload) {
 			try {
 				this.getView().getModel().getData().User = mPayload;
+                //this.onFinishBackendOperation();
+                this._loginDone();
+                //MessageToast.show(this.getResourceBundle().getText("Success.save"));
+                this.getView().setBusy(false);
 
 			} catch (e) {
 				this.saveLog('E', e.message);
 				MessageBox.error(e.message);
-				return;
 			}
-
-			//this.onFinishBackendOperation();
-			this._loginDone();
-			//MessageToast.show(this.getResourceBundle().getText("Success.save"));
-			this.getView().setBusy(false);
 		},
 
 

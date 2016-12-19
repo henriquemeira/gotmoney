@@ -44,18 +44,16 @@ sap.ui.define([
 
             // Validate input fields
             oValidator.validate(this.getView().byId("categoryForm"));
-            if (oValidator.isValid() === false) {
+            if (!oValidator.isValid()) {
                 return;
             }
 
             this.getView().setBusy(true);
-            //this.getView().setBusyIndicatorDelay(0);
             if (this.getView().getViewName() === "com.mlauffer.gotmoneyappui5.view.Category") {
                 this._saveEdit(oEvent);
             } else {
                 this._saveNew(oEvent);
             }
-            this.getView().setBusy(false);
         },
 
 
@@ -69,7 +67,6 @@ sap.ui.define([
 
                     $.ajax({
                         url: "/category/" + oModel.getData().User.Category[that.extractIdFromPath(sPath)].idcategoria,
-                        async: false,
                         contentType: 'application/json',
                         dataType: 'json',
                         method: 'DELETE'
@@ -133,7 +130,6 @@ sap.ui.define([
 
             $.ajax({
                 url: "/category",
-                async: false,
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),
                 dataType: 'json',
@@ -154,9 +150,8 @@ sap.ui.define([
 
             $.ajax({
                 url: "/category/" + mPayload.idcategoria,
-                async: false,
-                //contentType: ,
-                data: mPayload,
+                contentType: 'application/json',
+                data: JSON.stringify(mPayload),
                 dataType: 'json',
                 method: 'PUT'
             })
@@ -168,48 +163,39 @@ sap.ui.define([
         _newDone: function (mPayload) {
             try {
                 this.getView().getModel().getData().User.Category.push(mPayload);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            MessageToast.show(this.getResourceBundle().getText("Success.save"));
-            this.getView().setBusy(false);
         },
 
 
         _editDone: function (mPayload, oContext) {
             try {
                 this.getView().getModel().setProperty("descricao", mPayload.descricao, oContext);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            MessageToast.show(this.getResourceBundle().getText("Success.save"));
-            this.getView().setBusy(false);
         },
 
 
         _deleteDone: function (sPath) {
             try {
                 this.getView().getModel().getData().User.Category.splice(this.extractIdFromPath(sPath), 1);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.delete"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            MessageToast.show(this.getResourceBundle().getText("Success.delete"));
-            this.getView().setBusy(false);
         },
 
 

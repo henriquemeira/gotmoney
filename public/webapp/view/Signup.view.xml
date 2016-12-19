@@ -1,6 +1,6 @@
 <mvc:View controllerName="com.mlauffer.gotmoneyappui5.controller.Signup"
 	xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:mvc="sap.ui.core.mvc"
-	xmlns:core="sap.ui.core" xmlns="sap.m">
+	xmlns:core="sap.ui.core" xmlns="sap.m" busyIndicatorDelay="0">
 	<Page title="{i18n>Signup.title}" showNavButton="true"
 		navButtonPress="onNavBack">
 		<Panel headerText="{i18n>Signup.social}">

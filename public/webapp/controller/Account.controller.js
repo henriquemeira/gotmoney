@@ -43,7 +43,7 @@ sap.ui.define([
             var oValidator = new Validator();
             // Validate input fields
             oValidator.validate(this.getView().byId("accountForm"));
-            if (oValidator.isValid() === false) {
+            if (!oValidator.isValid()) {
                 return;
             }
 
@@ -53,7 +53,6 @@ sap.ui.define([
             } else {
                 this._saveNew(oEvent);
             }
-            this.getView().setBusy(false);
         },
 
 
@@ -67,7 +66,6 @@ sap.ui.define([
 
                     $.ajax({
                         url: "/account/" + oModel.getData().User.Account[that.extractIdFromPath(sPath)].idconta,
-                        async: false,
                         contentType: 'application/json',
                         dataType: 'json',
                         method: 'DELETE'
@@ -137,7 +135,6 @@ sap.ui.define([
 
             $.ajax({
                 url: "/account",
-                async: false,
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),
                 dataType: 'json',
@@ -157,9 +154,8 @@ sap.ui.define([
 
             $.ajax({
                 url: "/account/" + mPayload.idconta,
-                //contentType: ,
-                async: false,
-                data: mPayload,
+                contentType: 'application/json',
+                data: JSON.stringify(mPayload),
                 dataType: 'json',
                 method: 'PUT'
             })
@@ -171,54 +167,46 @@ sap.ui.define([
         _newDone: function (mPayload) {
             try {
                 this.getView().getModel().getData().User.Account.push(mPayload);
+                this.onFinishBackendOperation();
+                this.getView().setBusy(false);
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            this.getView().setBusy(false);
-            MessageToast.show(this.getResourceBundle().getText("Success.save"));
         },
 
 
         _editDone: function (mPayload, oContext) {
-            var oModel = this.getView().getModel();
             try {
+                var oModel = this.getView().getModel();
                 oModel.setProperty("idtipo", mPayload.idtipo, oContext);
                 oModel.setProperty("descricao", mPayload.descricao, oContext);
                 //TODO: mPayload.balance = 1;
                 oModel.setProperty("dataabertura", mPayload.dataabertura, oContext);
                 oModel.setProperty("limitecredito", mPayload.limitecredito, oContext);
                 oModel.setProperty("diafatura", mPayload.diafatura, oContext);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            MessageToast.show(this.getResourceBundle().getText("Success.save"));
-            this.getView().setBusy(false);
         },
 
 
         _deleteDone: function (sPath) {
             try {
                 this.getView().getModel().getData().User.Account.splice(this.extractIdFromPath(sPath), 1);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.delete"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            MessageToast.show(this.getResourceBundle().getText("Success.delete"));
-            this.getView().setBusy(false);
         },
 
 

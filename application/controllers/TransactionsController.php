@@ -39,7 +39,6 @@ class TransactionsController extends Extra_RESTController
         if (!$this->isValidHttpMethod(self::HTTP_METHOD_POST)) { return; }
         if (!$this->isValidSession()) { return; }
 
-        //$payload = $this->getRequest()->getPost();
         $payload = Zend_Json::decode($this->getRequest()->getRawBody());
 
         foreach($payload['data'] as $item) {
@@ -102,7 +101,8 @@ class TransactionsController extends Extra_RESTController
         if (!$this->isValidHttpMethod(self::HTTP_METHOD_PUT)) { return; }
         if (!$this->isValidSession()) { return; }
 
-        $this->convertPayloadToBackendFormat($this->getRequest()->getParams());
+        //$this->convertPayloadToBackendFormat($this->getRequest()->getParams());
+        $this->convertPayloadToBackendFormat(Zend_Json::decode($this->getRequest()->getRawBody()));
 
         if (!$this->isValidInput()) { return; }
 

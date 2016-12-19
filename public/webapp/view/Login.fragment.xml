@@ -1,7 +1,7 @@
 <core:FragmentDefinition xmlns:core="sap.ui.core"
 	xmlns="sap.m">
 	<Dialog title="{i18n>Login.title}" icon="sap-icon://customer"
-		afterClose="onAfterCloseLogin">
+		afterClose="onAfterCloseLogin" busyIndicatorDelay="0">
 		<Panel>
 			<VBox>
 				<HBox justifyContent="End">

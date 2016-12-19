@@ -42,6 +42,10 @@ sap.ui.define([
         },
 
         onSuccess: function (googleUser) {
+            if (this._oViewController._oDialogLogin) {
+                this._oViewController._oDialogLogin.setBusy(true);
+            }
+            this._oViewController.getView().setBusy(true);
             var that = this;
             var mPayload = {
                 login: "google",
@@ -53,7 +57,6 @@ sap.ui.define([
 
             $.ajax({
                 url: "/session/",
-                async: false,
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),
                 dataType: 'json',
@@ -63,12 +66,19 @@ sap.ui.define([
                 that._oViewController._loginDone();
             })
             .fail(function (jqXHR, textStatus, errorThrown) {
+                if (that._oViewController._oDialogLogin) {
+                    that._oViewController._oDialogLogin.setBusy(false);
+                }
                 that._oViewController._ajaxFail(jqXHR, textStatus, errorThrown);
             });
         },
 
 
         onFailure: function () {
+            if (this._oViewController._oDialogLogin) {
+                this._oViewController._oDialogLogin.setBusy(false);
+            }
+            this._oViewController.getView().setBusy(false);
             MessageBox.error(this._oViewController.getResourceBundle().getText("Login.googleError"));
         }
     });
