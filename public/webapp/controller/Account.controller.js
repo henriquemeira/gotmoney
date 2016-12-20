@@ -4,11 +4,14 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "com/mlauffer/gotmoneyappui5/controller/BaseController",
     "com/mlauffer/gotmoneyappui5/controller/Validator",
+    "com/mlauffer/gotmoneyappui5/model/formatter",
     "com/mlauffer/gotmoneyappui5/model/ObjectFactory"
-], function (MessageBox, MessageToast, JSONModel, BaseController, Validator, ObjectFactory) {
+], function (MessageBox, MessageToast, JSONModel, BaseController, Validator, formatter, ObjectFactory) {
     "use strict";
 
     return BaseController.extend("com.mlauffer.gotmoneyappui5.controller.Account", {
+        formatter: formatter,
+
         /* =========================================================== */
         /* lifecycle methods                                           */
         /* =========================================================== */

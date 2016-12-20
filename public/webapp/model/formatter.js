@@ -48,30 +48,31 @@ sap.ui.define([
             return ((sValue === "001" || sValue === true)) ? ValueState.Success : ValueState.Error;
         },
 
-        accountTypeIcon: function (sValue) {
-            var sIcon;
-            switch (sValue) {
+        accountTypeIcon: function (sId) {
+            switch (sId) {
                 // Cash
                 case '001':
-                    sIcon = "sap-icon://money-bills";
-                    break;
+                    return "sap-icon://money-bills";
                 // Credit Card
                 case '002':
-                    sIcon = "sap-icon://credit-card";
-                    break;
+                    return "sap-icon://credit-card";
                 // Bank Account
                 case '003':
-                    sIcon = "sap-icon://loan";
-                    break;
+                    return "sap-icon://loan";
                 // Savings
                 case '004':
-                    sIcon = "sap-icon://waiver";
-                    break;
-
+                    return "sap-icon://waiver";
                 default:
-                    break;
+                    return 'sap-icon://money-bills';
             }
-            return sIcon;
+        },
+
+        accountTypeName: function (sId) {
+            try {
+                return this.getResourceBundle().getText('Account.Type.' + sId);
+            } catch (e) {
+                return sId;
+            }
         },
 
         accountName: function (sValue) {

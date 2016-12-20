@@ -10,9 +10,8 @@
 				columnsL="1" columnsM="1">
 				<core:Title text="{i18n>General.create}" />
 				<Label text="{i18n>Account.accountType}" required="true" />
-				<Select id="idtype" selectedKey="{account>/idtipo}"
-					items="{accTypes>/}" change="onChangeType">
-					<core:Item key="{accTypes>idtipo}" text="{accTypes>descricao}" />
+				<Select id="idtype" selectedKey="{account>/idtipo}" items="{/AccountType}" change="onChangeType">
+					<core:Item key="{idtipo}" text="{path:'idtipo', formatter:'.formatter.accountTypeName'}"/>
 				</Select>
 				<Label text="{i18n>Account.description}" required="true" />
 				<Input id="description"

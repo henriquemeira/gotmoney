@@ -36,6 +36,7 @@ sap.ui.define([
 
         setModels : function() {
             var oData = {
+                AccountType: [],
                 User: {
                     Account: [],
                     Category: [],
@@ -46,13 +47,6 @@ sap.ui.define([
             oModel.setDefaultBindingMode(BindingMode.OneWay);
             oModel.iSizeLimit = 1000;
             oModel.setData(oData);
-
-            // Account Types Model
-            oModel = new JSONModel();
-            oModel.setDefaultBindingMode(BindingMode.OneWay);
-            //var url = "../../../accounttyperest/";
-            //oModel.loadData(url, {}, true, "GET", false, true);
-            this.setModel(oModel, "accTypes");
 
             // set the device model
             oModel = new JSONModel(Device);

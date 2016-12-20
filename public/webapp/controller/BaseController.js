@@ -164,7 +164,7 @@ sap.ui.define([
         _loadBackendData: function () {
             if (window.Promise) {
                 var that = this;
-                Promise.all([this._loadAccount(), this._loadCategory(), this._loadTransaction(), this._loadUser()])
+                Promise.all([this._loadAccount(), this._loadCategory(), this._loadTransaction(), this._loadUser(), this._loadAccountType()])
                     .then(function() {
                         that.getView().getModel().updateBindings();
                     })
@@ -174,9 +174,6 @@ sap.ui.define([
             } else {
                 MessageBox.error(this.getResourceBundle().getText("Error.notSupportPromise"));
             }
-
-            // Account Types Model
-            this.getView().getModel("accTypes").loadData("/accounttype/", {}, true, "GET", false, true);
         },
 
         _loadUser: function() {
@@ -263,6 +260,26 @@ sap.ui.define([
                 })
                     .done(function (response) {
                         that.getView().getModel().getData().User.Transaction = response;
+                        return resolve();
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        that._ajaxFail(jqXHR, textStatus, errorThrown);
+                        return reject();
+                    });
+            });
+        },
+
+        _loadAccountType: function() {
+            var that = this;
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: '/accounttype/',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    method: 'GET'
+                })
+                    .done(function (response) {
+                        that.getView().getModel().getData().AccountType = response;
                         return resolve();
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
