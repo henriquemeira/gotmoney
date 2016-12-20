@@ -12,15 +12,14 @@
 				<Label text="{i18n>Login.password}" />
 				<Input id="pwd" type="Password" />
 				<HBox justifyContent="End">
-					<Button icon="sap-icon://log" text="{i18n>XBUT.login}"
-						press="onSystemLogin" />
+					<Button icon="sap-icon://log" text="{i18n>XBUT.login}" press="onSystemLogin" />
 				</HBox>
 			</VBox>
 		</Panel>
 		<Panel headerText="{i18n>Login.social}">
 			<VBox>
-				<Button text="{i18n>Login.facebook}" press="onFacebookLogin" icon="https://www.facebookbrand.com/img/assets/asset.f.logo.lg.png" />
-				<Button id="btGoogle" text="{i18n>Login.google}" icon="https://developers.google.com/identity/sign-in/g-normal.png" />
+				<Button text="{i18n>Login.facebook}" press="onFacebookLogin" icon="./images/facebook.png" />
+				<Button id="btGoogle" text="{i18n>Login.google}" icon="./images/google.png" />
 			</VBox>
 		</Panel>
 		<buttons>

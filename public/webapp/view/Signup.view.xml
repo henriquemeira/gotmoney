@@ -6,9 +6,9 @@
 		<Panel headerText="{i18n>Signup.social}">
 			<OverflowToolbar>
 				<ToolbarSpacer/>
-				<Button text="{i18n>Signup.facebook}" press="onFacebookLogin" icon="https://www.facebookbrand.com/img/assets/asset.f.logo.lg.png" />
+				<Button text="{i18n>Signup.facebook}" press="onFacebookLogin" icon="./images/facebook.png" />
 				<ToolbarSpacer />
-				<Button id="btGoogle" text="{i18n>Signup.google}" icon="https://developers.google.com/identity/sign-in/g-normal.png" />
+				<Button id="btGoogle" text="{i18n>Signup.google}" icon="./images/google.png" />
 				<ToolbarSpacer/>
 			</OverflowToolbar>
 		</Panel>
