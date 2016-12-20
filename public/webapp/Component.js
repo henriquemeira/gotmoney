@@ -7,10 +7,6 @@ sap.ui.define([
     "use strict";
 
     return UIComponent.extend("com.mlauffer.gotmoneyappui5.Component", {
-        metadata: {
-            manifest: "json"
-        },
-
         /**
          * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
          * @public
@@ -60,7 +56,7 @@ sap.ui.define([
 
             // set the device model
             oModel = new JSONModel(Device);
-            oModel.setDefaultBindingMode(sap.ui.model.BindingMode.OneWay);
+            oModel.setDefaultBindingMode(BindingMode.OneWay);
             this.setModel(oModel, "device");
         }
     });

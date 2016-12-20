@@ -1,16 +1,27 @@
 //SAP OpenUI5
 sap.ui.getCore().attachInit(function() {
+    'use strict';
     sap.ui.require([
         "sap/m/Shell",
         "sap/ui/core/ComponentContainer"
     ], function (Shell, ComponentContainer) {
-        new Shell({
-            appWidthLimited: false,
-            app: new ComponentContainer({
-                height: "100%",
-                name: "com.mlauffer.gotmoneyappui5"
-            })
-        }).placeAt("content");
+        var oCompContainer = new ComponentContainer({
+            height : "100%"
+        });
+
+        var oShell = new Shell({
+            app: oCompContainer,
+            appWidthLimited: true
+        });
+
+        sap.ui.component({
+            name: "com.mlauffer.gotmoneyappui5",
+            manifestFirst: true,
+            async: true
+        }).then(function(oComponent) {
+            oCompContainer.setComponent(oComponent);
+            oShell.placeAt("content");
+        });
     });
 });
 
