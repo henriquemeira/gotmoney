@@ -67,14 +67,17 @@ sap.ui.define([
         /* =========================================================== */
 
         onPressHome: function () {
+            this.vibrate();
             this.getRouter().navTo("home");
         },
 
         onPressIndex: function () {
+            this.vibrate();
             this.getRouter().navTo("index");
         },
 
         onPressMenu: function () {
+            this.vibrate();
             this._toogleShellOverlay();
         },
 
@@ -116,6 +119,7 @@ sap.ui.define([
         },
 
         onLogin: function () {
+            this.vibrate();
             if (!this._oDialogLogin) {
                 this._oDialogLogin = sap.ui.xmlfragment("Login", "com.mlauffer.gotmoneyappui5.view.Login", this);
                 this.getView().addDependent(this._oDialogLogin);
@@ -155,6 +159,7 @@ sap.ui.define([
         },
 
         onCloseLogin: function () {
+            this.vibrate();
             this._oDialogLogin.setBusy(false);
             this._oDialogLogin.close();
             this.getView().setBusy(false);
@@ -201,6 +206,7 @@ sap.ui.define([
 
 
         onCloseRecovery: function () {
+            this.vibrate();
             Fragment.byId("Recovery", "email").setValue();
             this._oDialogRecovery.setBusy(false);
             this._oDialogRecovery.close();
@@ -212,6 +218,7 @@ sap.ui.define([
         },
 
         onSignup: function () {
+            this.vibrate();
             this.getRouter().navTo("signup");
         },
 
@@ -243,6 +250,7 @@ sap.ui.define([
         /* =========================================================== */
 
         _toogleShellOverlay: function () {
+            this.vibrate();
             var oItem = this.getView().byId("btMenu");
             var oShell = this.getView().byId("appUShell");
             var bState = oShell.getShowPane();

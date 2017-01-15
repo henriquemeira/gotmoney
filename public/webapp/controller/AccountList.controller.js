@@ -31,6 +31,7 @@ sap.ui.define([
         /* =========================================================== */
 
         onItemPress: function (oEvent) {
+            this.vibrate();
             this.getRouter().navTo("account", {
                 accountId: this.extractIdFromPath(oEvent.getSource().getBindingContext().getPath())
             });
@@ -38,6 +39,7 @@ sap.ui.define([
 
 
         onAddNew: function () {
+            this.vibrate();
             this.getRouter().navTo("accountNew");
         }
 

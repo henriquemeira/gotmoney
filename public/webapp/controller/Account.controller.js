@@ -42,6 +42,7 @@ sap.ui.define([
         /* =========================================================== */
 
         onSave: function (oEvent) {
+            this.vibrate();
             // Create new validator instance
             var oValidator = new Validator();
             // Validate input fields
@@ -60,6 +61,7 @@ sap.ui.define([
 
 
         onDelete: function (oEvent) {
+            this.vibrate();
             var that = this;
             var sPath = oEvent.getSource().getBindingContext().getPath();
             MessageBox.confirm(that.getResourceBundle().getText("Delete.message"), function (sAction) {

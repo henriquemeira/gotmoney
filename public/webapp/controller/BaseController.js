@@ -44,6 +44,7 @@ sap.ui.define([
          * @public
          */
         onNavBack: function () {
+            this.vibrate();
             var sPreviousHash = History.getInstance().getPreviousHash();
             if (sPreviousHash !== undefined) {
                 // The history contains a previous entry
@@ -79,6 +80,7 @@ sap.ui.define([
 
 
         _ajaxFail: function (oResult, textStatus, jqXHR) {
+            this.vibrate();
             var sText = this.getResourceBundle().getText("Error.internalServerError");
             //var sDetail = this.getResourceBundle().getText("Error.noDetails");
             try {
@@ -188,6 +190,13 @@ sap.ui.define([
             return connected;
         },
 
+        vibrate: function() {
+            navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        },
+
         _loadBackendData: function () {
             this._oBusyDialog = new BusyDialog();
             this._oBusyDialog.open();
@@ -198,9 +207,6 @@ sap.ui.define([
                     .then(function() {
                         that.getView().getModel().updateBindings(true);
                         that._oBusyDialog.close();
-                        console.dir(that.getView().getModel().iSizeLimit);
-                        console.dir(that.getView().getModel().getData());
-                        console.dir(that.getView().getModel());
                     })
                     .catch(function() {
                         console.dir('Promise error...');

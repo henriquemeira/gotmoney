@@ -47,6 +47,7 @@ sap.ui.define([
 		 * @public
 		 */
 		onItemPress: function(oEvent) {
+            this.vibrate();
 			this.getRouter().navTo("transaction", {
 				transactionId : this.extractIdFromPath(oEvent.getSource().getBindingContext().getPath())
 			});
@@ -54,11 +55,13 @@ sap.ui.define([
 
 
 		onAddNew: function() {
+            this.vibrate();
 			this.getRouter().navTo("transactionNew");
 		},
 
 
 		onSelectDate : function(oEvent) {
+            this.vibrate();
 			this._setFilterByYearMonth(oEvent.getSource().getSelectedDates()[0].getStartDate());
 		},
 

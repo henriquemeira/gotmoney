@@ -45,6 +45,7 @@ sap.ui.define([
 		/* =========================================================== */
 
 		onSave: function(oEvent) {
+            this.vibrate();
 			var oView = this.getView();
 			// Create new validator instance
 			var oValidator = new Validator();
