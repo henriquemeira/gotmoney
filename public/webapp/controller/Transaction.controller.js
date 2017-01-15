@@ -26,7 +26,7 @@ sap.ui.define([
 
 				this.getView().addEventDelegate({
 					onAfterShow: function() {
-						this.checkUserConnected(true);
+						this.checkSession();
 					}
 				}, this);
 

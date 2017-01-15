@@ -25,8 +25,8 @@ sap.ui.define([
                 oRouter.getRoute("accountNew").attachMatched(this._onRouteMatchedNew, this);
 
                 this.getView().addEventDelegate({
-                    onAfterShow: function () {
-                        this.checkUserConnected(true);
+                    onAfterShow: function() {
+                        this.checkSession();
                     }
                 }, this);
 

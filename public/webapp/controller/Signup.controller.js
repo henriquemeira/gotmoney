@@ -128,6 +128,7 @@ sap.ui.define([
 
 
 		_loginDone : function() {
+            this.setUserLogged(true);
 			this._loadBackendData();
             this.getOwnerComponent().byId("rootApp").getController()._toogleButtonsVisible();
             this.getView().setBusy(false);

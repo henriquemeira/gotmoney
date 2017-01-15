@@ -1,9 +1,19 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/routing/History",
+    "sap/m/BusyDialog",
     "sap/m/MessageBox"
-], function (Controller, History, MessageBox) {
+], function (Controller, History, BusyDialog, MessageBox) {
     "use strict";
+
+    var _initialData = {
+        AccountType: [],
+        User: {
+            Account: [],
+            Category: [],
+            Transaction: []
+        }
+    };
 
     return Controller.extend("com.mlauffer.gotmoneyappui5.controller.BaseController", {
         /**
@@ -135,8 +145,31 @@ sap.ui.define([
             }
         },
 
-        checkUserConnected: function (bRedirect) {
-            var that = this;
+        checkSession: function() {
+            if (!this.getUserLogged()) {
+                var that = this;
+                MessageBox.error(this.getResourceBundle().getText("Error.userNotConnected"), {
+                    onClose: function (sAction) {
+                        that.getRouter().navTo("index");
+                    }
+                });
+            }
+        },
+
+        destroySession: function() {
+            Lockr.rm('logged');
+            this.getView().getModel().setData(_initialData);
+        },
+
+        getUserLogged: function() {
+            return (Lockr.get('logged') === true);
+        },
+
+        setUserLogged: function(isUserLogged) {
+            Lockr.set('logged', isUserLogged);
+        },
+
+        checkUserConnected: function () {
             var connected = false;
             $.ajax({
                 url: "/session/" + $.now(),
@@ -150,23 +183,24 @@ sap.ui.define([
                 })
                 .fail(function (jqXHR, textStatus, errorThrown) {
                     connected = false;
-                    if (bRedirect) {
-                        MessageBox.error(that.getResourceBundle().getText("Error.userNotConnected"), {
-                            onClose: function (sAction) {
-                                that.getRouter().navTo("index");
-                            }
-                        });
-                    }
                 });
+            this.setUserLogged(connected);
             return connected;
         },
 
         _loadBackendData: function () {
+            this._oBusyDialog = new BusyDialog();
+            this._oBusyDialog.open();
             if (window.Promise) {
                 var that = this;
+                this.getView().getModel().setData(_initialData);
                 Promise.all([this._loadAccount(), this._loadCategory(), this._loadTransaction(), this._loadUser(), this._loadAccountType()])
                     .then(function() {
-                        that.getView().getModel().updateBindings();
+                        that.getView().getModel().updateBindings(true);
+                        that._oBusyDialog.close();
+                        console.dir(that.getView().getModel().iSizeLimit);
+                        console.dir(that.getView().getModel().getData());
+                        console.dir(that.getView().getModel());
                     })
                     .catch(function() {
                         console.dir('Promise error...');

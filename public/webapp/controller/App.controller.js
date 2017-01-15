@@ -252,7 +252,7 @@ sap.ui.define([
         },
 
         _toogleButtonsVisible: function () {
-            var bState = this.checkUserConnected();
+            var bState = this.getUserLogged();
             this.getView().byId("btHome").setVisible(bState);
             this.getView().byId("btMenu").setVisible(bState);
             this.getView().byId("btIndex").setVisible(!bState);
@@ -267,6 +267,7 @@ sap.ui.define([
         },
 
         _loginDone: function () {
+            this.setUserLogged(true);
             this._loadBackendData();
             this._toogleButtonsVisible();
             this.onCloseLogin();
@@ -275,6 +276,7 @@ sap.ui.define([
         },
 
         _logoffDone: function () {
+            this.destroySession();
             this._toogleShellOverlay();
             this._toogleButtonsVisible();
             this.getView().setBusy(false);
