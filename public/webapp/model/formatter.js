@@ -77,23 +77,27 @@ sap.ui.define([
             try {
                 return this.getResourceBundle().getText('Account.Type.' + sId);
             } catch (e) {
+                console.dir(e);
                 return sId;
             }
         },
 
         accountName: function (sValue) {
             var sDesc = sValue;
-            var oModel = this.getView().getModel();
-            if (oModel) {
-                //TODO
-                var nItems = oModel.getData().User.Account.length;
-                var aAccounts = oModel.getData().User.Account;
-                for (var i = 0; i < nItems; i++) {
-                    if (aAccounts[i].idconta == sValue) {
-                        sDesc = aAccounts[i].descricao;
-                        return sDesc;
+            try {
+                var oModel = this.getView().getModel();
+                if (oModel) {
+                    var nItems = oModel.getData().User.Account.length;
+                    var aAccounts = oModel.getData().User.Account;
+                    for (var i = 0; i < nItems; i++) {
+                        if (aAccounts[i].idconta == sValue) {
+                            sDesc = aAccounts[i].descricao;
+                            return sDesc;
+                        }
                     }
                 }
+            } catch (e) {
+                console.dir(e);
             }
             return sDesc;
         },

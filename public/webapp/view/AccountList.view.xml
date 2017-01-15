@@ -3,10 +3,8 @@
 	<Page title="{i18n>Account.title}" showNavButton="true" navButtonPress="onNavBack">
 		<List items="{/User/Account}">
 			<StandardListItem title="{descricao}" type="Navigation"
-				icon="{
-					path: 'idtipo',
-					formatter: '.formatter.accountTypeIcon'
-				}"
+				description="{path: 'idtipo', formatter: '.formatter.accountTypeName'}"
+				icon="{path: 'idtipo', formatter: '.formatter.accountTypeIcon'}"
 				press="onItemPress" />
 		</List>
 		<footer>
