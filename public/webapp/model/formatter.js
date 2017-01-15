@@ -48,6 +48,12 @@ sap.ui.define([
             return ((sValue === "001" || sValue === true)) ? ValueState.Success : ValueState.Error;
         },
 
+        paymentTooltip: function (sValue) {
+            return ((sValue === "001" || sValue === true))
+                ? this.getResourceBundle().getText('Transaction.status.paid')
+                : this.getResourceBundle().getText('Transaction.status.awaiting');
+        },
+
         accountTypeIcon: function (sId) {
             switch (sId) {
                 // Cash

@@ -44,7 +44,8 @@
 						<Text text="{path:'idconta', formatter:'.formatter.accountName'}" />
 						<ObjectStatus
 							icon="{path:'idstatus', formatter:'.formatter.paymentIcon'}"
-							state="{path:'idstatus', formatter:'.formatter.paymentStatus'}" />
+							state="{path:'idstatus', formatter:'.formatter.paymentStatus'}"
+							tooltip="{path:'idstatus', formatter:'.formatter.paymentTooltip'}" />
 					</cells>
 				</ColumnListItem>
 			</items>
