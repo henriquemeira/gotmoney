@@ -15,318 +15,319 @@ sap.ui.define([
         }
     };
 
-    return Controller.extend("com.mlauffer.gotmoneyappui5.controller.BaseController", {
-        /**
-         * Convenience method for accessing the router in every controller of the application.
-         * @public
-         * @returns {sap.ui.core.routing.Router} the router for this component
-         */
-        getRouter: function () {
-            return this.getOwnerComponent().getRouter();
-            //return sap.ui.core.UIComponent.getRouterFor(this);
-        },
+    var BaseController = Controller.extend("com.mlauffer.gotmoneyappui5.controller.BaseController", {});
+
+    /**
+     * Convenience method for accessing the router in every controller of the application.
+     * @public
+     * @returns {sap.ui.core.routing.Router} the router for this component
+     */
+    BaseController.prototype.getRouter = function () {
+        return this.getOwnerComponent().getRouter();
+    };
 
 
-        /**
-         * Convenience method for getting the resource bundle.
-         * @public
-         * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
-         */
-        getResourceBundle: function () {
-            return this.getOwnerComponent().getModel("i18n").getResourceBundle();
-        },
+    /**
+     * Convenience method for getting the resource bundle.
+     * @public
+     * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
+     */
+    BaseController.prototype.getResourceBundle = function () {
+        return this.getOwnerComponent().getModel("i18n").getResourceBundle();
+    };
 
 
-        /**
-         * Event handler  for navigating back.
-         * It checks if there is a history entry. If yes, history.go(-1) will happen.
-         * If not, it will replace the current entry of the browser history with the master route.
-         * @public
-         */
-        onNavBack: function () {
-            this.vibrate();
-            var sPreviousHash = History.getInstance().getPreviousHash();
-            if (sPreviousHash !== undefined) {
-                // The history contains a previous entry
-                history.go(-1);
-            } else {
-                // Otherwise we go backwards with a forward history
-                var bReplace = true;
-                this.getRouter().navTo("home", {}, bReplace);
-            }
-        },
+    /**
+     * Event handler  for navigating back.
+     * It checks if there is a history entry. If yes, history.go(-1) will happen.
+     * If not, it will replace the current entry of the browser history with the master route.
+     * @public
+     */
+    BaseController.prototype.onNavBack = function () {
+        this.vibrate();
+        var sPreviousHash = History.getInstance().getPreviousHash();
+        if (sPreviousHash !== undefined) {
+            // The history contains a previous entry
+            history.go(-1);
+        } else {
+            // Otherwise we go backwards with a forward history
+            var bReplace = true;
+            this.getRouter().navTo("home", {}, bReplace);
+        }
+    };
 
 
-        /**
-         * Convenience method for getting the last part of a Binding Path.
-         * @public
-         * @returns {string} the last part of a Binding Path
-         */
-        onFinishBackendOperation: function () {
-            this.getView().getModel().updateBindings();
-            this.onNavBack();
-            this.getView().setBusy(false);
-        },
+    /**
+     * Convenience method for getting the last part of a Binding Path.
+     * @public
+     * @returns {string} the last part of a Binding Path
+     */
+    BaseController.prototype.onFinishBackendOperation =  function () {
+        this.getView().getModel().updateBindings();
+        this.onNavBack();
+        this.getView().setBusy(false);
+    };
 
 
-        /**
-         * Convenience method for getting the last part of a Binding Path.
-         * @public
-         * @returns {string} the last part of a Binding Path
-         */
-        extractIdFromPath: function (sPath) {
-            return sPath.slice(sPath.lastIndexOf("/") + 1);
-        },
+    /**
+     * Convenience method for getting the last part of a Binding Path.
+     * @public
+     * @returns {string} the last part of a Binding Path
+     */
+    BaseController.prototype.extractIdFromPath = function (sPath) {
+        return sPath.slice(sPath.lastIndexOf("/") + 1);
+    };
 
 
-        _ajaxFail: function (oResult, textStatus, jqXHR) {
-            this.vibrate();
-            var sText = this.getResourceBundle().getText("Error.internalServerError");
-            //var sDetail = this.getResourceBundle().getText("Error.noDetails");
-            try {
-                if (oResult.responseJSON.messageCode) {
-                    sText = oResult.responseJSON.messageCode;
-                }
-
-                //TODO
-                /*if (oResult.responseJSON.messageCode = "Error.invalidInput") {
-                 sDetail = oResult.responseJSON.message;
-                 //MessageBox.error(this.getResourceBundle().getText(sText) + "\n\n", { details : sDetail });
-                 } else {
-                 MessageBox.error(this.getResourceBundle().getText(sText));
-                 }*/
-
-            } catch (e) {
-                console.dir(e);
-                console.dir(oResult);
+    BaseController.prototype._ajaxFail = function (oResult, textStatus, jqXHR) {
+        this.vibrate();
+        var sText = this.getResourceBundle().getText("Error.internalServerError");
+        //var sDetail = this.getResourceBundle().getText("Error.noDetails");
+        try {
+            if (oResult.responseJSON.messageCode) {
+                sText = oResult.responseJSON.messageCode;
             }
 
-            MessageBox.error(this.getResourceBundle().getText(sText));
-
-            this.getView().setBusy(false);
-            try {
-                if (oResult.responseJSON.messageCode === "Error.userNotLoggedIn") {
-                    this.getRouter().navTo("index");
-                }
-            } catch (e) {
-                console.dir(e);
-            }
-        },
-
-
-        /**
-         * Convenience method for logging actions in the system.
-         * @public
-         */
-        saveLog: function (sType, sText) {
             //TODO
-            // do something, i.e. send usage statistics to backend
-            // in order to improve our app and the user experience (Build-Measure-Learn cycle)
-            //console.dir($(window.location).attr('href'));
-            //console.dir($(window.location).attr('hash'));
-            sType = sType.toUpperCase();
-            //var sUser = '';
-            var sURL = $(window.location).attr('href').toString();
-            var sLogMessage = sType + ": " + sText + ". User accessed route " + sURL + ", timestamp = " + $.now();
-            switch (sType) {
-                case 'E':
-                    jQuery.sap.log.error(sLogMessage);
-                    break;
-                case 'I':
-                    jQuery.sap.log.info(sLogMessage);
-                    break;
-                case 'S':
-                    jQuery.sap.log.info(sLogMessage);
-                    break;
-                case 'W':
-                    jQuery.sap.log.warning(sLogMessage);
-                    break;
-                default:
-                    jQuery.sap.log.info(sLogMessage);
-                    break;
-            }
-        },
+            /*if (oResult.responseJSON.messageCode = "Error.invalidInput") {
+             sDetail = oResult.responseJSON.message;
+             //MessageBox.error(this.getResourceBundle().getText(sText) + "\n\n", { details : sDetail });
+             } else {
+             MessageBox.error(this.getResourceBundle().getText(sText));
+             }*/
 
-        checkSession: function() {
-            if (!this.getUserLogged()) {
-                var that = this;
-                MessageBox.error(this.getResourceBundle().getText("Error.userNotConnected"), {
-                    onClose: function (sAction) {
-                        that.getRouter().navTo("index");
-                    }
-                });
-            }
-        },
+        } catch (e) {
+            console.dir(e);
+            console.dir(oResult);
+        }
 
-        destroySession: function() {
-            Lockr.rm('logged');
+        MessageBox.error(this.getResourceBundle().getText(sText));
+
+        this.getView().setBusy(false);
+        try {
+            if (oResult.responseJSON.messageCode === "Error.userNotLoggedIn") {
+                this.getRouter().navTo("index");
+            }
+        } catch (e) {
+            console.dir(e);
+        }
+    };
+
+
+    /**
+     * Convenience method for logging actions in the system.
+     * @public
+     */
+    BaseController.prototype.saveLog = function (sType, sText) {
+        //TODO
+        // do something, i.e. send usage statistics to backend
+        // in order to improve our app and the user experience (Build-Measure-Learn cycle)
+        //console.dir($(window.location).attr('href'));
+        //console.dir($(window.location).attr('hash'));
+        sType = sType.toUpperCase();
+        //var sUser = '';
+        var sURL = $(window.location).attr('href').toString();
+        var sLogMessage = sType + ": " + sText + ". User accessed route " + sURL + ", timestamp = " + $.now();
+        switch (sType) {
+            case 'E':
+                jQuery.sap.log.error(sLogMessage);
+                break;
+            case 'I':
+                jQuery.sap.log.info(sLogMessage);
+                break;
+            case 'S':
+                jQuery.sap.log.info(sLogMessage);
+                break;
+            case 'W':
+                jQuery.sap.log.warning(sLogMessage);
+                break;
+            default:
+                jQuery.sap.log.info(sLogMessage);
+                break;
+        }
+    };
+
+    BaseController.prototype.checkSession = function() {
+        if (!this.getUserLogged()) {
+            var that = this;
+            MessageBox.error(this.getResourceBundle().getText("Error.userNotConnected"), {
+                onClose: function (sAction) {
+                    that.getRouter().navTo("index");
+                }
+            });
+        }
+    };
+
+    BaseController.prototype.destroySession = function() {
+        Lockr.rm('logged');
+        this.getView().getModel().setData(_initialData);
+    };
+
+    BaseController.prototype.getUserLogged = function() {
+        return (Lockr.get('logged') === true);
+    };
+
+    BaseController.prototype.setUserLogged = function(isUserLogged) {
+        Lockr.set('logged', isUserLogged);
+    };
+
+    BaseController.prototype.checkUserConnected = function () {
+        var connected = false;
+        $.ajax({
+            url: "/session/" + $.now(),
+            async: false,
+            contentType: 'application/json',
+            dataType: 'json',
+            method: 'GET'
+        })
+            .done(function () {
+                connected = true;
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                connected = false;
+            });
+        this.setUserLogged(connected);
+        return connected;
+    };
+
+    BaseController.prototype.vibrate = function() {
+        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+    };
+
+    BaseController.prototype._loadBackendData = function () {
+        this._oBusyDialog = new BusyDialog();
+        this._oBusyDialog.open();
+        if (window.Promise) {
+            var that = this;
             this.getView().getModel().setData(_initialData);
-        },
+            Promise.all([this._loadAccount(), this._loadCategory(), this._loadTransaction(), this._loadUser(), this._loadAccountType()])
+                .then(function() {
+                    that.getView().getModel().updateBindings(true);
+                    that._oBusyDialog.close();
+                })
+                .catch(function() {
+                    console.dir('Promise error...');
+                });
+        } else {
+            MessageBox.error(this.getResourceBundle().getText("Error.notSupportPromise"));
+        }
+    };
 
-        getUserLogged: function() {
-            return (Lockr.get('logged') === true);
-        },
-
-        setUserLogged: function(isUserLogged) {
-            Lockr.set('logged', isUserLogged);
-        },
-
-        checkUserConnected: function () {
-            var connected = false;
+    BaseController.prototype._loadUser = function() {
+        var that = this;
+        return new Promise(function(resolve, reject) {
             $.ajax({
-                url: "/session/" + $.now(),
-                async: false,
+                url: '/user/' + $.now(),
                 contentType: 'application/json',
                 dataType: 'json',
                 method: 'GET'
             })
-                .done(function () {
-                    connected = true;
+                .done(function(response) {
+                    var user = that.getView().getModel().getData().User;
+                    user.active = response.active;
+                    user.alert = response.alert;
+                    user.datacriacao = response.datacriacao;
+                    user.datanascimento = response.datanascimento;
+                    user.email = response.email;
+                    user.facebook = response.facebook;
+                    user.google = response.google;
+                    user.iduser = response.iduser;
+                    user.lastchange = response.lastchange;
+                    user.lastsync = response.lastsync;
+                    user.nome = response.nome;
+                    user.sexo = response.sexo;
+                    user.twitter = response.twitter;
+                    return resolve();
+                })
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    that._ajaxFail(jqXHR, textStatus, errorThrown);
+                    return reject();
+                });
+        });
+    };
+
+    BaseController.prototype._loadCategory = function() {
+        var that = this;
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                url: '/category/',
+                contentType: 'application/json',
+                dataType: 'json',
+                method: 'GET'
+            })
+                .done(function (response) {
+                    that.getView().getModel().getData().User.Category = response;
+                    return resolve();
                 })
                 .fail(function (jqXHR, textStatus, errorThrown) {
-                    connected = false;
+                    that._ajaxFail(jqXHR, textStatus, errorThrown);
+                    return reject();
                 });
-            this.setUserLogged(connected);
-            return connected;
-        },
+        });
+    };
 
-        vibrate: function() {
-            navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-        },
-
-        _loadBackendData: function () {
-            this._oBusyDialog = new BusyDialog();
-            this._oBusyDialog.open();
-            if (window.Promise) {
-                var that = this;
-                this.getView().getModel().setData(_initialData);
-                Promise.all([this._loadAccount(), this._loadCategory(), this._loadTransaction(), this._loadUser(), this._loadAccountType()])
-                    .then(function() {
-                        that.getView().getModel().updateBindings(true);
-                        that._oBusyDialog.close();
-                    })
-                    .catch(function() {
-                        console.dir('Promise error...');
-                    });
-            } else {
-                MessageBox.error(this.getResourceBundle().getText("Error.notSupportPromise"));
-            }
-        },
-
-        _loadUser: function() {
-            var that = this;
-            return new Promise(function(resolve, reject) {
-                $.ajax({
-                    url: '/user/' + $.now(),
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    method: 'GET'
+    BaseController.prototype._loadAccount = function() {
+        var that = this;
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                url: '/account/',
+                contentType: 'application/json',
+                dataType: 'json',
+                method: 'GET'
+            })
+                .done(function (response) {
+                    that.getView().getModel().getData().User.Account = response;
+                    return resolve();
                 })
-                    .done(function(response) {
-                        var user = that.getView().getModel().getData().User;
-                        user.active = response.active;
-                        user.alert = response.alert;
-                        user.datacriacao = response.datacriacao;
-                        user.datanascimento = response.datanascimento;
-                        user.email = response.email;
-                        user.facebook = response.facebook;
-                        user.google = response.google;
-                        user.iduser = response.iduser;
-                        user.lastchange = response.lastchange;
-                        user.lastsync = response.lastsync;
-                        user.nome = response.nome;
-                        user.sexo = response.sexo;
-                        user.twitter = response.twitter;
-                        return resolve();
-                    })
-                    .fail(function(jqXHR, textStatus, errorThrown) {
-                        that._ajaxFail(jqXHR, textStatus, errorThrown);
-                        return reject();
-                    });
-            });
-        },
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    that._ajaxFail(jqXHR, textStatus, errorThrown);
+                    return reject();
+                });
+        });
+    };
 
-        _loadCategory: function() {
-            var that = this;
-            return new Promise(function(resolve, reject) {
-                $.ajax({
-                    url: '/category/',
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    method: 'GET'
+    BaseController.prototype._loadTransaction = function() {
+        var that = this;
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                url: '/transactions/',
+                contentType: 'application/json',
+                dataType: 'json',
+                method: 'GET'
+            })
+                .done(function (response) {
+                    that.getView().getModel().getData().User.Transaction = response;
+                    return resolve();
                 })
-                    .done(function (response) {
-                        that.getView().getModel().getData().User.Category = response;
-                        return resolve();
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        that._ajaxFail(jqXHR, textStatus, errorThrown);
-                        return reject();
-                    });
-            });
-        },
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    that._ajaxFail(jqXHR, textStatus, errorThrown);
+                    return reject();
+                });
+        });
+    };
 
-        _loadAccount: function() {
-            var that = this;
-            return new Promise(function(resolve, reject) {
-                $.ajax({
-                    url: '/account/',
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    method: 'GET'
+    BaseController.prototype._loadAccountType = function() {
+        var that = this;
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                url: '/accounttype/',
+                contentType: 'application/json',
+                dataType: 'json',
+                method: 'GET'
+            })
+                .done(function (response) {
+                    that.getView().getModel().getData().AccountType = response;
+                    return resolve();
                 })
-                    .done(function (response) {
-                        that.getView().getModel().getData().User.Account = response;
-                        return resolve();
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        that._ajaxFail(jqXHR, textStatus, errorThrown);
-                        return reject();
-                    });
-            });
-        },
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    that._ajaxFail(jqXHR, textStatus, errorThrown);
+                    return reject();
+                });
+        });
+    };
 
-        _loadTransaction: function() {
-            var that = this;
-            return new Promise(function(resolve, reject) {
-                $.ajax({
-                    url: '/transactions/',
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    method: 'GET'
-                })
-                    .done(function (response) {
-                        that.getView().getModel().getData().User.Transaction = response;
-                        return resolve();
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        that._ajaxFail(jqXHR, textStatus, errorThrown);
-                        return reject();
-                    });
-            });
-        },
-
-        _loadAccountType: function() {
-            var that = this;
-            return new Promise(function(resolve, reject) {
-                $.ajax({
-                    url: '/accounttype/',
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    method: 'GET'
-                })
-                    .done(function (response) {
-                        that.getView().getModel().getData().AccountType = response;
-                        return resolve();
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        that._ajaxFail(jqXHR, textStatus, errorThrown);
-                        return reject();
-                    });
-            });
-        }
-    });
+    return BaseController;
 });
