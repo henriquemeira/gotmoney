@@ -14,14 +14,17 @@ sap.ui.define([
 		/* =========================================================== */
 
 		onPrivacy: function() {
+            this.vibrate();
 			this.getRouter().navTo("privacy");
 		},
 
 		onTerms: function() {
+            this.vibrate();
 			this.getRouter().navTo("terms");
 		},
 
 		onAbout: function() {
+            this.vibrate();
 			this.getRouter().navTo("about");
 		}
 

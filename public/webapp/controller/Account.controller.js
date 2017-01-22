@@ -4,11 +4,14 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "com/mlauffer/gotmoneyappui5/controller/BaseController",
     "com/mlauffer/gotmoneyappui5/controller/Validator",
+    "com/mlauffer/gotmoneyappui5/model/formatter",
     "com/mlauffer/gotmoneyappui5/model/ObjectFactory"
-], function (MessageBox, MessageToast, JSONModel, BaseController, Validator, ObjectFactory) {
+], function (MessageBox, MessageToast, JSONModel, BaseController, Validator, formatter, ObjectFactory) {
     "use strict";
 
     return BaseController.extend("com.mlauffer.gotmoneyappui5.controller.Account", {
+        formatter: formatter,
+
         /* =========================================================== */
         /* lifecycle methods                                           */
         /* =========================================================== */
@@ -22,8 +25,8 @@ sap.ui.define([
                 oRouter.getRoute("accountNew").attachMatched(this._onRouteMatchedNew, this);
 
                 this.getView().addEventDelegate({
-                    onAfterShow: function () {
-                        this.checkUserConnected(true);
+                    onAfterShow: function() {
+                        this.checkSession();
                     }
                 }, this);
 
@@ -39,11 +42,12 @@ sap.ui.define([
         /* =========================================================== */
 
         onSave: function (oEvent) {
+            this.vibrate();
             // Create new validator instance
             var oValidator = new Validator();
             // Validate input fields
             oValidator.validate(this.getView().byId("accountForm"));
-            if (oValidator.isValid() === false) {
+            if (!oValidator.isValid()) {
                 return;
             }
 
@@ -53,11 +57,11 @@ sap.ui.define([
             } else {
                 this._saveNew(oEvent);
             }
-            this.getView().setBusy(false);
         },
 
 
         onDelete: function (oEvent) {
+            this.vibrate();
             var that = this;
             var sPath = oEvent.getSource().getBindingContext().getPath();
             MessageBox.confirm(that.getResourceBundle().getText("Delete.message"), function (sAction) {
@@ -66,14 +70,13 @@ sap.ui.define([
                     var oModel = that.getView().getModel();
 
                     $.ajax({
-                        url: that.getAjaxBaseURL() + "account/" + oModel.getData().User.Account[that.extractIdFromPath(sPath)].idconta,
-                        async: false,
+                        url: "/account/" + oModel.getData().User.Account[that.extractIdFromPath(sPath)].idconta,
                         contentType: 'application/json',
                         dataType: 'json',
                         method: 'DELETE'
                     })
-                    .success(jQuery.proxy(that._deleteDone(sPath), this))
-                    .error(jQuery.proxy(that._ajaxFail, this));
+                    .done(jQuery.proxy(that._deleteDone(sPath), this))
+                    .fail(jQuery.proxy(that._ajaxFail, this));
                 }
             }, that.getResourceBundle().getText("Delete.title"));
         },
@@ -136,15 +139,14 @@ sap.ui.define([
             mPayload.idconta = $.now();
 
             $.ajax({
-                url: this.getAjaxBaseURL() + "account",
-                async: false,
+                url: "/account",
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),
                 dataType: 'json',
                 method: 'POST'
             })
-            .success(jQuery.proxy(that._newDone(mPayload), this))
-            .error(jQuery.proxy(that._ajaxFail, this));
+            .done(jQuery.proxy(that._newDone(mPayload), this))
+            .fail(jQuery.proxy(that._ajaxFail, this));
         },
 
 
@@ -156,69 +158,60 @@ sap.ui.define([
             mPayload.idconta = oModel.getProperty("idconta", oContext);
 
             $.ajax({
-                url: this.getAjaxBaseURL() + "account/" + mPayload.idconta,
-                //contentType: ,
-                async: false,
-                data: mPayload,
+                url: "/account/" + mPayload.idconta,
+                contentType: 'application/json',
+                data: JSON.stringify(mPayload),
                 dataType: 'json',
                 method: 'PUT'
             })
-            .success(jQuery.proxy(that._editDone(mPayload, oContext), this))
-            .error(jQuery.proxy(that._ajaxFail, this));
+            .done(jQuery.proxy(that._editDone(mPayload, oContext), this))
+            .fail(jQuery.proxy(that._ajaxFail, this));
         },
 
 
         _newDone: function (mPayload) {
             try {
                 this.getView().getModel().getData().User.Account.push(mPayload);
+                this.onFinishBackendOperation();
+                this.getView().setBusy(false);
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            this.getView().setBusy(false);
-            MessageToast.show(this.getResourceBundle().getText("Success.save"));
         },
 
 
         _editDone: function (mPayload, oContext) {
-            var oModel = this.getView().getModel();
             try {
+                var oModel = this.getView().getModel();
                 oModel.setProperty("idtipo", mPayload.idtipo, oContext);
                 oModel.setProperty("descricao", mPayload.descricao, oContext);
                 //TODO: mPayload.balance = 1;
                 oModel.setProperty("dataabertura", mPayload.dataabertura, oContext);
                 oModel.setProperty("limitecredito", mPayload.limitecredito, oContext);
                 oModel.setProperty("diafatura", mPayload.diafatura, oContext);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            MessageToast.show(this.getResourceBundle().getText("Success.save"));
-            this.getView().setBusy(false);
         },
 
 
         _deleteDone: function (sPath) {
             try {
                 this.getView().getModel().getData().User.Account.splice(this.extractIdFromPath(sPath), 1);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.delete"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            MessageToast.show(this.getResourceBundle().getText("Success.delete"));
-            this.getView().setBusy(false);
         },
 
 

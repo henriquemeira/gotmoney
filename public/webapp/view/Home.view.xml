@@ -1,5 +1,5 @@
 <mvc:View controllerName="com.mlauffer.gotmoneyappui5.controller.Home"
-          xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+          xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" busyIndicatorDelay="0">
 <Page showHeader="false" class="sapUiUfdShellBG sapUiStrongBackgroundColor" title="{i18n>Home.title} xxx">
     <Panel backgroundDesign="Transparent">
         <HBox>

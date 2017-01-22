@@ -26,7 +26,7 @@ sap.ui.define([
 
 				this.getView().addEventDelegate({
 					onAfterShow: function() {
-						this.checkUserConnected(true);
+						this.checkSession();
 					}
 				}, this);
 
@@ -42,12 +42,13 @@ sap.ui.define([
 		/* =========================================================== */
 
 		onSave: function(oEvent) {
+            this.vibrate();
             // Create new validator instance
 			var oValidator = new Validator();
 
 			// Validate input fields
 			oValidator.validate(this.getView().byId("transactionForm"));
-			if (oValidator.isValid() === false) {
+			if (!oValidator.isValid()) {
 				return;
 			}
 
@@ -63,6 +64,7 @@ sap.ui.define([
 
 
 		onDelete : function(oEvent) {
+            this.vibrate();
 			var that = this;
 			var sPath = oEvent.getSource().getBindingContext().getPath();
 			MessageBox.confirm(that.getResourceBundle().getText("Delete.message"), function(sAction) {
@@ -71,14 +73,13 @@ sap.ui.define([
 					var oModel = that.getView().getModel();
 
 					$.ajax({
-						url: that.getAjaxBaseURL() + "transactions/" + oModel.getData().User.Transaction[that.extractIdFromPath(sPath)].idlancamento,
-						async: false,
+						url: "/transactions/" + oModel.getData().User.Transaction[that.extractIdFromPath(sPath)].idlancamento,
 						contentType: 'application/json',
 						dataType: 'json',
 						method: 'DELETE'
 					})
-					.success(jQuery.proxy(that._deleteDone(sPath), this))
-					.error(jQuery.proxy(that._ajaxFail, this));
+					.done(jQuery.proxy(that._deleteDone(sPath), this))
+					.fail(jQuery.proxy(that._ajaxFail, this));
 				}
 			}, that.getResourceBundle().getText("Delete.title"));
 		},
@@ -140,21 +141,17 @@ sap.ui.define([
 			//mPayload.idlancamento = $.now();
 
 			var mPayload = this._createRepetition(this.getView().byId("occurrence").getSelectedKey());
-			var data = {
-				data: mPayload
-			};
+			var data = { data: mPayload };
 
 			$.ajax({
-				url: this.getAjaxBaseURL() + "transactions",
-				async: false,
+				url: "/transactions",
 				contentType: 'application/json',
-				//data: { "data" : mPayload },
 				data: JSON.stringify(data),
 				dataType: 'json',
 				method: 'POST'
 			})
-			.success(jQuery.proxy(that._newDone(mPayload), this))
-			.error(jQuery.proxy(that._ajaxFail, this));
+			.done(jQuery.proxy(that._newDone(mPayload), this))
+			.fail(jQuery.proxy(that._ajaxFail, this));
 		},
 
 
@@ -172,42 +169,37 @@ sap.ui.define([
 			}*/
 
 			$.ajax({
-				url: this.getAjaxBaseURL() + "transactions/" + mPayload.idlancamento,
-				async: false,
-				data: mPayload,
-				dataType: 'json',
+				url: "/transactions/" + mPayload.idlancamento,
+                contentType: 'application/json',
+                data: JSON.stringify(mPayload),
+                dataType: 'json',
 				method: 'PUT'
 			})
-			.success(jQuery.proxy(that._editDone(mPayload, oContext), this))
-			.error(jQuery.proxy(that._ajaxFail, this));
+			.done(jQuery.proxy(that._editDone(mPayload, oContext), this))
+			.fail(jQuery.proxy(that._ajaxFail, this));
 		},
 
 
 		_newDone : function(mPayload) {
-			var oView = this.getView();
-
 			try {
+                var oView = this.getView();
 				$.each(mPayload, function(i, item){
 					console.dir(item);
 					oView.getModel().getData().User.Transaction.push(item);
 				});
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
 			} catch (e) {
 				this.saveLog('E', e.message);
 				MessageBox.error(e.message);
-				return;
 			}
-
-			this.onFinishBackendOperation();
-			MessageToast.show(this.getResourceBundle().getText("Success.save"));
-			this.getView().setBusy(false);
 		},
 
 
 		_editDone : function(mPayload, oContext) {
-			var oModel = this.getView().getModel();
-
 			try {
+                var oModel = this.getView().getModel();
 				oModel.setProperty("idconta", mPayload.idconta, oContext);
 				oModel.setProperty("tipo", mPayload.tipo, oContext);
 				oModel.setProperty("idstatus", mPayload.idstatus, oContext);
@@ -215,32 +207,27 @@ sap.ui.define([
 				oModel.setProperty("valor", mPayload.valor, oContext);
 				oModel.setProperty("datalancamento", mPayload.datalancamento, oContext);
 				oModel.setProperty("datavencimento", mPayload.datavencimento, oContext);
+                oModel.setProperty("tag", mPayload.tag, oContext);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
 			} catch (e) {
 				this.saveLog('E', e.message);
 				MessageBox.error(e.message);
-				return;
 			}
-
-			this.onFinishBackendOperation();
-			MessageToast.show(this.getResourceBundle().getText("Success.save"));
-			this.getView().setBusy(false);
 		},
 
 
 		_deleteDone : function(sPath) {
 			try {
 				this.getView().getModel().getData().User.Transaction.splice(this.extractIdFromPath(sPath), 1);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.delete"));
 
 			} catch (e) {
 				this.saveLog('E', e.message);
 				MessageBox.error(e.message);
-				return;
 			}
-
-			this.onFinishBackendOperation();
-			MessageToast.show(this.getResourceBundle().getText("Success.delete"));
-			this.getView().setBusy(false);
 		},
 
 
@@ -262,11 +249,7 @@ sap.ui.define([
 			mPayload.valor = oView.byId("amount").getValue();
 			mPayload.tipo = oView.byId("type").getSelectedKey();
 			mPayload.datalancamento = oView.byId("startdate").getValue();
-			//mPayload.datalancamento = formatter.dateMySQLFormat(oView.byId("startdate").getDateValue());
 			mPayload.datavencimento = oView.byId("duedate").getValue();
-			//mPayload.datavencimento = formatter.dateMySQLFormat(oView.byId("duedate").getDateValue());
-			//tag = null,
-
 			mPayload.tag = oView.byId("category").getSelectedKeys();
 			return mPayload;
 		},
@@ -297,7 +280,7 @@ sap.ui.define([
 			var sLastId;
 			mPayloadReference.idlancamento = $.now();
 
-			for(var i=0; i < sSplit; i++) {
+			for(var i = 0; i < sSplit; i++) {
 				var mPayload;
 				mPayload = $.extend(true, {}, mPayloadReference);
 				var oDueDate = new Date(oStartDate.getFullYear(), oStartDate.getMonth(), oStartDate.getDate());

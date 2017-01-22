@@ -17,7 +17,7 @@ sap.ui.define([
             try {
                 this.getView().addEventDelegate({
                     onAfterShow: function () {
-                        this.checkUserConnected(true);
+                        this.checkSession();
                         this._getTitleTotalItems();
                     }
                 }, this);
@@ -33,26 +33,32 @@ sap.ui.define([
         /* =========================================================== */
 
         onAccount: function () {
+            this.vibrate();
             this.getRouter().navTo("accountList");
         },
 
         onCategory: function () {
+            this.vibrate();
             this.getRouter().navTo("categoryList");
         },
 
         onTransaction: function () {
+            this.vibrate();
             this.getRouter().navTo("transactionList");
         },
 
         onTransactionLate: function () {
+            this.vibrate();
             this.getRouter().navTo("transactionListLate");
         },
 
         onReport: function () {
             //TODO:
+            this.vibrate();
         },
 
         onProfile: function () {
+            this.vibrate();
             this.getRouter().navTo("profile");
         },
 

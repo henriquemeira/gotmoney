@@ -23,7 +23,7 @@ sap.ui.define([
 
                 this.getView().addEventDelegate({
                     onAfterShow: function () {
-                        this.checkUserConnected(true);
+                        this.checkSession();
                     }
                 }, this);
 
@@ -39,27 +39,27 @@ sap.ui.define([
         /* =========================================================== */
 
         onSave: function (oEvent) {
+            this.vibrate();
             // Create new validator instance
             var oValidator = new Validator();
 
             // Validate input fields
             oValidator.validate(this.getView().byId("categoryForm"));
-            if (oValidator.isValid() === false) {
+            if (!oValidator.isValid()) {
                 return;
             }
 
             this.getView().setBusy(true);
-            //this.getView().setBusyIndicatorDelay(0);
             if (this.getView().getViewName() === "com.mlauffer.gotmoneyappui5.view.Category") {
                 this._saveEdit(oEvent);
             } else {
                 this._saveNew(oEvent);
             }
-            this.getView().setBusy(false);
         },
 
 
         onDelete: function (oEvent) {
+            this.vibrate();
             var that = this;
             var sPath = oEvent.getSource().getBindingContext().getPath();
             MessageBox.confirm(that.getResourceBundle().getText("Delete.message"), function (sAction) {
@@ -68,14 +68,13 @@ sap.ui.define([
                     var oModel = that.getView().getModel();
 
                     $.ajax({
-                        url: that.getAjaxBaseURL() + "category/" + oModel.getData().User.Category[that.extractIdFromPath(sPath)].idcategoria,
-                        async: false,
+                        url: "/category/" + oModel.getData().User.Category[that.extractIdFromPath(sPath)].idcategoria,
                         contentType: 'application/json',
                         dataType: 'json',
                         method: 'DELETE'
                     })
-                    .success(jQuery.proxy(that._deleteDone(sPath), this))
-                    .error(jQuery.proxy(that._ajaxFail, this));
+                    .done(jQuery.proxy(that._deleteDone(sPath), this))
+                    .fail(jQuery.proxy(that._ajaxFail, this));
                 }
             }, that.getResourceBundle().getText("Delete.title"));
         },
@@ -132,15 +131,14 @@ sap.ui.define([
             mPayload.idcategoria = $.now();
 
             $.ajax({
-                url: this.getAjaxBaseURL() + "category",
-                async: false,
+                url: "/category",
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),
                 dataType: 'json',
                 method: 'POST'
             })
-            .success(jQuery.proxy(that._newDone(mPayload), this))
-            .error(jQuery.proxy(that._ajaxFail, this));
+            .done(jQuery.proxy(that._newDone(mPayload), this))
+            .fail(jQuery.proxy(that._ajaxFail, this));
         },
 
 
@@ -153,63 +151,53 @@ sap.ui.define([
             mPayload.idcategoria = oModel.getProperty("idcategoria", oContext);
 
             $.ajax({
-                url: this.getAjaxBaseURL() + "category/" + mPayload.idcategoria,
-                async: false,
-                //contentType: ,
-                data: mPayload,
+                url: "/category/" + mPayload.idcategoria,
+                contentType: 'application/json',
+                data: JSON.stringify(mPayload),
                 dataType: 'json',
                 method: 'PUT'
             })
-            .success(jQuery.proxy(that._editDone(mPayload, oContext), this))
-            .error(jQuery.proxy(that._ajaxFail, this));
+            .done(jQuery.proxy(that._editDone(mPayload, oContext), this))
+            .fail(jQuery.proxy(that._ajaxFail, this));
         },
 
 
         _newDone: function (mPayload) {
             try {
                 this.getView().getModel().getData().User.Category.push(mPayload);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            MessageToast.show(this.getResourceBundle().getText("Success.save"));
-            this.getView().setBusy(false);
         },
 
 
         _editDone: function (mPayload, oContext) {
             try {
                 this.getView().getModel().setProperty("descricao", mPayload.descricao, oContext);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.save"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            MessageToast.show(this.getResourceBundle().getText("Success.save"));
-            this.getView().setBusy(false);
         },
 
 
         _deleteDone: function (sPath) {
             try {
                 this.getView().getModel().getData().User.Category.splice(this.extractIdFromPath(sPath), 1);
+                this.onFinishBackendOperation();
+                MessageToast.show(this.getResourceBundle().getText("Success.delete"));
 
             } catch (e) {
                 this.saveLog('E', e.message);
                 MessageBox.error(e.message);
-                return;
             }
-
-            this.onFinishBackendOperation();
-            MessageToast.show(this.getResourceBundle().getText("Success.delete"));
-            this.getView().setBusy(false);
         },
 
 

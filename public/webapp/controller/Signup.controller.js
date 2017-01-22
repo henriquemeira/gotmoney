@@ -48,13 +48,14 @@ sap.ui.define([
 		/* =========================================================== */
 
 		onSave: function(oEvent) {
+            this.vibrate();
 			var oView = this.getView();
 			// Create new validator instance
 			var oValidator = new Validator();
 
 			// Validate input fields
 			oValidator.validate(oView.byId("userForm"));
-			if (oValidator.isValid() === false) {
+			if (!oValidator.isValid()) {
 				return;
 			}
 
@@ -76,7 +77,6 @@ sap.ui.define([
 			} else {
 				this._saveNew(oEvent);
 			}
-			this.getView().setBusy(false);
 		},
 
 		onFacebookLogin : function() {
@@ -129,9 +129,11 @@ sap.ui.define([
 
 
 		_loginDone : function() {
+            this.setUserLogged(true);
 			this._loadBackendData();
-			sap.ui.getCore().byId("__component0---rootApp").getController()._toogleButtonsVisible();
-			this.getRouter().navTo("home");
+            this.getOwnerComponent().byId("rootApp").getController()._toogleButtonsVisible();
+            this.getView().setBusy(false);
+            this.getRouter().navTo("home");
 			MessageToast.show(this.getResourceBundle().getText("Success.login"));
 		},
 
@@ -142,32 +144,29 @@ sap.ui.define([
 			mPayload.iduser = $.now();
 
 			$.ajax({
-				url: this.getAjaxBaseURL() + "/user",
-				async: false,
+				url: "/user",
 				contentType: 'application/json',
 				data: JSON.stringify(mPayload),
 				dataType: 'json',
 				method: 'POST'
 			})
-			.success(jQuery.proxy(that._newDone(mPayload), this))
-			.error(jQuery.proxy(that._ajaxFail, this));
+			.done(jQuery.proxy(that._newDone(mPayload), this))
+			.fail(jQuery.proxy(that._ajaxFail, this));
 		},
 
 
 		_newDone : function(mPayload) {
 			try {
 				this.getView().getModel().getData().User = mPayload;
+                //this.onFinishBackendOperation();
+                this._loginDone();
+                //MessageToast.show(this.getResourceBundle().getText("Success.save"));
+                this.getView().setBusy(false);
 
 			} catch (e) {
 				this.saveLog('E', e.message);
 				MessageBox.error(e.message);
-				return;
 			}
-
-			//this.onFinishBackendOperation();
-			this._loginDone();
-			//MessageToast.show(this.getResourceBundle().getText("Success.save"));
-			this.getView().setBusy(false);
 		},
 
 

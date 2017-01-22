@@ -2,9 +2,10 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
+	"sap/ui/unified/DateRange",
 	"com/mlauffer/gotmoneyappui5/controller/BaseController",
 	"com/mlauffer/gotmoneyappui5/model/formatter"
-], function (MessageBox, Filter, FilterOperator, BaseController, formatter) {
+], function (MessageBox, Filter, FilterOperator, DateRange, BaseController, formatter) {
 	"use strict";
 
 	return BaseController.extend("com.mlauffer.gotmoneyappui5.controller.TransactionList", {
@@ -17,7 +18,7 @@ sap.ui.define([
 			try {
 				this.getView().addEventDelegate({
 					onAfterShow: function() {
-						this.checkUserConnected(true);
+                        this.checkSession();
 						//this._setFilterByYearMonth(new Date());
 					}
 				}, this);
@@ -30,7 +31,7 @@ sap.ui.define([
 
 		onAfterRendering : function() {
 			//this._setFilterByYearMonth(new Date());
-			var oDataRange = new sap.ui.unified.DateRange({ startDate : new Date()});
+			var oDataRange = new DateRange({ startDate : new Date()});
 			this.getView().byId("calendar").addSelectedDate(oDataRange);
 			this._setFilterByYearMonth(new Date());
 		},
@@ -46,6 +47,7 @@ sap.ui.define([
 		 * @public
 		 */
 		onItemPress: function(oEvent) {
+            this.vibrate();
 			this.getRouter().navTo("transaction", {
 				transactionId : this.extractIdFromPath(oEvent.getSource().getBindingContext().getPath())
 			});
@@ -53,11 +55,13 @@ sap.ui.define([
 
 
 		onAddNew: function() {
+            this.vibrate();
 			this.getRouter().navTo("transactionNew");
 		},
 
 
 		onSelectDate : function(oEvent) {
+            this.vibrate();
 			this._setFilterByYearMonth(oEvent.getSource().getSelectedDates()[0].getStartDate());
 		},
 

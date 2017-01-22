@@ -1,7 +1,6 @@
-<core:FragmentDefinition xmlns:core="sap.ui.core"
-						 xmlns="sap.m">
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
 	<Dialog title="{i18n>Recovery.title}" icon="sap-icon://shield"
-			afterClose="onAfterCloseRecovery">
+			afterClose="onAfterCloseRecovery" busyIndicatorDelay="0">
 		<Panel>
 			<VBox>
 				<Label text="{i18n>Recovery.email}" required="true" />

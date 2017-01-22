@@ -17,7 +17,7 @@ sap.ui.define([
 			try {
 				this.getView().addEventDelegate({
 					onAfterShow: function() {
-						this.checkUserConnected(true);
+						this.checkSession();
 						this._setFilterByYearMonth(new Date());
 					}
 				}, this);
@@ -40,6 +40,7 @@ sap.ui.define([
 		 * @public
 		 */
         onItemPress: function(oEvent) {
+            this.vibrate();
 			this.getRouter().navTo("transaction", {
 				transactionId : this.extractIdFromPath(oEvent.getSource().getBindingContext().getPath())
 			});
@@ -71,6 +72,7 @@ sap.ui.define([
 
 
 		onAddNew: function() {
+            this.vibrate();
 			this.getRouter().navTo("transactionNew");
 		},
 

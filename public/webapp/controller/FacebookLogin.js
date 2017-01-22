@@ -45,6 +45,10 @@ sap.ui.define([
 
 
         onSuccess: function (facebookUser) {
+            if (this._oViewController._oDialogLogin) {
+                this._oViewController._oDialogLogin.setBusy(true);
+            }
+            this._oViewController.getView().setBusy(true);
             var that = this;
             var mPayload = {
                 login: "facebook",
@@ -56,23 +60,29 @@ sap.ui.define([
             };
 
             $.ajax({
-                url: this._oViewController.getAjaxBaseURL() + "session/",
-                async: false,
+                url: "/session/",
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),
                 dataType: 'json',
                 method: 'POST'
             })
-            .success(function (response, textStatus, jqXHR) {
+            .done(function (response, textStatus, jqXHR) {
                 that._oViewController._loginDone();
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                if (that._oDialogLogin) {
+                    that._oDialogLogin.setBusy(false);
+                }
                 that._oViewController._ajaxFail(jqXHR, textStatus, errorThrown);
             });
         },
 
 
         onFailure: function () {
+            if (this._oViewController._oDialogLogin) {
+                this._oViewController._oDialogLogin.setBusy(false);
+            }
+            this._oViewController.getView().setBusy(false);
             MessageBox.error(this._oViewController.getResourceBundle().getText("Login.facebookError"));
         }
     });

@@ -3,10 +3,11 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/ui/core/Fragment",
     "sap/ui/core/ValueState",
+    "sap/ui/unified/ShellHeadUserItem",
     "com/mlauffer/gotmoneyappui5/controller/BaseController",
     "com/mlauffer/gotmoneyappui5/controller/FacebookLogin",
     "com/mlauffer/gotmoneyappui5/controller/GoogleLogin"
-], function (MessageBox, MessageToast, Fragment, ValueState, BaseController, FacebookLogin, GoogleLogin) {
+], function (MessageBox, MessageToast, Fragment, ValueState, ShellHeadUserItem, BaseController, FacebookLogin, GoogleLogin) {
     "use strict";
 
     return BaseController.extend("com.mlauffer.gotmoneyappui5.controller.App", {
@@ -39,7 +40,7 @@ sap.ui.define([
             sap.ui.getCore().getMessageManager().registerObject(this.getView(), true);
         },
 
-        onAfterRendering: function () {
+        onAfterRendering: function() {
             if (this.checkUserConnected()) {
                 this._loadBackendData();
                 this._toogleButtonsVisible();
@@ -66,14 +67,17 @@ sap.ui.define([
         /* =========================================================== */
 
         onPressHome: function () {
+            this.vibrate();
             this.getRouter().navTo("home");
         },
 
         onPressIndex: function () {
+            this.vibrate();
             this.getRouter().navTo("index");
         },
 
         onPressMenu: function () {
+            this.vibrate();
             this._toogleShellOverlay();
         },
 
@@ -115,6 +119,7 @@ sap.ui.define([
         },
 
         onLogin: function () {
+            this.vibrate();
             if (!this._oDialogLogin) {
                 this._oDialogLogin = sap.ui.xmlfragment("Login", "com.mlauffer.gotmoneyappui5.view.Login", this);
                 this.getView().addDependent(this._oDialogLogin);
@@ -127,6 +132,7 @@ sap.ui.define([
 
 
         onSystemLogin: function () {
+            this._oDialogLogin.setBusy(true);
             var that = this;
             var mPayload = {
                 login: "system",
@@ -135,8 +141,7 @@ sap.ui.define([
             };
 
             $.ajax({
-                url: this.getAjaxBaseURL() + "session/",
-                async: false,
+                url: "/session/",
                 contentType: 'application/json',
                 data: JSON.stringify(mPayload),
                 dataType: 'json',
@@ -144,22 +149,25 @@ sap.ui.define([
                 //username: Fragment.byId("Login", "email").getValue(),
                 //password: Fragment.byId("Login", "pwd").getValue()
             })
-            .success(function () {
+            .done(function () {
                 that._loginDone();
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                that._oDialogLogin.setBusy(false);
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
             });
         },
 
         onCloseLogin: function () {
+            this.vibrate();
+            this._oDialogLogin.setBusy(false);
             this._oDialogLogin.close();
+            this.getView().setBusy(false);
         },
 
         onAfterCloseLogin: function () {
             Fragment.byId("Login", "email").setValue();
             Fragment.byId("Login", "pwd").setValue();
-            //oEvent.getSource().destroy();
         },
 
         onRecovery: function () {
@@ -174,54 +182,59 @@ sap.ui.define([
         },
 
         onResetPassword: function () {
+            this._oDialogRecovery.setBusy(true);
             var that = this;
             var mPayload = {
                 email: Fragment.byId("Recovery", "email").getValue()
             };
             $.ajax({
-                url: this.getAjaxBaseURL() + "session/" + $.now(),
-                data: mPayload,
+                url: "/session/" + $.now(),
+                contentType: 'application/json',
+                data: JSON.stringify(mPayload),
                 dataType: 'json',
                 method: 'PUT'
             })
-            .success(function () {
+            .done(function () {
                 MessageBox.show(that.getResourceBundle().getText("Success.passwordRecovery"));
+                that.onCloseRecovery();
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
+                that.onCloseRecovery();
             });
-
-            this.onCloseRecovery();
         },
 
 
         onCloseRecovery: function () {
+            this.vibrate();
             Fragment.byId("Recovery", "email").setValue();
+            this._oDialogRecovery.setBusy(false);
             this._oDialogRecovery.close();
+            this.getView().setBusy(false);
         },
 
         onAfterCloseRecovery: function () {
             Fragment.byId("Recovery", "email").setValue();
-            //oEvent.getSource().destroy();
         },
 
         onSignup: function () {
+            this.vibrate();
             this.getRouter().navTo("signup");
         },
 
         onLogoff: function () {
+            this.getView().setBusy(true);
             var that = this;
             $.ajax({
-                url: this.getAjaxBaseURL() + "session/",
-                async: false,
+                url: "/session/",
                 contentType: 'application/json',
                 dataType: 'json',
                 method: 'DELETE'
             })
-            .success(function () {
+            .done(function () {
                 that._logoffDone();
             })
-            .error(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 that._ajaxFail(jqXHR, textStatus, errorThrown);
             });
         },
@@ -237,6 +250,7 @@ sap.ui.define([
         /* =========================================================== */
 
         _toogleShellOverlay: function () {
+            this.vibrate();
             var oItem = this.getView().byId("btMenu");
             var oShell = this.getView().byId("appUShell");
             var bState = oShell.getShowPane();
@@ -246,7 +260,7 @@ sap.ui.define([
         },
 
         _toogleButtonsVisible: function () {
-            var bState = this.checkUserConnected();
+            var bState = this.getUserLogged();
             this.getView().byId("btHome").setVisible(bState);
             this.getView().byId("btMenu").setVisible(bState);
             this.getView().byId("btIndex").setVisible(!bState);
@@ -261,6 +275,7 @@ sap.ui.define([
         },
 
         _loginDone: function () {
+            this.setUserLogged(true);
             this._loadBackendData();
             this._toogleButtonsVisible();
             this.onCloseLogin();
@@ -269,15 +284,17 @@ sap.ui.define([
         },
 
         _logoffDone: function () {
+            this.destroySession();
             this._toogleShellOverlay();
             this._toogleButtonsVisible();
+            this.getView().setBusy(false);
             this.getRouter().navTo("index");
             MessageToast.show(this.getResourceBundle().getText("Success.logoff"));
         },
 
 
         _createShellUserButton: function () {
-            var oUser = new sap.ui.unified.ShellHeadUserItem({
+            var oUser = new ShellHeadUserItem({
                 image: "sap-icon://person-placeholder",
                 username: "{/User/nome}",
                 press: $.proxy(this.onUserItemPressed, this)

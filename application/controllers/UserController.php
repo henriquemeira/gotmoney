@@ -100,8 +100,9 @@ class UserController extends Extra_RESTController
             Extra_ErrorREST::setNotFound($this->getResponse());
             return;
         }
-
-        $this->getResponse()->setHttpResponseCode(200)->setBody(Zend_Json::encode($consumidor));
+        $user = $consumidor->current();
+        unset($user->passwd);
+        $this->getResponse()->setHttpResponseCode(200)->setBody(Zend_Json::encode($user));
     }
 
 
@@ -116,7 +117,8 @@ class UserController extends Extra_RESTController
         if (!$this->isValidHttpMethod(self::HTTP_METHOD_PUT)) { return; }
         if (!$this->isValidSession()) { return; }
 
-        $this->convertPayloadToBackendFormat($this->getRequest()->getParams());
+        //$this->convertPayloadToBackendFormat($this->getRequest()->getParams());
+        $this->convertPayloadToBackendFormat(Zend_Json::decode($this->getRequest()->getRawBody()));
 
         $this->_form->removeElement('captcha');
         $this->_form->removeElement('tec');
@@ -128,8 +130,6 @@ class UserController extends Extra_RESTController
         } else {
 
         }
-
-
 
         if (!$this->isValidInput()) { return; }
 

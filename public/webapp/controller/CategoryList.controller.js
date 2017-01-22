@@ -12,7 +12,7 @@ sap.ui.define([
             try {
                 this.getView().addEventDelegate({
                     onAfterShow: function () {
-                        this.checkUserConnected(true);
+                        this.checkSession();
                     }
                 }, this);
 
@@ -27,6 +27,7 @@ sap.ui.define([
         /* event handlers                                              */
         /* =========================================================== */
         onItemPress: function (oEvent) {
+            this.vibrate();
             this.getRouter().navTo("category", {
                 categoryId: this.extractIdFromPath(oEvent.getSource().getBindingContext().getPath())
             });
@@ -34,6 +35,7 @@ sap.ui.define([
 
 
         onAddNew: function () {
+            this.vibrate();
             this.getRouter().navTo("categoryNew");
         }
 

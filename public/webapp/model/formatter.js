@@ -48,45 +48,56 @@ sap.ui.define([
             return ((sValue === "001" || sValue === true)) ? ValueState.Success : ValueState.Error;
         },
 
-        accountTypeIcon: function (sValue) {
-            var sIcon;
-            switch (sValue) {
+        paymentTooltip: function (sValue) {
+            return ((sValue === "001" || sValue === true))
+                ? this.getResourceBundle().getText('Transaction.status.paid')
+                : this.getResourceBundle().getText('Transaction.status.awaiting');
+        },
+
+        accountTypeIcon: function (sId) {
+            switch (sId) {
                 // Cash
                 case '001':
-                    sIcon = "sap-icon://money-bills";
-                    break;
+                    return "sap-icon://money-bills";
                 // Credit Card
                 case '002':
-                    sIcon = "sap-icon://credit-card";
-                    break;
+                    return "sap-icon://credit-card";
                 // Bank Account
                 case '003':
-                    sIcon = "sap-icon://loan";
-                    break;
+                    return "sap-icon://loan";
                 // Savings
                 case '004':
-                    sIcon = "sap-icon://waiver";
-                    break;
-
+                    return "sap-icon://waiver";
                 default:
-                    break;
+                    return 'sap-icon://money-bills';
             }
-            return sIcon;
+        },
+
+        accountTypeName: function (sId) {
+            try {
+                return this.getResourceBundle().getText('Account.Type.' + sId);
+            } catch (e) {
+                console.dir(e);
+                return sId;
+            }
         },
 
         accountName: function (sValue) {
             var sDesc = sValue;
-            var oModel = this.getView().getModel();
-            if (oModel) {
-                //TODO
-                var nItems = oModel.getData().User.Account.length;
-                var aAccounts = oModel.getData().User.Account;
-                for (var i = 0; i < nItems; i++) {
-                    if (aAccounts[i].idconta == sValue) {
-                        sDesc = aAccounts[i].descricao;
-                        return sDesc;
+            try {
+                var oModel = this.getView().getModel();
+                if (oModel) {
+                    var nItems = oModel.getData().User.Account.length;
+                    var aAccounts = oModel.getData().User.Account;
+                    for (var i = 0; i < nItems; i++) {
+                        if (aAccounts[i].idconta == sValue) {
+                            sDesc = aAccounts[i].descricao;
+                            return sDesc;
+                        }
                     }
                 }
+            } catch (e) {
+                console.dir(e);
             }
             return sDesc;
         },
