@@ -6,9 +6,9 @@
 		<Panel headerText="{i18n>Signup.social}">
 			<OverflowToolbar>
 				<ToolbarSpacer/>
-				<Button text="{i18n>Signup.facebook}" press="onFacebookLogin" icon="./images/facebook.png" />
+				<Button text="{i18n>Signup.facebook}" press="onFacebookLogin" icon="./images/facebook.png" iconDensityAware="false" />
 				<ToolbarSpacer />
-				<Button id="btGoogle" text="{i18n>Signup.google}" icon="./images/google.png" />
+				<Button id="btGoogle" text="{i18n>Signup.google}" icon="./images/google.png" iconDensityAware="false" />
 				<ToolbarSpacer/>
 			</OverflowToolbar>
 		</Panel>
