@@ -1,12 +1,12 @@
 {
   "_version": "1.5.0",
-  "start_url": "index.html",
+  "start_url": "../index.html",
   "sap.app": {
     "id": "com.mlauffer.gotmoneyappui5",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
-      "version": "2.1.0"
+      "version": "2.1.1"
     },
     "title": "{{appTitle}}",
     "description": "{{appDescription}}"
@@ -14,12 +14,12 @@
   "sap.ui": {
     "technology": "UI5",
     "icons": {
-      "icon": "",
-      "favIcon": "",
-      "phone": "",
-      "phone@2": "",
-      "tablet": "",
-      "tablet@2": ""
+      "icon": "sap-icon://lead",
+      "favIcon": "images/favicon.ico",
+      "phone": "images/pig-57x57.png",
+      "phone@2": "images/pig-144x144.png",
+      "tablet": "images/pig-72x72.png",
+      "tablet@2": "images/pig-144x144.png"
     },
     "deviceTypes": {
       "desktop": true,
@@ -29,11 +29,12 @@
     "supportedThemes": [
       "sap_hcb",
       "sap_belize"
-    ]
+    ],
+    "fullWidth": true
   },
   "sap.ui5": {
     "dependencies": {
-      "minUI5Version": "1.42.0",
+      "minUI5Version": "1.46.0",
       "libs": {
         "sap.ui.core": {},
         "sap.m": {},
@@ -45,20 +46,24 @@
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "preload": true,
+        "async": true,
         "settings": {
-          "bundleName": "com.mlauffer.gotmoneyappui5.i18n.i18n"
-        },
-        "async": true
+          "bundleName": "com.mlauffer.gotmoneyappui5.i18n.i18n",
+          "async": true
+        }
       },
       "": {
         "type": "sap.ui.model.json.JSONModel"
+      },
+      "local": {
+        "type": "com.mlauffer.gotmoneyappui5.model.LocalStorageModel"
       }
     },
     "contentDensities": {
       "compact": true,
       "cozy": false
     },
+    "handleValidation": true,
     "rootView": {
       "viewName": "com.mlauffer.gotmoneyappui5.view.App",
       "id": "rootApp",
@@ -73,6 +78,7 @@
         "controlId": "idAppControl",
         "controlAggregation": "pages",
         "transition": "slide",
+        "homeRoute": "index",
         "bypassed": {
           "target": "notFound"
         }
@@ -149,9 +155,9 @@
           "target": "transactionList"
         },
         {
-          "pattern": "transactionLate",
-          "name": "transactionListLate",
-          "target": "transactionListLate"
+          "pattern": "transactionOverdue",
+          "name": "transactionOverdue",
+          "target": "transactionOverdue"
         },
         {
           "pattern": "transaction/{transactionId}",
@@ -166,74 +172,92 @@
       ],
       "targets": {
         "index": {
+          "viewId": "index",
           "viewName": "Index",
           "viewLevel": 1
         },
         "home": {
+          "viewId": "home",
           "viewName": "Home",
           "viewLevel": 1
         },
         "about": {
+          "viewId": "about",
           "viewName": "About",
           "viewLevel": 2
         },
         "privacy": {
+          "viewId": "privacy",
           "viewName": "Privacy",
           "viewLevel": 2
         },
         "terms": {
+          "viewId": "terms",
           "viewName": "Terms",
           "viewLevel": 2
         },
         "notFound": {
+          "viewId": "notFound",
           "viewName": "NotFound",
           "transition": "show"
         },
         "profile": {
+          "viewId": "user",
           "viewName": "User",
           "viewLevel": 2
         },
         "signup": {
+          "viewId": "signup",
           "viewName": "Signup",
           "viewLevel": 2
         },
         "accountList": {
+          "viewId": "accountList",
           "viewName": "AccountList",
           "viewLevel": 2
         },
         "account": {
+          "viewId": "account",
           "viewName": "Account",
           "viewLevel": 3
         },
         "accountNew": {
+          "viewId": "accountNew",
           "viewName": "AccountNew",
           "viewLevel": 3
         },
         "categoryList": {
+          "viewId": "categoryList",
           "viewName": "CategoryList",
           "viewLevel": 2
         },
         "category": {
+          "viewId": "category",
           "viewName": "Category",
           "viewLevel": 3
         },
         "categoryNew": {
+          "viewId": "categoryNew",
           "viewName": "CategoryNew",
           "viewLevel": 3
         },
         "transactionList": {
+          "viewId": "transactionList",
           "viewName": "TransactionList",
           "viewLevel": 2
         },
-        "transactionListLate": {
-          "viewName": "TransactionListLate",
+        "transactionOverdue": {
+          "viewId": "transactionOverdue",
+          "viewName": "TransactionOverdue",
           "viewLevel": 2
         },
         "transaction": {
+          "viewId": "transaction",
           "viewName": "Transaction",
           "viewLevel": 3
         },
         "transactionNew": {
+          "viewId": "transactionNew",
           "viewName": "TransactionNew",
           "viewLevel": 3
         }

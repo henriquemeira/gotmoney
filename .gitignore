@@ -1,6 +1,10 @@
-/.idea/
-/application/configs/application.ini
-/build/
-/node_modules/
-/public/js/resources/
-/library/Zend/*
+.idea/
+build/
+coverage/
+data/logs/
+node_modules/
+public/webapp/js/resources/
+.env
+.env.*
+*.log
+.nyc_output/

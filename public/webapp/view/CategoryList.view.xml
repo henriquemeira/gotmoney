@@ -1,14 +1,13 @@
 <mvc:View controllerName="com.mlauffer.gotmoneyappui5.controller.CategoryList"
 	xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" busyIndicatorDelay="0">
-	<Page title="{i18n>Category.title}" showNavButton="true" navButtonPress="onNavBack">
-		<List items="{/User/Category}">
-			<StandardListItem title="{descricao}" type="Navigation"
-				press="onItemPress" />
+	<Page id="page" title="{i18n>Category.title}" showNavButton="true" navButtonPress="onNavBack">
+		<List id="list" items="{/User/Category}">
+			<StandardListItem title="{description}" type="Navigation" press="onItemPress" />
 		</List>
 		<footer>
 			<Toolbar>
 				<ToolbarSpacer />
-				<Button icon="sap-icon://add" text="{i18n>XBUT.new}" press="onAddNew" />
+				<Button id="btNew" icon="sap-icon://add" text="{i18n>XBUT.new}" press="onAddNew" />
 			</Toolbar>
 		</footer>
 	</Page>

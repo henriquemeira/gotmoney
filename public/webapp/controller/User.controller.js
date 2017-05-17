@@ -1,175 +1,171 @@
 sap.ui.define([
-"sap/m/MessageBox",
-"sap/m/MessageToast",
-"sap/ui/model/json/JSONModel",
-"sap/ui/core/ValueState",
-"com/mlauffer/gotmoneyappui5/controller/BaseController",
-"com/mlauffer/gotmoneyappui5/controller/Validator",
-"com/mlauffer/gotmoneyappui5/controller/ZString",
-"com/mlauffer/gotmoneyappui5/model/ObjectFactory",
-"com/mlauffer/gotmoneyappui5/model/formatter"
-], function (MessageBox, MessageToast, JSONModel, ValueState, BaseController, Validator, ZString, ObjectFactory, formatter) {
-	"use strict";
+  'jquery.sap.global',
+  'sap/m/MessageBox',
+  'sap/m/MessageToast',
+  'sap/ui/model/json/JSONModel',
+  'sap/ui/core/ValueState',
+  'com/mlauffer/gotmoneyappui5/controller/BaseController',
+  'com/mlauffer/gotmoneyappui5/controller/Validator',
+  'com/mlauffer/gotmoneyappui5/controller/ZString',
+  'com/mlauffer/gotmoneyappui5/model/ObjectFactory',
+  'com/mlauffer/gotmoneyappui5/model/formatter'
+], function(jQuery, MessageBox, MessageToast, JSONModel, ValueState, BaseController, Validator, ZString, ObjectFactory,
+            formatter) {
+  'use strict';
 
-	return BaseController.extend("com.mlauffer.gotmoneyappui5.controller.User", {
-		formatter: formatter,
-		ZString: ZString,
+  return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.User', {
+    formatter: formatter,
+    ZString: ZString,
 
-		/* =========================================================== */
-		/* lifecycle methods                                           */
-		/* =========================================================== */
+    onInit: function() {
+      try {
+        this.getView().setModel(new JSONModel(), 'user');
+        var oRouter = this.getRouter();
+        oRouter.getRoute('profile').attachMatched(this._onRouteMatched, this);
+        oRouter.getRoute('signup').attachMatched(this._onRouteMatchedNew, this);
 
-		onInit: function() {
-			this.getView().setModel(new JSONModel(), "user");
+        this.getView().addEventDelegate({
+          onAfterShow: function() {
+            this.checkSession();
+          }
+        }, this);
 
-			try {
-				var oRouter = this.getRouter();
-				oRouter.getRoute("profile").attachMatched(this._onRouteMatched, this);
-				oRouter.getRoute("signup").attachMatched(this._onRouteMatchedNew, this);
-
-				this.getView().addEventDelegate({
-					onAfterShow: function() {
-                        this.checkSession();
-					}
-				}, this);
-
-			} catch (e) {
-				this.saveLog('E', e.message);
-				MessageBox.error(e.message);
-			}
-		},
+      } catch (e) {
+        this.saveLog('E', e.message);
+        MessageBox.error(e.message);
+      }
+    },
 
 
-		/* =========================================================== */
-		/* event handlers                                              */
-		/* =========================================================== */
+    onSave: function(oEvent) {
+      this.vibrate();
+      var oView = this.getView();
+      // Create new validator instance
+      var oValidator = new Validator();
 
-		onSave: function(oEvent) {
-            this.vibrate();
-			var oView = this.getView();
-			// Create new validator instance
-			var oValidator = new Validator();
+      // Validate input fields
+      oValidator.validate(oView.byId('form'));
+      if (!oValidator.isValid()) {
+        return;
+      }
 
-			// Validate input fields
-			oValidator.validate(oView.byId("userForm"));
-			if (!oValidator.isValid()) {
-				return;
-			}
+      if (oView.byId('pwd').getValue()) {
+        if (oView.byId('pwd').getValue() === oView.byId('pwdRepeat').getValue()) {
+          oView.byId('pwd').setValueState(ValueState.None);
+          oView.byId('pwdRepeat').setValueState(ValueState.None);
+        } else {
+          oView.byId('pwd').setValueState(ValueState.Error);
+          oView.byId('pwdRepeat').setValueState(ValueState.Error);
+          MessageToast.show(this.getResourceBundle().getText('Error.passwordNotEqual'));
+          return;
+        }
+      }
 
-			if (oView.byId("pwd").getValue()) {
-				if (oView.byId("pwd").getValue() === oView.byId("pwdRepeat").getValue()) {
-					oView.byId("pwd").setValueState(ValueState.None);
-					oView.byId("pwdRepeat").setValueState(ValueState.None);
-				} else {
-					oView.byId("pwd").setValueState(ValueState.Error);
-					oView.byId("pwdRepeat").setValueState(ValueState.Error);
-					MessageToast.show(this.getResourceBundle().getText("Error.passwordNotEqual"));
-					return;
-				}
-			}
-
-			this.getView().setBusy(true);
-			if (this.getView().getViewName() === "com.mlauffer.gotmoneyappui5.view.User") {
-				this._saveEdit(oEvent);
-			}
-		},
-
-
-		/* =========================================================== */
-		/* begin: internal methods                                     */
-		/* =========================================================== */
-
-		_onRouteMatched: function() {
-			var sObjectPath = "/User/";
-			this._bindView(sObjectPath);
-		},
+      this.getView().setBusyIndicatorDelay(0);
+      this.getView().setBusy(true);
+      //oEvent.getSource().getEnabled(false);
+      if (this.getView().getViewName() === 'com.mlauffer.gotmoneyappui5.view.User') {
+        this._saveEdit(oEvent.getSource().getBindingContext());
+      }
+      //oEvent.getSource().getEnabled(true);
+    },
 
 
-		_onRouteMatchedNew: function() {
-			this.getView().getModel("user").setData(ObjectFactory.buildUser());
-		},
+    _onRouteMatched: function() {
+      var sObjectPath = '/User/';
+      this._bindView(sObjectPath);
+    },
 
 
-		_bindView : function(sPath) {
-			var oView = this.getView();
-			oView.unbindElement();
-			oView.bindElement({
-				path : sPath,
-				events : {
-					change : this._onBindingChange.bind(this),
-					dataRequested : function(oEvent) {
-						console.log("dataRequested");
-						oView.setBusy(true);
-					},
-					dataReceived : function(oEvent) {
-						console.log("dataReceived");
-						oView.setBusy(false);
-					}
-				}
-			});
-		},
+    _onRouteMatchedNew: function() {
+      this.getView().getModel('user').setData(ObjectFactory.buildUser());
+    },
 
 
-		_onBindingChange : function() {
-			// No data for the binding
-			if (!this.getView().getBindingContext()) {
-				this.getRouter().getTargets().display("notFound");
-			}
-		},
+    _bindView: function(sPath) {
+      var oView = this.getView();
+      oView.unbindElement();
+      oView.bindElement({
+        path: sPath,
+        events: {
+          change: this._onBindingChange.bind(this),
+          dataRequested: function(oEvent) {
+            oView.setBusy(true);
+          },
+          dataReceived: function(oEvent) {
+            oView.setBusy(false);
+          }
+        }
+      });
+    },
 
 
-		_saveEdit: function(oEvent) {
-			var that = this;
-			var oContext = oEvent.getSource().getBindingContext();
-			var oModel = this.getView().getModel();
-			var mPayload = this._getPayload();
-			mPayload.iduser = oModel.getProperty("iduser", oContext);
-
-			$.ajax({
-				url: "/user/" + mPayload.iduser,
-                contentType: 'application/json',
-                data: JSON.stringify(mPayload),
-				dataType: 'json',
-				method: 'PUT'
-			})
-			.done(jQuery.proxy(that._editDone(mPayload, oContext), this))
-			.fail(jQuery.proxy(that._ajaxFail, this));
-		},
+    _onBindingChange: function() {
+      // No data for the binding
+      if (!this.getView().getBindingContext()) {
+        this.getRouter().getTargets().display('notFound');
+      }
+    },
 
 
-		_editDone : function(mPayload, oContext) {
-			try {
-                var oModel = this.getView().getModel();
-                oModel.setProperty("nome", mPayload.nome, oContext);
-				oModel.setProperty("sexo", mPayload.sexo, oContext);
-				oModel.setProperty("datanascimento", mPayload.datanascimento, oContext);
-				oModel.setProperty("alert", mPayload.alert, oContext);
-                this.onFinishBackendOperation();
-                MessageToast.show(this.getResourceBundle().getText("Success.save"));
+    _saveEdit: function(oContext) {
+      var that = this;
+      var mPayload = this._getPayload();
+      that.getView().byId('btSave').setBusy(true);
+      mPayload.iduser = oContext.getProperty('iduser');
+      if (!mPayload.passwd) {
+        delete mPayload.passwd;
+      }
 
-			} catch (e) {
-				this.saveLog('E', e.message);
-				MessageBox.error(e.message);
-			}
-		},
+      jQuery.ajax({
+        url: '/api/user/' + mPayload.iduser,
+        data: JSON.stringify(mPayload),
+        method: 'PUT'
+      })
+        .done(function() {
+          that._editDone(mPayload, oContext);
+        })
+        .fail(jQuery.proxy(that._ajaxFail, this))
+        .always(function() {
+          that.getView().byId('btSave').setBusy(false);
+        })
+      ;
+    },
 
 
-		_getPayload : function() {
-			var oView = this.getView();
-			var mPayload = ObjectFactory.buildUser();
+    _editDone: function(mPayload, oContext) {
+      try {
+        var oModel = this.getView().getModel();
+        oModel.setProperty('name', mPayload.name, oContext);
+        oModel.setProperty('gender', mPayload.gender, oContext);
+        oModel.setProperty('birthdate', mPayload.birthdate, oContext);
+        oModel.setProperty('alert', mPayload.alert, oContext);
+        this.onFinishBackendOperation();
+        MessageToast.show(this.getResourceBundle().getText('Success.save'));
 
-			//iduser : null,
-			mPayload.email = oView.byId("email").getValue();
-			mPayload.passwdold = oView.byId("pwdOld").getValue();
-			mPayload.passwd = oView.byId("pwd").getValue();
-			mPayload.passwdconf = oView.byId("pwdRepeat").getValue();
-			mPayload.nome = oView.byId("name").getValue();
-			mPayload.sexo = oView.byId("sex").getSelectedKey();
-			mPayload.datanascimento = oView.byId("birthdate").getValue();
-			mPayload.alert = oView.byId("alert").getState();
-			mPayload.lastchange = $.now();
-			//mPayload.lastsync : null
-			return mPayload;
-		}
-	});
+      } catch (e) {
+        this.saveLog('E', e.message);
+        MessageBox.error(e.message);
+      }
+    },
+
+
+    _getPayload: function() {
+      var oView = this.getView();
+      var mPayload = ObjectFactory.buildUser();
+      //iduser : null,
+      mPayload.email = oView.byId('email').getValue();
+      mPayload.passwd = oView.byId('pwd').getValue();
+      mPayload.name = oView.byId('name').getValue();
+      mPayload.gender = oView.byId('sex').getSelectedKey();
+      mPayload.birthdate = oView.byId('birthdate').getDateValue();
+      mPayload.alert = oView.byId('alert').getState();
+      mPayload.lastchange = jQuery.now();
+      //mPayload.lastsync : null
+      if (mPayload.birthdate) {
+        mPayload.birthdate.setHours(12); //Workaround for date location, avoid D -1
+      }
+      return mPayload;
+    }
+  });
 });

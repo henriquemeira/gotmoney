@@ -1,101 +1,84 @@
 sap.ui.define([
-    "sap/m/MessageBox",
-    "sap/m/MessageToast",
-    "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator",
-    "sap/ui/core/Fragment",
-    "sap/ui/core/ValueState",
-    "com/mlauffer/gotmoneyappui5/controller/BaseController"
-], function (MessageBox, MessageToast, Filter, FilterOperator, Fragment, ValueState, BaseController) {
-    "use strict";
+  'sap/m/MessageBox',
+  'sap/m/MessageToast',
+  'sap/ui/model/Filter',
+  'sap/ui/model/FilterOperator',
+  'sap/ui/core/Fragment',
+  'sap/ui/core/ValueState',
+  'com/mlauffer/gotmoneyappui5/controller/BaseController',
+  'com/mlauffer/gotmoneyappui5/model/formatter'
+], function(MessageBox, MessageToast, Filter, FilterOperator, Fragment, ValueState, BaseController, formatter) {
+  'use strict';
 
-    return BaseController.extend("com.mlauffer.gotmoneyappui5.controller.Home", {
-        /* =========================================================== */
-        /* lifecycle methods                                           */
-        /* =========================================================== */
-        onInit: function () {
-            try {
-                this.getView().addEventDelegate({
-                    onAfterShow: function () {
-                        this.checkSession();
-                        this._getTitleTotalItems();
-                    }
-                }, this);
+  return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.Home', {
+    formatter: formatter,
 
-            } catch (e) {
-                this.saveLog('E', e.message);
-                MessageBox.error(e.message);
-            }
-        },
+    onInit: function() {
+      try {
+        this.getView().addEventDelegate({
+          onAfterShow: function() {
+            this.checkSession();
+            this._getTitleTotalItems();
+          }
+        }, this);
 
-        /* =========================================================== */
-        /* event handlers                                              */
-        /* =========================================================== */
+      } catch (e) {
+        this.saveLog('E', e.message);
+        MessageBox.error(e.message);
+      }
+    },
 
-        onAccount: function () {
-            this.vibrate();
-            this.getRouter().navTo("accountList");
-        },
+    onAccount: function() {
+      this.vibrate();
+      this.getRouter().navTo('accountList');
+    },
 
-        onCategory: function () {
-            this.vibrate();
-            this.getRouter().navTo("categoryList");
-        },
+    onCategory: function() {
+      this.vibrate();
+      this.getRouter().navTo('categoryList');
+    },
 
-        onTransaction: function () {
-            this.vibrate();
-            this.getRouter().navTo("transactionList");
-        },
+    onTransaction: function() {
+      this.vibrate();
+      this.getRouter().navTo('transactionList');
+    },
 
-        onTransactionLate: function () {
-            this.vibrate();
-            this.getRouter().navTo("transactionListLate");
-        },
+    onTransactionOverdue: function() {
+      this.vibrate();
+      this.getRouter().navTo('transactionOverdue');
+    },
 
-        onReport: function () {
-            //TODO:
-            this.vibrate();
-        },
+    onReport: function() {
+      //TODO:
+      this.vibrate();
+    },
 
-        onProfile: function () {
-            this.vibrate();
-            this.getRouter().navTo("profile");
-        },
+    onProfile: function() {
+      this.vibrate();
+      this.getRouter().navTo('profile');
+    },
 
 
-        /* =========================================================== */
-        /* begin: internal methods                                     */
-        /* =========================================================== */
+    _getTitleTotalItems: function() {
+      try {
+        var oView = this.getView();
+        var oData = oView.getModel().getData();
 
-        _getTitleTotalItems: function () {
-            var oView = this.getView();
-            var oData = oView.getModel().getData();
-
-            if (oData) {
-                try {
-                    //TODO : Late
-                    oView.byId("accountTile").setValue(oData.User.Account.length);
-                    oView.byId("categoryTile").setValue(oData.User.Category.length);
-
-                    //this._getTransactionLateItems();
-                    //oView.byId("transactionLateTile").setValue(12);
-                } catch (e) {
-                    console.dir(e);
-                }
-            }
-        },
-
-        _getTransactionLateItems: function () {
-            var oDateTo = new Date();
-            this.getView().byId("transactionTable").setBusy(true);
-            var aFilters = [];
-            var oFilter = new Filter("datavencimento", FilterOperator.LT, formatter.dateMySQLFormat(oDateTo));
-            aFilters.push(oFilter);
-            oFilter = new Filter("idstatus", FilterOperator.EQ, "000");
-            aFilters.push(oFilter);
-            this.getView().byId("transactionTable").getBinding("items").filter(aFilters);
-            this.getView().byId("transactionTable").setBusy(false);
+        if (oData) {
+          oView.byId('accountTile').setValue(oData.User.Account.length);
+          oView.byId('categoryTile').setValue(oData.User.Category.length);
+          oView.byId('transactionOverdueTile').setValue(this._getTransactionOverdueItems());
         }
+      } catch (e) {
+        console.dir(e);
+      }
+    },
 
-    });
+    _getTransactionOverdueItems: function() {
+      var overdue = this.getView().getModel().getData().User.Transaction.filter(function(item) {
+        return item.idstatus === 0 && item.duedate < new Date().toJSON();
+      });
+      return overdue.length;
+    }
+  });
 });
