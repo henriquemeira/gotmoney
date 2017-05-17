@@ -1,18 +1,40 @@
-# see http://editorconfig.org
-
-root = false
+root = true
 
 [*]
-charset = utf-8
-
-[*.{css,html,java,js,json,less,txt}]
-trim_trailing_whitespace = true
 end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
 
-# npm is using 2 spaces when modifying package.json
-[package.json]
+[vcbuild.bat]
+end_of_line = crlf
+
+[{lib,src,test}/**.js]
 indent_style = space
 indent_size = 2
 
-[*.md]
-trim_trailing_whitespace = false
+[src/**.{h,cc}]
+indent_style = space
+indent_size = 2
+
+[test/*.py]
+indent_style = space
+indent_size = 2
+
+[configure]
+indent_style = space
+indent_size = 2
+
+[Makefile]
+indent_style = tab
+indent_size = 8
+
+[{deps,tools}/**]
+indent_style = ignore
+indent_size = ignore
+end_of_line = ignore
+trim_trailing_whitespace = ignore
+charset = ignore
+
+[{test/fixtures,deps,tools/eslint,tools/gyp,tools/icu,tools/msvs}/**]
+insert_final_newline = false

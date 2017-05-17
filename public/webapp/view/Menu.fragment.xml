@@ -9,8 +9,8 @@
                 <tnt:NavigationListItem text="{i18n>Menu.category}" icon="sap-icon://tag" select="onCategory"/>
                 <tnt:NavigationListItem text="{i18n>Menu.transaction}" icon="sap-icon://appointment"
                                         select="onTransaction"/>
-                <tnt:NavigationListItem text="{i18n>Menu.transactionLate}" icon="sap-icon://message-warning"
-                                        select="onTransactionLate"/>
+                <tnt:NavigationListItem text="{i18n>Menu.transactionOverdue}" icon="sap-icon://message-warning"
+                                        select="onTransactionOverdue"/>
                 <!--<tnt:NavigationListItem text="{i18n>Menu.report}" icon="sap-icon://bar-chart" select="onReport"/>-->
                 <tnt:NavigationListItem id="btLogoff" text="{i18n>Menu.logoff}" icon="sap-icon://log" select="onLogoff"/>
             </tnt:NavigationList>

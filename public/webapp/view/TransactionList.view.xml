@@ -1,14 +1,14 @@
 <mvc:View controllerName="com.mlauffer.gotmoneyappui5.controller.TransactionList"
 	xmlns:mvc="sap.ui.core.mvc" xmlns:u="sap.ui.unified" xmlns="sap.m" busyIndicatorDelay="0">
-	<Page id="transactionListPage"
-		title="{i18n>Transaction.listTitle}" showNavButton="true" navButtonPress="onNavBack">
+	<Page id="transactionListPage" title="{i18n>Transaction.listTitle}" showNavButton="true" navButtonPress="onNavBack">
 		<u:CalendarMonthInterval id="calendar"
-			startDate="{path:'', formatter:'.formatter.getCalendarStartDate'}"
-			width="100%" select="onSelectDate" />
+			startDate="{path:'', formatter:'.formatter.getCalendarStartDate'}" width="100%" select="onSelectDate" />
 		<Table id="transactionTable" items="{/User/Transaction}" updateStarted="onUpdateStarted" updateFinished="onUpdateFinished">
             <headerToolbar>
                 <Toolbar>
                     <Title id="countTitle" text="{i18n>Transaction.count}"/>
+					<ToolbarSpacer/>
+					<ObjectStatus id="totalAmount" text="$ 0.00" class="sapUiSmallMarginEnd" />
                 </Toolbar>
             </headerToolbar>
 			<columns>
@@ -18,7 +18,7 @@
 				<Column hAlign="Center" width="8em">
 					<Text text="{i18n>Transaction.dueDate}" />
 				</Column>
-				<Column hAlign="Center" width="4em" demandPopin="true"
+				<Column hAlign="Center" width="5em" demandPopin="true"
 					minScreenWidth="Small">
 					<Text text="{i18n>Transaction.split}" />
 				</Column>
@@ -36,12 +36,12 @@
 			<items>
 				<ColumnListItem type="Navigation" press="onItemPress">
 					<cells>
-						<ObjectIdentifier title="{descricao}" />
-						<Text text="{datavencimento}" />
-						<Text text="{parcela}" />
-						<ObjectNumber number="{path:'valor'}"
-							state="{= ${tipo} === 'C' ? 'None' : 'Error' }" />
-						<Text text="{path:'idconta', formatter:'.formatter.accountName'}" />
+						<ObjectIdentifier title="{description}" />
+						<Text text="{path:'duedate', formatter:'.formatter.dateMySQLFormat'}"/>
+						<Text text="{instalment}" />
+						<ObjectNumber number="{path:'amount'}"
+							state="{= ${type} === 'C' ? 'None' : 'Error' }" />
+						<Text text="{path:'idaccount', formatter:'.formatter.accountName'}" />
 						<ObjectStatus
 							icon="{path:'idstatus', formatter:'.formatter.paymentIcon'}"
 							state="{path:'idstatus', formatter:'.formatter.paymentStatus'}"
@@ -53,7 +53,7 @@
 		<footer>
 			<Toolbar>
 				<ToolbarSpacer />
-				<Button icon="sap-icon://add" text="{i18n>XBUT.new}" press="onAddNew" />
+				<Button id="btNew" icon="sap-icon://add" text="{i18n>XBUT.new}" press="onAddNew" />
 			</Toolbar>
 		</footer>
 	</Page>

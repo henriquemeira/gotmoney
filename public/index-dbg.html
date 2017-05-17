@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name=description
+    <meta name="description"
           content="GotMoney App - Gerenciador financeiro pessoal. Controle suas despesas online e sem custos!">
-    <meta name=keywords
+    <meta name="keywords"
           content="finan&ccedil;as, despesas, or&ccedil;amento, gerenciador, controle, planejamento, financeiro, pessoal, familiar, contas">
-    <meta name=author content="Mauricio Lauffer">
-    <meta name=viewport content="width=device-width, initial-scale=1">
+    <meta name="author" content="Mauricio Lauffer">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6699ff">
     <meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id" content="512998861746.apps.googleusercontent.com">
-    <link rel="stylesheet" href="./css/gotmoneyapp.min.css">
-    <link rel=icon href="./images/favicon.ico" type="image/ico">
+    <link rel="stylesheet" type="text/css" href="/webapp/css/gotmoneyapp.min.css">
+    <link rel="icon" type="image/ico" href="/webapp/images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="/webapp/images/pig-192x192.png">
+    <link rel="manifest" href="/manifest.json">
     <title>GotMoney App - Gerenciador financeiro pessoal</title>
     <script type="text/javascript" id="sap-ui-bootstrap"
-            src="https://openui5.hana.ondemand.com/1.44.6/resources/sap-ui-core.js" data-sap-ui-theme="sap_belize"
+            src="/webapp/js/resources/sap-ui-core.js" data-sap-ui-theme="sap_belize"
             data-sap-ui-libs="sap.m, sap.ui.layout, sap.ui.unified, sap.tnt" data-sap-ui-bindingSyntax="complex"
             data-sap-ui-preload="async" data-sap-ui-compatVersion="edge" data-sap-ui-frameOptions="deny"
             data-sap-ui-resourceroots='{"com.mlauffer.gotmoneyappui5": "./webapp/"}'></script>
@@ -23,32 +26,47 @@
 <body class="sapUiBody">
 <div id="content" class="spinner"></div>
 <script type="text/javascript">
-    //SAP OpenUI5
-    sap.ui.getCore().attachInit(function() {
-        'use strict';
-        sap.ui.require([
-            "sap/m/Shell",
-            "sap/ui/core/ComponentContainer"
-        ], function (Shell, ComponentContainer) {
-            sap.ui.component({
-                name: "com.mlauffer.gotmoneyappui5",
-                manifestFirst: true,
-                async: true
-            }).then(function(oComponent) {
-                new Shell({
-                    app: new ComponentContainer({
-                        height : "100%",
-                        component: oComponent
-                    }),
-                    appWidthLimited: true
-                }).placeAt("content");
-            });
-        });
-    });
+//SAP OpenUI5
+sap.ui.getCore().attachInit(function() {
+'use strict';
+sap.ui.require([
+  'sap/m/Shell',
+  'sap/ui/core/ComponentContainer'
+], function(Shell, ComponentContainer) {
+  sap.ui.component({
+    name: 'com.mlauffer.gotmoneyappui5',
+    manifestFirst: true,
+    async: true
+  }).then(function(oComponent) {
+    new Shell({
+      app: new ComponentContainer({
+        height: '100%',
+        component: oComponent
+      }),
+      appWidthLimited: true
+    }).placeAt('content');
+  });
+});
+});
+
+if (window.navigator.serviceWorker) {
+  window.navigator.serviceWorker
+    .register('./sw.js')
+    .then(function() { console.log('Service Worker Registered'); })
+    .catch(function() { console.error('Service Worker Not Registered'); });
+}
 </script>
-<script type="text/javascript" src="./js/gotmoneyapp.min.js" async defer></script>
-<script type="text/javascript" src="./js/lockr.js" async defer></script>
+<script type="text/javascript" src="/webapp/js/gotmoneyapp.min.js" async defer></script>
+<script type="text/javascript" src="/webapp/js/lockr.min.js" async defer></script>
 <script type="text/javascript" src="https://apis.google.com/js/platform.js?onload=onLoadGoogleClient" async defer></script>
 <script type="text/javascript" id="facebook-jssdk" src="https://connect.facebook.net/en_US/sdk.js" async defer></script>
+<noscript>
+    <div id="noScriptMessageEN">GotMoney cannot be displayed! JavaScript is not enabled. Please enable JavaScript in
+        your browser and try again...
+    </div>
+    <div id="noScriptMessagePT">GotMoney não pode ser exibido! JavaScript não está habilitado. Por favor, habilite
+        JavaScript no seu navegador e tente novamente...
+    </div>
+</noscript>
 </body>
 </html>

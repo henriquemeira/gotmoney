@@ -1,6 +1,6 @@
 <mvc:View controllerName="com.mlauffer.gotmoneyappui5.controller.Index" xmlns:core="sap.ui.core"
           xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" busyIndicatorDelay="0">
-    <Page title="{i18n>Index.title}">
+    <Page id="page" title="{i18n>Index.title}">
         <Panel class="sapUiLargeMargin" width="auto">
             <VBox>
                 <VBox alignItems="Center">

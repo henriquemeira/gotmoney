@@ -1,0 +1,4 @@
+--recursive
+--check-leaks
+--require dotenv/config
+--timeout 8000
