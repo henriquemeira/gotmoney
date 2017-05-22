@@ -6,8 +6,3 @@ install:
   - npm install
 script:
   - npm test
-env:
-  - FACEBOOK_APP_ID=dummy
-  - FACEBOOK_APP_SECRET=dummy
-  - GOOGLE_APP_ID=dummy
-  - GOOGLE_APP_SECRET=dummy
