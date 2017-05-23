@@ -50,6 +50,6 @@
     "url": "https://github.com/mauriciolauffer/gotmoney.git"
   },
   "engines": {
-    "node": ">= 6"
+    "node": "6.9.4"
   }
 }
