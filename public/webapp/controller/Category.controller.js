@@ -108,7 +108,12 @@ sap.ui.define([
       jQuery.ajax({
         url: '/api/category',
         data: JSON.stringify(mPayload),
-        method: 'POST'
+        method: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function() {
           that._newDone(mPayload);
@@ -126,7 +131,12 @@ sap.ui.define([
       jQuery.ajax({
         url: '/api/category/' + mPayload.idcategory,
         data: JSON.stringify(mPayload),
-        method: 'PUT'
+        method: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function() {
           that._editDone(mPayload, oContext);
@@ -140,7 +150,12 @@ sap.ui.define([
       var that = this;
       jQuery.ajax({
         url: '/api/category/' + oContext.getProperty('idcategory'),
-        method: 'DELETE'
+        method: 'DELETE',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function() {
           that._deleteDone(oContext);

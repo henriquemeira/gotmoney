@@ -141,7 +141,12 @@ sap.ui.define([
       jQuery.ajax({
         url: '/api/session/login',
         data: JSON.stringify(mPayload),
-        method: 'POST'
+        method: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function() {
           that._loginDone();
@@ -185,7 +190,12 @@ sap.ui.define([
       jQuery.ajax({
         url: '/api/session/recovery',
         data: JSON.stringify(mPayload),
-        method: 'PUT'
+        method: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function() {
           MessageBox.show(that.getResourceBundle().getText('Success.passwordRecovery'));
@@ -221,7 +231,12 @@ sap.ui.define([
       var that = this;
       jQuery.ajax({
         url: '/api/session/logout',
-        method: 'GET'
+        method: 'GET',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function() {
           that._logoffDone();

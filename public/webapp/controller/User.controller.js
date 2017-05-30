@@ -120,7 +120,12 @@ sap.ui.define([
       jQuery.ajax({
         url: '/api/user/' + mPayload.iduser,
         data: JSON.stringify(mPayload),
-        method: 'PUT'
+        method: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function() {
           that._editDone(mPayload, oContext);

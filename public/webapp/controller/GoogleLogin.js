@@ -40,6 +40,11 @@ sap.ui.define([
         method: 'POST',
         headers: {
           'Access_token': googleUser.getAuthResponse().access_token
+        },
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
         }
       })
         .done(function() {

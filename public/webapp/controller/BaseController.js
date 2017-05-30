@@ -177,7 +177,12 @@ sap.ui.define([
     jQuery.ajax({
       url: '/api/session/loggedin',
       async: false,
-      method: 'GET'
+      method: 'GET',
+      contentType: 'application/json',
+      dataType: 'json',
+      xhrFields: {
+        withCredentials: true
+      }
     })
       .done(function() {
         connected = true;
@@ -227,7 +232,12 @@ sap.ui.define([
     return new Promise(function(resolve, reject) {
       jQuery.ajax({
         url: '/api/user/' + jQuery.now(),
-        method: 'GET'
+        method: 'GET',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function(response) {
           that.getView().getModel().getData().User = response.User;
@@ -249,7 +259,12 @@ sap.ui.define([
     return new Promise(function(resolve, reject) {
       jQuery.ajax({
         url: '/api/category/',
-        method: 'GET'
+        method: 'GET',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function(response) {
           that.getView().getModel().getData().User.Category = response || [];
@@ -267,7 +282,12 @@ sap.ui.define([
     return new Promise(function(resolve, reject) {
       jQuery.ajax({
         url: '/api/account/',
-        method: 'GET'
+        method: 'GET',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function(response) {
           that.getView().getModel().getData().User.Account = response || [];
@@ -285,7 +305,12 @@ sap.ui.define([
     return new Promise(function(resolve, reject) {
       jQuery.ajax({
         url: '/api/transaction/',
-        method: 'GET'
+        method: 'GET',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function(response) {
           that.getView().getModel().getData().User.Transaction = response || [];
@@ -303,7 +328,12 @@ sap.ui.define([
     return new Promise(function(resolve, reject) {
       jQuery.ajax({
         url: '/api/accounttype/',
-        method: 'GET'
+        method: 'GET',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function(response) {
           that.getView().getModel().getData().AccountType = response || [];

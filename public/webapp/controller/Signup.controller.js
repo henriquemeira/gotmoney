@@ -132,7 +132,12 @@ sap.ui.define([
       jQuery.ajax({
         url: '/api/session/signup',
         data: JSON.stringify(mPayload),
-        method: 'POST'
+        method: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function() {
           that._newDone(mPayload);
