@@ -10,6 +10,7 @@ const logger = require('winston');
 const morgan = require('morgan');
 const express = require('express');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 //const csrf = require('csurf');
 const favicon = require('serve-favicon');
 const app = express();
@@ -33,6 +34,13 @@ logger.level = process.env.LOG_LEVEL || 'debug';
 
 if (app.get('env') === 'production') {
   app.use(morgan('combined'));
+  staticData.store = new MongoStore({
+    url: [process.env.SESSION_PROTOCOL,
+          process.env.SESSION_CREDENTIALS,
+          process.env.SESSION_CLUSTERS,
+          process.env.SESSION_DB,
+          process.env.SESSION_PARAMETERS].join('')
+  });
 } else {
   sessionData.cookie.secure = false;
   staticData.maxAge = 0;
