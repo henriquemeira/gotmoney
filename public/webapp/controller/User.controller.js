@@ -10,7 +10,7 @@ sap.ui.define([
   'com/mlauffer/gotmoneyappui5/model/ObjectFactory',
   'com/mlauffer/gotmoneyappui5/model/formatter'
 ], function(jQuery, MessageBox, MessageToast, JSONModel, ValueState, BaseController, Validator, ZString, ObjectFactory,
-            formatter) {
+    formatter) {
   'use strict';
 
   return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.User', {

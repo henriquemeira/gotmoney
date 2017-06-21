@@ -49,7 +49,7 @@ sap.ui.define([
         aMessages = [];
       jQuery.each(this.oConstraints, function(sName, oContent) {
         switch (sName) {
-          case 'email':  // expects boolean
+          case 'email': // expects boolean
             if (oContent && sValue.length > 0) {
               // Copyright (c) Jörn Zaefferer, MIT licensed
               // https://github.com/jzaefferer/jquery-validation

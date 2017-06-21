@@ -9,7 +9,7 @@ sap.ui.define([
   'com/mlauffer/gotmoneyappui5/controller/FacebookLogin',
   'com/mlauffer/gotmoneyappui5/controller/GoogleLogin'
 ], function(jQuery, MessageBox, MessageToast, Fragment, ValueState, ShellHeadUserItem, BaseController, FacebookLogin,
-            GoogleLogin) {
+    GoogleLogin) {
   'use strict';
 
   return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.App', {
@@ -26,7 +26,7 @@ sap.ui.define([
         jQuery.sap.log.info("Sorry, but the hash '" + sHash + "' is invalid.", 'The resource was not found.');
         this.saveLog('E', 'notFound');
       }, this);
-        /*oRouter.attachRouteMatched(function(oEvent) {
+      /*oRouter.attachRouteMatched(function(oEvent) {
          var sRouteName = oEvent.getParameter("name");
          // do something, i.e. send usage statistics to backend
          // in order to improve our app and the user experience (Build-Measure-Learn cycle)

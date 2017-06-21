@@ -21,10 +21,10 @@ router.get('/:id', (req, res, next) => {
                category.getAll(req.user.iduser), accountType.getAll()])
     .then((result) => {
       res.status(200).json({
-                User: result[0].getProperties(),
-                Account: result[1] || [],
-                Category: result[2] || [],
-                AccountType: result[3]
+        User: result[0].getProperties(),
+        Account: result[1] || [],
+        Category: result[2] || [],
+        AccountType: result[3]
       });
     })
     .catch((err) => next(err));
