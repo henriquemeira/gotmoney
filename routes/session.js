@@ -17,9 +17,9 @@ router.get('/loggedin', passport.isUserAuthenticated(), (req, res) => {
 
 router.post('/login', validator.isValidLogin(), passport.authenticate('local-login'), (req, res) => {
   const userSession = {
-        iduser: req.user.iduser,
-        email: req.user.email,
-        name: req.user.name
+    iduser: req.user.iduser,
+    email: req.user.email,
+    name: req.user.name
   };
   res.status(200).json(userSession);
 });
@@ -53,9 +53,9 @@ router.put('/recovery', validator.isValidRecovery(), (req, res, next) => {
 
 router.post('/signup', validator.isValidSignup(), passport.authenticate('local-signup'), (req, res) => {
   const user = {
-        iduser: req.user.iduser,
-        email: req.user.email,
-        name: req.user.name
+    iduser: req.user.iduser,
+    email: req.user.email,
+    name: req.user.name
   };
   res.status(201).json(user);
 });

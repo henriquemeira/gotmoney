@@ -12,7 +12,7 @@ sap.ui.define([
   'com/mlauffer/gotmoneyappui5/model/ObjectFactory',
   'com/mlauffer/gotmoneyappui5/model/formatter'
 ], function(jQuery, MessageBox, MessageToast, JSONModel, ValueState, BaseController, FacebookLogin, GoogleLogin,
-            Validator, ZString, ObjectFactory, formatter) {
+    Validator, ZString, ObjectFactory, formatter) {
   'use strict';
 
   return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.Signup', {
@@ -132,7 +132,12 @@ sap.ui.define([
       jQuery.ajax({
         url: '/api/session/signup',
         data: JSON.stringify(mPayload),
-        method: 'POST'
+        method: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function() {
           that._newDone(mPayload);

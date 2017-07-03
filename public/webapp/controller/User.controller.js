@@ -10,7 +10,7 @@ sap.ui.define([
   'com/mlauffer/gotmoneyappui5/model/ObjectFactory',
   'com/mlauffer/gotmoneyappui5/model/formatter'
 ], function(jQuery, MessageBox, MessageToast, JSONModel, ValueState, BaseController, Validator, ZString, ObjectFactory,
-            formatter) {
+    formatter) {
   'use strict';
 
   return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.User', {
@@ -120,7 +120,12 @@ sap.ui.define([
       jQuery.ajax({
         url: '/api/user/' + mPayload.iduser,
         data: JSON.stringify(mPayload),
-        method: 'PUT'
+        method: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        }
       })
         .done(function() {
           that._editDone(mPayload, oContext);

@@ -5,16 +5,16 @@ const User = require('../controllers/user');
 const mailer = require('../utils/mailer');
 
 const facebook = new FacebookStrategy({
-    clientID: process.env.FACEBOOK_APP_ID,
-    clientSecret: process.env.FACEBOOK_APP_SECRET,
-    enableProof: true,
-    passReqToCallback: true
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_APP_SECRET,
+  enableProof: true,
+  passReqToCallback: true
 }, (req, accessToken, refreshToken, profile, done) => {
   req.logout();
   const payload = {
-        facebook: profile.id,
-        email: (profile.emails[0]) ? profile.emails[0].value : null,
-        name: profile.displayName
+    facebook: profile.id,
+    email: (profile.emails[0]) ? profile.emails[0].value : null,
+    name: profile.displayName
   };
   const user = new User();
   let facebookUser = {};
@@ -49,5 +49,5 @@ function createUser(payload, done) {
 }
 
 module.exports = {
-    facebook
+  facebook
 };

@@ -5,15 +5,15 @@ const User = require('../controllers/user');
 const mailer = require('../utils/mailer');
 
 const google = new GoogleStrategy({
-    clientID: process.env.GOOGLE_APP_ID,
-    clientSecret: process.env.GOOGLE_APP_SECRET,
-    passReqToCallback: true
+  clientID: process.env.GOOGLE_APP_ID,
+  clientSecret: process.env.GOOGLE_APP_SECRET,
+  passReqToCallback: true
 }, (req, accessToken, refreshToken, profile, done) => {
   req.logout();
   const payload = {
-        google: profile.id,
-        email: profile.email,
-        name: profile.name
+    google: profile.id,
+    email: profile.email,
+    name: profile.name
   };
   const user = new User();
   let googleUser = {};
@@ -48,5 +48,5 @@ function createUser(payload, done) {
 }
 
 module.exports = {
-    google
+  google
 };

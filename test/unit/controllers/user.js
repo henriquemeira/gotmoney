@@ -180,7 +180,7 @@ describe('User', () => {
       const user = new User();
       return expect(user.findById(iduser)).to.eventually.be.fulfilled
         .and.to.be.an('object')
-        .and.to.have.deep.property('props.iduser', dataEntryTest.iduser);
+        .and.to.have.nested.property('props.iduser', dataEntryTest.iduser);
     });
 
     it('should fail to find an entry into DB by ID', () => {
@@ -211,7 +211,7 @@ describe('User', () => {
       const user = new User();
       return expect(user.findByEmail(email)).to.eventually.be.fulfilled
         .and.to.be.an('object')
-        .and.to.have.deep.property('props.iduser', dataEntryTest.iduser);
+        .and.to.have.nested.property('props.iduser', dataEntryTest.iduser);
     });
 
     it('should fail to find an entry into DB by email', () => {
@@ -242,7 +242,7 @@ describe('User', () => {
       const user = new User();
       return expect(user.findByFacebook(facebook)).to.eventually.be.fulfilled
         .and.to.be.an('object')
-        .and.to.have.deep.property('props.iduser', dataEntryTest.iduser);
+        .and.to.have.nested.property('props.iduser', dataEntryTest.iduser);
     });
 
     it('should fail to find an entry into DB by Facebook', () => {
@@ -273,7 +273,7 @@ describe('User', () => {
       const user = new User();
       return expect(user.findByGoogle(google)).to.eventually.be.fulfilled
         .and.to.be.an('object')
-        .and.to.have.deep.property('props.iduser', dataEntryTest.iduser);
+        .and.to.have.nested.property('props.iduser', dataEntryTest.iduser);
     });
 
     it('should fail to find an entry into DB by Google', () => {

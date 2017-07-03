@@ -4,24 +4,24 @@ const validator = require('validator');
 const Ajv = require('ajv');
 function getSchema(id, required) {
   return {
-        id: id,
-        type: 'object',
-        maxProperties: 10,
-        properties: {
-            iduser: {
-                type: 'integer',
-                maximum: 99999999999999999999
-            },
-            idcategory: {
-                type: 'integer',
-                maximum: 99999999999999999999
-            },
-            description: {
-                type: 'string',
-                maxLength: 50
-            }
-        },
-        required: required
+    id: id,
+    type: 'object',
+    maxProperties: 10,
+    properties: {
+      iduser: {
+        type: 'integer',
+        maximum: 99999999999999999999
+      },
+      idcategory: {
+        type: 'integer',
+        maximum: 99999999999999999999
+      },
+      description: {
+        type: 'string',
+        maxLength: 50
+      }
+    },
+    required: required
   };
 }
 

@@ -36,7 +36,7 @@ describe('Account Type', () => {
       const account = new AccountType();
       return expect(account.getAll(dataEntryTest.iduser)).to.eventually.be.fulfilled
         .and.to.be.instanceOf(Object)
-        .and.to.have.deep.property('[0].idtype', 1);
+        .and.to.have.nested.property('[0].idtype', 1);
     });
 
     it('should fail to return all entries from DB', () => {

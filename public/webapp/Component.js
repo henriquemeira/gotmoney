@@ -19,7 +19,6 @@ sap.ui.define([
 
       this.setResourceBundle();
       this.setModels();
-      this.setAjaxSetup();
       this.getRouter().initialize();
     },
 
@@ -39,16 +38,6 @@ sap.ui.define([
     setModels: function() {
       Models.editDefaultModel(this.getModel());
       this.setModel(Models.createDeviceModel(), 'device');
-    },
-
-    setAjaxSetup: function() {
-      $.ajaxSetup({
-        contentType: 'application/json',
-        dataType: 'json',
-        xhrFields: {
-          withCredentials: true
-        }
-      });
     },
 
     setResourceBundle: function() {

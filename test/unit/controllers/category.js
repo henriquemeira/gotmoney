@@ -75,7 +75,7 @@ describe('Category', () => {
       const category = new Category();
       return expect(category.getAll(dataEntryTest.iduser)).to.eventually.be.fulfilled
         .and.to.be.instanceOf(Object)
-        .and.to.have.deep.property('[0].idcategory', 2);
+        .and.to.have.nested.property('[0].idcategory', 2);
     });
 
     it('should fail to return all entries from DB', () => {
@@ -97,7 +97,7 @@ describe('Category', () => {
       const category = new Category();
       return expect(category.findById(dataEntryTest.iduser, dataEntryTest.idcategory)).to.eventually.be.fulfilled
         .and.to.be.instanceOf(Object)
-        .and.to.have.deep.property('props.idcategory', 2);
+        .and.to.have.nested.property('props.idcategory', 2);
     });
 
     it('should fail to find an entry into DB by ID', () => {

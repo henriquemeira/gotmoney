@@ -1,7 +1,9 @@
 language: node_js
 sudo: false
+env:
+  - NODE_ENV=test
 node_js:
-  - "6.0"
+  - "6.9.4"
 cache:
   directories:
     - node_modules
@@ -9,5 +11,4 @@ install:
   - npm install
 script:
   - npm test
-after_success:
-  - npm run coverage
+

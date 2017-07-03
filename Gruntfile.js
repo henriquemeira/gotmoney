@@ -10,7 +10,9 @@ module.exports = function(grunt) {
             prefix: 'com/mlauffer/gotmoneyappui5',
             src: [
               '**/*.js',
-              '**/*.xml'
+              '**/*.xml',
+              '!**/js/**',
+              '!**/test/**'
             ]
           },
           dest: 'build',
@@ -22,6 +24,6 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-openui5');
-  //grunt.loadNpmTasks('grunt-contrib-htmlmin');
-  //grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.registerTask('build', ['openui5_preload']);
+  grunt.registerTask('default', ['build']);
 };

@@ -8,7 +8,7 @@ function Transaction(data = {}) {
 }
 
 Transaction.prototype.setProperties = function({iduser, idtransaction, idaccount, idparent, idstatus, description,
-                                                 instalment, amount, type, startdate, duedate, tag, origin, lastchange}) {
+  instalment, amount, type, startdate, duedate, tag, origin, lastchange}) {
   this.props = {
     iduser: iduser,
     idtransaction: idtransaction,
@@ -77,8 +77,8 @@ Transaction.prototype.create = function() {
       'startdate, duedate, tag, origin';
     const sql = 'INSERT INTO transactions (' + fields + ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     const parameters = [this.props.iduser, this.props.idtransaction, this.props.idaccount, this.props.idparent,
-      this.props.idstatus, this.props.description, this.props.instalment, this.props.amount,
-      this.props.type, this.props.startdate, this.props.duedate, this.props.tag, this.props.origin];
+                        this.props.idstatus, this.props.description, this.props.instalment, this.props.amount,
+                        this.props.type, this.props.startdate, this.props.duedate, this.props.tag, this.props.origin];
     db.executePromise(sql, parameters)
       .then(() => resolve())
       .catch((err) => reject(err));
@@ -93,8 +93,8 @@ Transaction.prototype.createBatch = function(iduser, payload) {
     const sqlBulk = [];
     payload.forEach((item) => {
       const parameters = [iduser, item.idtransaction, item.idaccount, item.idparent,
-        item.idstatus, item.description, item.instalment, item.amount, item.type,
-        item.startdate, item.duedate, item.tag, item.origin];
+                          item.idstatus, item.description, item.instalment, item.amount, item.type,
+                          item.startdate, item.duedate, item.tag, item.origin];
       sqlBulk.push(mysql.format(sql, parameters));
     });
     const sqlFinal = sqlBulk.join('; ');
@@ -110,8 +110,8 @@ Transaction.prototype.update = function() {
       'startdate = ?, duedate = ?, tag = ?, origin = ?';
     const sql = 'UPDATE transactions SET ' + fields + ' WHERE iduser = ? AND idtransaction = ?';
     const parameters = [this.props.idaccount, this.props.idstatus, this.props.description, this.props.instalment,
-      this.props.amount, this.props.type, this.props.startdate, this.props.duedate,
-      this.props.tag, this.props.origin, this.props.iduser, this.props.idtransaction];
+                        this.props.amount, this.props.type, this.props.startdate, this.props.duedate,
+                        this.props.tag, this.props.origin, this.props.iduser, this.props.idtransaction];
     db.executePromise(sql, parameters)
       .then(() => resolve())
       .catch((err) => reject(err));

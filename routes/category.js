@@ -11,8 +11,8 @@ router.all('*', passport.isUserAuthenticated(), (req, res, next) => {
 
 router.delete('/:id', (req, res, next) => {
   const category = new Category({
-        iduser: req.user.iduser,
-        idcategory: req.params.id
+    iduser: req.user.iduser,
+    idcategory: req.params.id
   });
   category.delete()
     .then((result) => res.status(200).json({}))

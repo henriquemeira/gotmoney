@@ -8,9 +8,9 @@ const googleStrategy = require('./google');
 
 passport.serializeUser((user, done) => {
   const userSession = {
-        iduser: user.iduser,
-        email: user.email,
-        name: user.name
+    iduser: user.iduser,
+    email: user.email,
+    name: user.name
   };
   done(null, userSession);
 });

@@ -4,9 +4,9 @@ sap.ui.define([
   'use strict';
 
   var Common = Opa5.extend('com.mlauffer.gotmoneyappui5.test.arrangements.Common', {
-      iStartMyApp: function() {
-        return this.iStartMyAppInAFrame('../mockServer.html');
-      }
+    iStartMyApp: function() {
+      return this.iStartMyAppInAFrame('../mockServer.html');
+    }
   });
 
   return Common;
