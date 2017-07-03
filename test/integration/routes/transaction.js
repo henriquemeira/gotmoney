@@ -111,8 +111,7 @@ describe('Routing Transaction', () => {
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body).to.be.an('array')
-            .and.to.have.deep.property('[0]');
+          expect(res.body).to.be.an('array').that.is.not.empty;
           done();
         });
     });

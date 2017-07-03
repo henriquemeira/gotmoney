@@ -24,7 +24,7 @@ describe('Database', () => {
       const sql = 'SELECT 1 AS res';
       return expect(db.executePromise(sql, [])).to.eventually.be.fulfilled
         .and.be.an('array')
-        .and.to.have.deep.property('[0].res', 1);
+        .and.to.have.deep.nested.property('[0].res', 1);
     });
 
     it('should execute SQL command with parameters', () => {
@@ -32,7 +32,7 @@ describe('Database', () => {
       const parameters = [5, 10];
       return expect(db.executePromise(sql, parameters)).to.eventually.be.fulfilled
         .and.be.an('array')
-        .and.to.have.deep.property('[0].res', 15);
+        .and.to.have.deep.nested.property('[0].res', 15);
     });
 
     it('should execute SQL command and return empty array', () => {
@@ -53,7 +53,7 @@ describe('Database', () => {
       const sql = 'SELECT 1 AS res';
       return expect(db.queryPromise(sql, [])).to.eventually.be.fulfilled
         .and.be.an('array')
-        .and.to.have.deep.property('[0].res', 1);
+        .and.to.have.deep.nested.property('[0].res', 1);
     });
 
     it('should execute SQL command with parameters', () => {
@@ -61,7 +61,7 @@ describe('Database', () => {
       const parameters = [5, 10];
       return expect(db.queryPromise(sql, parameters)).to.eventually.be.fulfilled
         .and.be.an('array')
-        .and.to.have.deep.property('[0].res', 15);
+        .and.to.have.deep.nested.property('[0].res', 15);
     });
 
     it('should execute SQL command and return error for not found', () => {
