@@ -9,7 +9,7 @@ function User(data = {}) {
 }
 
 User.prototype.setProperties = function({iduser, name, gender, birthdate, email, createdon, passwd, alert, facebook,
-                                          google, twitter, lastchange}) {
+  google, twitter, lastchange}) {
   this.props = {
     iduser: iduser,
     name: name,
@@ -140,8 +140,8 @@ User.prototype.create = function() {
         const fields = 'iduser, name, gender, birthdate, email, createdon, passwd, active, alert, facebook, google, twitter';
         const sql = 'INSERT INTO users2 (' + fields + ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         const parameters = [this.props.iduser, this.props.name, this.props.gender, this.props.birthdate,
-          this.props.email, this.props.createdon, this.props.passwd, this.props.active,
-          this.props.alert, this.props.facebook, this.props.google, this.props.twitter];
+                            this.props.email, this.props.createdon, this.props.passwd, this.props.active,
+                            this.props.alert, this.props.facebook, this.props.google, this.props.twitter];
         return db.executePromise(sql, parameters);
       })
       .then(() => resolve())

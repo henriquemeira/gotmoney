@@ -132,7 +132,7 @@ describe('Transaction', () => {
       const transaction = new Transaction();
       return expect(transaction.getAll(iduser)).to.eventually.be.fulfilled
         .and.to.be.instanceOf(Object)
-        .and.to.have.deep.property('[0].idtransaction', 2);
+        .and.to.have.nested.property('[0].idtransaction', 2);
     });
 
     it('should fail to return all entries from DB', () => {
@@ -156,7 +156,7 @@ describe('Transaction', () => {
       const transaction = new Transaction();
       return expect(transaction.findById(iduser, idtransaction)).to.eventually.be.fulfilled
         .and.to.be.instanceOf(Object)
-        .and.to.have.deep.property('props.idtransaction', 2);
+        .and.to.have.nested.property('props.idtransaction', 2);
     });
 
     it('should fail to find an entry into DB by ID', () => {
@@ -182,7 +182,7 @@ describe('Transaction', () => {
       const transaction = new Transaction();
       return expect(transaction.findByPeriod(iduser, year, month)).to.eventually.be.fulfilled
         .and.to.be.instanceOf(Object)
-        .and.to.have.deep.property('[0].idtransaction', 2);
+        .and.to.have.nested.property('[0].idtransaction', 2);
     });
 
     it('should find all entries into DB by a given period', () => {
@@ -207,7 +207,7 @@ describe('Transaction', () => {
       const transaction = new Transaction();
       return expect(transaction.findOverdue(iduser)).to.eventually.be.fulfilled
         .and.to.be.instanceOf(Object)
-        .and.to.have.deep.property('[0].idtransaction', 2);
+        .and.to.have.nested.property('[0].idtransaction', 2);
     });
 
     it('should fail to find all overdue entries into DB', () => {

@@ -95,7 +95,8 @@ describe('Account', () => {
       const account = new Account();
       return expect(account.getAll(dataEntryTest.iduser)).to.eventually.be.fulfilled
         .and.to.be.instanceOf(Object)
-        .and.to.have.deep.property('[0].idaccount', 2);
+        //.and.to.have.deep.property('[0].idaccount', 2);
+        .and.to.have.nested.property('[0].idaccount', 2);
     });
 
     it('should fail to return all entries from DB', () => {
@@ -117,7 +118,7 @@ describe('Account', () => {
       const account = new Account();
       return expect(account.findById(dataEntryTest.iduser, dataEntryTest.idaccount)).to.eventually.be.fulfilled
         .and.to.be.instanceOf(Object)
-        .and.to.have.deep.property('props.idaccount', 2);
+        .and.to.have.nested.property('props.idaccount', 2);
     });
 
     it('should fail to find an entry into DB by ID', () => {

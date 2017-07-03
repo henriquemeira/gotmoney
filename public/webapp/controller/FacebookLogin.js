@@ -53,6 +53,11 @@ sap.ui.define([
         method: 'POST',
         headers: {
           'Authorization': 'Bearer ' + accessToken
+        },
+        contentType: 'application/json',
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
         }
       })
         .done(function() {

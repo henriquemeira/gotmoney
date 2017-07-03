@@ -11,8 +11,8 @@ router.all('*', passport.isUserAuthenticated(), (req, res, next) => {
 
 router.delete('/:id', (req, res, next) => {
   const account = new Account({
-        iduser: req.user.iduser,
-        idaccount: req.params.id
+    iduser: req.user.iduser,
+    idaccount: req.params.id
   });
   account.delete()
     .then((result) => res.status(200).json({}))

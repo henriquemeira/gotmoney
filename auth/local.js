@@ -5,9 +5,9 @@ const User = require('../controllers/user');
 const mailer = require('../utils/mailer');
 
 const login = new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'passwd',
-    passReqToCallback: true
+  usernameField: 'email',
+  passwordField: 'passwd',
+  passReqToCallback: true
 }, (req, username, password, done) => {
   req.logout();
   let userFound;
@@ -26,9 +26,9 @@ const login = new LocalStrategy({
 });
 
 const signup = new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'passwd',
-    passReqToCallback: true
+  usernameField: 'email',
+  passwordField: 'passwd',
+  passReqToCallback: true
 }, (req, username, password, done) => {
   req.logout();
   const user = new User(req.body);
@@ -62,6 +62,6 @@ function isUsernameAvailable(username) {
 }
 
 module.exports = {
-    login,
-    signup
+  login,
+  signup
 };

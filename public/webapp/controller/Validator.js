@@ -79,7 +79,7 @@ sap.ui.define([
                 oInternalValue = oControlBinding.getType().parseValue(oExternalValue, oControlBinding.sInternalType);
                 oControlBinding.getType().validateValue(oInternalValue);
               }
-                // catch any validation errors
+              // catch any validation errors
               catch (ex) {
                 this._isValid = false;
                 oControlBinding = oControl.getBinding(aValidateProperties[i]);
