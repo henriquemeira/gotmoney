@@ -6,6 +6,10 @@ const User = require('../controllers/user');
 const validator = require('../middleware/validate_user');
 const mailer = require('../utils/mailer');
 
+router.get('/token', (req, res) => {
+  res.status(200).json({csrfToken: req.csrfToken()});
+});
+
 router.get('/logout', (req, res) => {
   req.logout();
   res.status(200).json({});

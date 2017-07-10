@@ -32,6 +32,7 @@ describe('Routing Session', () => {
     };
 
     sandbox.stub(nodemailer, 'createTransport').returns(fakeSendEmailResolved);
+    sandbox.stub(mock_middleware.getMiddleware('csrf'), 'handle').callsFake((req, res, next) => next());
   });
 
   after(() => {
@@ -126,6 +127,24 @@ describe('Routing Session', () => {
     });
   });
 
+  describe('POST /api/session/facebook', () => {
+    it('should fail when login Facebook', (done) => {
+      request.post('/api/session/facebook')
+        .set('Authorization', 'Bearer fakeToken')
+        .set('Accept', 'application/json')
+        .expect(500, done);
+    });
+  });
+
+  describe('POST /api/session/google', () => {
+    it('should fail when login Google', (done) => {
+      request.post('/api/session/google')
+        .set('Access_token', 'fakeToken')
+        .set('Accept', 'application/json')
+        .expect(401, done);
+    });
+  });
+
   describe('GET /api/session/loggedin', () => {
     before(() => {
       sandbox.stub(mock_middleware.getMiddleware('authenticate'), 'handle').callsFake(mock_middleware.authenticate);
@@ -159,21 +178,20 @@ describe('Routing Session', () => {
     });
   });
 
-  describe('POST /api/session/facebook', () => {
-    it('should fail when login Facebook', (done) => {
-      request.post('/api/session/facebook')
-        .set('Authorization', 'Bearer fakeToken')
-        .set('Accept', 'application/json')
-        .expect(500, done);
+  describe('GET /api/session/token', () => {
+    before(() => {
+      sandbox.restore();
     });
-  });
 
-  describe('POST /api/session/google', () => {
-    it('should fail when login Google', (done) => {
-      request.post('/api/session/google')
-        .set('Access_token', 'fakeToken')
+    it('should return a CSRF token', (done) => {
+      request.get('/api/session/token')
         .set('Accept', 'application/json')
-        .expect(401, done);
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.deep.property('csrfToken');
+          if (err) return done(err);
+          done();
+        });
     });
   });
 });

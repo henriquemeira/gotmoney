@@ -35,6 +35,22 @@ sap.ui.define([
          }, this);*/
 
       sap.ui.getCore().getMessageManager().registerObject(this.getView(), true);
+
+      jQuery.ajax({
+        url: '/api/session/token',
+        method: 'GET',
+        contentType: 'application/json'
+      })
+        .done(function(result) {
+          jQuery.ajaxSetup({
+            beforeSend: function(xhr) {
+              xhr.setRequestHeader('x-csrf-token', result.csrfToken);
+            }
+          });
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+          //jqXHR
+        });
     },
 
     onAfterRendering: function() {

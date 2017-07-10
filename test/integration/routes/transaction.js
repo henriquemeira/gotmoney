@@ -40,6 +40,7 @@ const payloadBaseAccount = {
 describe('Routing Transaction', () => {
   before(() => {
     sandbox.stub(mock_middleware.getMiddleware('authenticate'), 'handle').callsFake(mock_middleware.authenticate);
+    sandbox.stub(mock_middleware.getMiddleware('csrf'), 'handle').callsFake((req, res, next) => next());
     const user = new User(payloadBase);
     return user.create()
       .then(() => {

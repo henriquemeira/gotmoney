@@ -201,6 +201,24 @@ sap.ui.define([
     }
   };
 
+  BaseController.prototype.getToken = function() {
+    jQuery.ajax({
+      url: '/api/session/token',
+      method: 'GET',
+      contentType: 'application/json'
+    })
+      .done(function(result) {
+        jQuery.ajaxSetup({
+          beforeSend: function(xhr) {
+            xhr.setRequestHeader('x-csrf-token', result.csrfToken);
+          }
+        });
+      })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+        //jqXHR
+      });
+  };
+
   BaseController.prototype._loadBackendData = function() {
     this._oBusyDialog = new BusyDialog();
     this._oBusyDialog.open();

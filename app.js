@@ -11,12 +11,12 @@ const morgan = require('morgan');
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-//const csrf = require('csurf');
+const csrf = require('csurf');
 const favicon = require('serve-favicon');
 const app = express();
 const sessionData = {
   name: 'gotmoney.sid',
-  secret: '#Xurupita@Farms!X1',
+  secret: process.env.SESSION_SECRET || new Date().getTime(),
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -32,29 +32,30 @@ const staticData = {
 
 logger.level = process.env.LOG_LEVEL || 'debug';
 
-if (app.get('env') === 'production') {
+if (app.get('env') === 'development') {
+  app.use(morgan('dev'));
+  sessionData.cookie.secure = false;
+  staticData.maxAge = 0;
+} else {
   app.use(morgan('combined'));
-  staticData.store = new MongoStore({
+  sessionData.store = new MongoStore({
     url: [process.env.SESSION_PROTOCOL,
           process.env.SESSION_CREDENTIALS,
           process.env.SESSION_CLUSTERS,
           process.env.SESSION_DB,
           process.env.SESSION_PARAMETERS].join('')
   });
-} else {
-  sessionData.cookie.secure = false;
-  staticData.maxAge = 0;
-  app.use(morgan('dev'));
 }
 
 app.use(helmet());
 app.use(compression());
-app.use(express.static('public', staticData));
 app.use(favicon(path.join(__dirname, 'public', 'webapp', 'images', 'favicon.ico')));
+app.use(express.static('public', staticData));
 app.use(cookieParser(sessionData.secret));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session(sessionData));
+app.use(csrf());
 
 require('./auth/authentication')(app);
 
