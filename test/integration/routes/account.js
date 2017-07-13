@@ -7,7 +7,7 @@ const app = require('../../../app');
 const User = require('../../../controllers/user');
 const mock_middleware = require('../../mock_middleware');
 const sandbox = sinon.sandbox.create();
-const request = supertest(app);
+const agent = supertest.agent(app);
 const payloadBase = {
   iduser: 1,
   idaccount: 1,
@@ -20,10 +20,20 @@ const payloadBase = {
   lastchange: 9
 };
 
+function getCSRFToken() {
+  return new Promise((resolve, reject) => {
+    agent.get('/api/session/token')
+      .expect(200)
+      .end((err, res) => {
+        if (err) return reject(err);
+        resolve(res.body.csrfToken);
+      });
+  });
+}
+
 describe('Routing Account', () => {
   before(() => {
     sandbox.stub(mock_middleware.getMiddleware('authenticate'), 'handle').callsFake(mock_middleware.authenticate);
-    sandbox.stub(mock_middleware.getMiddleware('csrf'), 'handle').callsFake((req, res, next) => next());
     const user = new User(payloadBase);
     return user.create()
       .then(() => true)
@@ -40,39 +50,53 @@ describe('Routing Account', () => {
 
   describe('POST /api/account', () => {
     it('should create account', (done) => {
-      request.post('/api/account')
-        .send(payloadBase)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /application\/json/)
-        .expect(201, done);
+      getCSRFToken()
+        .then((csrfToken) => {
+          agent.post('/api/account')
+            .send(payloadBase)
+            .set('x-csrf-token', csrfToken)
+            .set('Accept', 'application/json')
+            //.set('Cookie', resToken.headers['set-cookie']
+            // .map(function(r) { return r.replace("; path=/; httponly","")}).join("; "))
+            .expect('Content-Type', /application\/json/)
+            .expect(201, done);
+        })
+        .catch((err) => done(err));
     });
 
     it('should fail when create account', (done) => {
       const payload = Object.assign({}, payloadBase);
       payload.description = null;
-      request.post('/api/account')
-        .send(payload)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /application\/json/)
-        .expect(400)
-        .end((err, res) => {
-          expect(res.body).to.be.an('object')
-            .and.to.have.deep.property('message', 'Invalid data!');
-          expect(res.body).to.have.deep.property('error');
-          if (err) return done(err);
-          done();
-        });
+      console.dir('should fail when create account');
+      getCSRFToken()
+        .then((csrfToken) => {
+          agent.post('/api/account')
+            .send(payload)
+            .set('x-csrf-token', csrfToken)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /application\/json/)
+            .expect(400)
+            .end((err, res) => {
+              expect(res.body).to.be.an('object')
+                .and.to.have.nested.property('message', 'Invalid data!');
+              expect(res.body).to.have.nested.property('error');
+              if (err) return done(err);
+              done();
+            });
+        })
+        .catch((err) => done(err));
     });
   });
 
   describe('GET /api/account', () => {
     it('should get accounts', (done) => {
-      request.get('/api/account')
+      agent.get('/api/account')
         .set('Accept', 'application/json')
         .expect('Content-Type', /application\/json/)
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
+          console.dir(res.body);
           expect(res.body).to.be.an('array').that.is.not.empty;
           done();
         });
@@ -83,54 +107,79 @@ describe('Routing Account', () => {
     it('should update account', (done) => {
       const payload = Object.assign({}, payloadBase);
       payload.description += new Date().getTime();
-      request.put('/api/account/' + payload.idaccount)
-        .send(payload)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /application\/json/)
-        .expect(200, done);
+      getCSRFToken()
+        .then((csrfToken) => {
+          agent.put('/api/account/' + payload.idaccount)
+            .send(payload)
+            .set('x-csrf-token', csrfToken)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /application\/json/)
+            .expect(200, done);
+        })
+        .catch((err) => done(err));
     });
 
     it('should fail when update account', (done) => {
       const payload = Object.assign({}, payloadBase);
       payload.description = null;
-      request.put('/api/account/' + payload.idaccount)
-        .send(payload)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /application\/json/)
-        .expect(400)
-        .end((err, res) => {
-          expect(res.body).to.be.an('object')
-            .and.to.have.deep.property('message', 'Invalid data!');
-          expect(res.body).to.have.deep.property('error');
-          if (err) return done(err);
-          done();
-        });
+      getCSRFToken()
+        .then((csrfToken) => {
+          agent.put('/api/account/' + payload.idaccount)
+            .send(payload)
+            .set('x-csrf-token', csrfToken)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /application\/json/)
+            .expect(400)
+            .end((err, res) => {
+              expect(res.body).to.be.an('object')
+                .and.to.have.nested.property('message', 'Invalid data!');
+              expect(res.body).to.have.nested.property('error');
+              if (err) return done(err);
+              done();
+            });
+        })
+        .catch((err) => done(err));
     });
 
     it('should not find account to update', (done) => {
       const payload = Object.assign({}, payloadBase);
       payload.idaccount = 999999999;
-      request.put('/api/account/' + payload.idaccount)
-        .send(payload)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /application\/json/)
-        .expect(404, done);
+      getCSRFToken()
+        .then((csrfToken) => {
+          agent.put('/api/account/' + payload.idaccount)
+            .send(payload)
+            .set('x-csrf-token', csrfToken)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /application\/json/)
+            .expect(404, done);
+        })
+        .catch((err) => done(err));
     });
   });
 
   describe('DELETE /api/account/:id', () => {
     it('should delete account', (done) => {
-      request.delete('/api/account/' + payloadBase.idaccount)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /application\/json/)
-        .expect(200, done);
+      getCSRFToken()
+        .then((csrfToken) => {
+          agent.delete('/api/account/' + payloadBase.idaccount)
+            .set('x-csrf-token', csrfToken)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /application\/json/)
+            .expect(200, done);
+        })
+        .catch((err) => done(err));
     });
 
     it('should not find account to delete', (done) => {
-      request.post('/api/account/' + 'A')
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /application\/json/)
-        .expect(404, done);
+      getCSRFToken()
+        .then((csrfToken) => {
+          agent.delete('/api/account/' + 'A')
+            .set('x-csrf-token', csrfToken)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /application\/json/)
+            .expect(404, done);
+        })
+        .catch((err) => done(err));
     });
   });
 });
