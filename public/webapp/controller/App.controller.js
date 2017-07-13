@@ -9,7 +9,7 @@ sap.ui.define([
   'com/mlauffer/gotmoneyappui5/controller/FacebookLogin',
   'com/mlauffer/gotmoneyappui5/controller/GoogleLogin'
 ], function(jQuery, MessageBox, MessageToast, Fragment, ValueState, ShellHeadUserItem, BaseController, FacebookLogin,
-    GoogleLogin) {
+            GoogleLogin) {
   'use strict';
 
   return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.App', {
@@ -27,12 +27,12 @@ sap.ui.define([
         this.saveLog('E', 'notFound');
       }, this);
       /*oRouter.attachRouteMatched(function(oEvent) {
-         var sRouteName = oEvent.getParameter("name");
-         // do something, i.e. send usage statistics to backend
-         // in order to improve our app and the user experience (Build-Measure-Learn cycle)
-         jQuery.sap.log.info("User accessed route " + sRouteName + ", timestamp = " + new Date().getTime());
-         this.saveLog("I", sRouteName);
-         }, this);*/
+       var sRouteName = oEvent.getParameter("name");
+       // do something, i.e. send usage statistics to backend
+       // in order to improve our app and the user experience (Build-Measure-Learn cycle)
+       jQuery.sap.log.info("User accessed route " + sRouteName + ", timestamp = " + new Date().getTime());
+       this.saveLog("I", sRouteName);
+       }, this);*/
 
       sap.ui.getCore().getMessageManager().registerObject(this.getView(), true);
 
@@ -43,8 +43,13 @@ sap.ui.define([
       })
         .done(function(result) {
           jQuery.ajaxSetup({
-            beforeSend: function(xhr) {
-              xhr.setRequestHeader('x-csrf-token', result.csrfToken);
+            beforeSend: function(jqXHR, settings) {
+              // Do not set CSRF header for external calls
+              if (!/openui5.hana.ondemand.com/.test(settings.url) &&
+                !/facebook.com/.test(settings.url) &&
+                !/google.com/.test(settings.url)) {
+                jqXHR.setRequestHeader('x-csrf-token', result.csrfToken);
+              }
             }
           });
         })
