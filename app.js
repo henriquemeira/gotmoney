@@ -13,14 +13,15 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const csrf = require('csurf');
 const favicon = require('serve-favicon');
+const SHA256 = require('crypto-js/sha256');
+const BASE64 = require('crypto-js/enc-base64');
 const app = express();
 const sessionData = {
   name: 'gotmoney.sid',
-  secret: process.env.SESSION_SECRET || new Date().getTime(),
+  secret: process.env.SESSION_SECRET + Math.random().toString(),
   resave: false,
   saveUninitialized: false,
   cookie: {
-    sameSite: 'lax',
     httpOnly: true,
     secure: true,
     maxAge: 7 * 24 * 60 * 60 * 1000
@@ -30,17 +31,20 @@ const staticData = {
   maxAge: 7 * 24 * 60 * 60 * 1000
 };
 
-logger.level = process.env.LOG_LEVEL || 'debug';
+logger.level = process.env.LOG_LEVEL;
+sessionData.store = new MongoStore({
+  url: [process.env.SESSION_PROTOCOL,
+        process.env.SESSION_CREDENTIALS,
+        process.env.SESSION_CLUSTERS,
+        process.env.SESSION_DB,
+        process.env.SESSION_PARAMETERS].join('')
+});
+
+// Clear all sessions when starting the app
+sessionData.store.clear();
 
 if (app.get('env') === 'production') {
   app.use(morgan('combined'));
-  sessionData.store = new MongoStore({
-    url: [process.env.SESSION_PROTOCOL,
-          process.env.SESSION_CREDENTIALS,
-          process.env.SESSION_CLUSTERS,
-          process.env.SESSION_DB,
-          process.env.SESSION_PARAMETERS].join('')
-  });
 } else {
   app.use(morgan('dev'));
   sessionData.cookie.secure = false;
@@ -59,9 +63,16 @@ app.use(csrf());
 
 require('./auth/authentication')(app);
 
+app.use((req, res, next) => {
+  res.set('X-Got-Money', BASE64.stringify(SHA256([Math.random().toString(), new Date().toISOString()].join(''))));
+  res.locals.csrftoken = req.csrfToken();
+  res.locals.session = req.session;
+  next();
+});
+
 app.use('/api', require('./routes/index'));
 
-// Error handlers
+// Error handler
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;

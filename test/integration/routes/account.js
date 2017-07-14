@@ -67,7 +67,6 @@ describe('Routing Account', () => {
     it('should fail when create account', (done) => {
       const payload = Object.assign({}, payloadBase);
       payload.description = null;
-      console.dir('should fail when create account');
       getCSRFToken()
         .then((csrfToken) => {
           agent.post('/api/account')
@@ -96,7 +95,6 @@ describe('Routing Account', () => {
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
-          console.dir(res.body);
           expect(res.body).to.be.an('array').that.is.not.empty;
           done();
         });
