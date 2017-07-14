@@ -14,6 +14,15 @@ const payloadBase = {
   description: 'Node Unit Test ',
   lastchange: 4
 };
+const userPayload = {
+  iduser: 1,
+  name: 'Node Unit Test',
+  gender: 'F',
+  birthdate: new Date().toJSON(),
+  email: 'node@test.com',
+  createdon: new Date().toJSON(),
+  passwd: '123456'
+};
 
 function getCSRFToken() {
   return new Promise((resolve, reject) => {
@@ -30,18 +39,14 @@ describe('Routing Category', () => {
   before(() => {
     sandbox.stub(mock_middleware.getMiddleware('authenticate'), 'handle').callsFake(mock_middleware.authenticate);
     //sandbox.stub(mock_middleware.getMiddleware('csrf'), 'handle').callsFake((req, res, next) => next());
-    const user = new User(payloadBase);
-    return user.create()
-      .then(() => true)
-      .catch((err) => err);
+    const user = new User(userPayload);
+    return user.create();
   });
 
   after(() => {
     sandbox.restore();
-    const user = new User(payloadBase);
-    return user.create()
-      .then(() => true)
-      .catch((err) => err);
+    const user = new User(userPayload);
+    return user.delete();
   });
 
   describe('POST /api/category', () => {

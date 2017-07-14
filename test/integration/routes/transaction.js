@@ -36,6 +36,15 @@ const payloadBaseAccount = {
   duedate: 8,
   lastchange: 9
 };
+const userPayload = {
+  iduser: 1,
+  name: 'Node Unit Test',
+  gender: 'F',
+  birthdate: new Date().toJSON(),
+  email: 'node@test.com',
+  createdon: new Date().toJSON(),
+  passwd: '123456'
+};
 
 function getCSRFToken() {
   return new Promise((resolve, reject) => {
@@ -51,7 +60,7 @@ function getCSRFToken() {
 describe('Routing Transaction', () => {
   before(() => {
     sandbox.stub(mock_middleware.getMiddleware('authenticate'), 'handle').callsFake(mock_middleware.authenticate);
-    const user = new User(payloadBase);
+    const user = new User(userPayload);
     return user.create()
       .then(() => {
         const account = new Account(payloadBaseAccount);
@@ -62,8 +71,8 @@ describe('Routing Transaction', () => {
 
   after(() => {
     sandbox.restore();
-    const user = new User(payloadBase);
-    return user.create()
+    const user = new User(userPayload);
+    return user.delete()
       .then(() => {
         const account = new Account(payloadBaseAccount);
         return account.delete();

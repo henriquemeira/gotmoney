@@ -38,17 +38,13 @@ describe('Routing User', () => {
   before(() => {
     sandbox.stub(mock_middleware.getMiddleware('authenticate'), 'handle').callsFake(mock_middleware.authenticate);
     const user = new User(payloadBase);
-    return user.create()
-      .then(() => true)
-      .catch((err) => err);
+    return user.create();
   });
 
   after(() => {
     sandbox.restore();
     const user = new User(payloadBase);
-    return user.delete()
-      .then(() => true)
-      .catch((err) => err);
+    return user.delete();
   });
 
   describe('GET /api/user/:id', () => {
@@ -78,7 +74,6 @@ describe('Routing User', () => {
             .expect('Content-Type', /application\/json/)
             .expect(200)
             .end((err, res) => {
-              console.dir(res.text);
               if (err) return done(err);
               done();
             });
@@ -98,7 +93,6 @@ describe('Routing User', () => {
             .expect('Content-Type', /application\/json/)
             .expect(400)
             .end((err, res) => {
-              console.dir(res.text);
               expect(res.body).to.be.an('object')
                 .and.to.have.deep.property('message', 'Invalid data!');
               expect(res.body).to.have.deep.property('error');

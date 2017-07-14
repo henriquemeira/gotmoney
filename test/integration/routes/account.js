@@ -19,6 +19,15 @@ const payloadBase = {
   duedate: 8,
   lastchange: 9
 };
+const userPayload = {
+  iduser: 1,
+  name: 'Node Unit Test',
+  gender: 'F',
+  birthdate: new Date().toJSON(),
+  email: 'node@test.com',
+  createdon: new Date().toJSON(),
+  passwd: '123456'
+};
 
 function getCSRFToken() {
   return new Promise((resolve, reject) => {
@@ -34,44 +43,35 @@ function getCSRFToken() {
 describe('Routing Account', () => {
   before(() => {
     sandbox.stub(mock_middleware.getMiddleware('authenticate'), 'handle').callsFake(mock_middleware.authenticate);
-    const user = new User(payloadBase);
-    return user.create()
-      .then(() => true)
-      .catch((err) => err);
+    const user = new User(userPayload);
+    return user.create();
   });
 
   after(() => {
     sandbox.restore();
-    const user = new User(payloadBase);
-    return user.create()
-      .then(() => true)
-      .catch((err) => err);
+    const user = new User(userPayload);
+    return user.delete();
   });
 
   describe('POST /api/account', () => {
     it('should create account', (done) => {
-      agent.get('/api/session/token')
-        .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
-          const csrfToken = res.body.csrfToken;
+      getCSRFToken()
+        .then((csrfToken) => {
           agent.post('/api/account')
             .send(payloadBase)
             .set('x-csrf-token', csrfToken)
             .set('Accept', 'application/json')
             .expect('Content-Type', /application\/json/)
             .expect(201, done);
-        });
+        })
+        .catch((err) => done(err));
     });
 
     it('should fail when create account', (done) => {
       const payload = Object.assign({}, payloadBase);
       payload.description = null;
-      agent.get('/api/session/token')
-        .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
-          const csrfToken = res.body.csrfToken;
+      getCSRFToken()
+        .then((csrfToken) => {
           agent.post('/api/account')
             .send(payload)
             .set('x-csrf-token', csrfToken)
@@ -85,7 +85,8 @@ describe('Routing Account', () => {
               if (err) return done(err);
               done();
             });
-        });
+        })
+        .catch((err) => done(err));
     });
   });
 

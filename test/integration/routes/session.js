@@ -48,9 +48,7 @@ describe('Routing Session', () => {
   after(() => {
     sandbox.restore();
     const user = new User(payloadBase);
-    return user.delete()
-      .then(() => true)
-      .catch((err) => err);
+    return user.delete();
   });
 
   describe('POST /api/session/signup', () => {
@@ -64,7 +62,6 @@ describe('Routing Session', () => {
             .expect('Content-Type', /application\/json/)
             .expect(201)
             .end((err, res) => {
-              console.dir(res.text);
               expect(res.body).to.be.an('object');
               if (err) return done(err);
               done();
@@ -98,7 +95,6 @@ describe('Routing Session', () => {
             .expect('Content-Type', /application\/json/)
             .expect(400)
             .end((err, res) => {
-              console.dir(res.text);
               expect(res.body).to.be.an('object')
                 .and.to.have.deep.property('message', 'Invalid data!');
               expect(res.body).to.have.deep.property('error');
