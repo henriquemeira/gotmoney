@@ -50,25 +50,28 @@ describe('Routing Account', () => {
 
   describe('POST /api/account', () => {
     it('should create account', (done) => {
-      getCSRFToken()
-        .then((csrfToken) => {
+      agent.get('/api/session/token')
+        .expect(200)
+        .end((err, res) => {
+          if (err) return done(err);
+          const csrfToken = res.body.csrfToken;
           agent.post('/api/account')
             .send(payloadBase)
             .set('x-csrf-token', csrfToken)
             .set('Accept', 'application/json')
-            //.set('Cookie', resToken.headers['set-cookie']
-            // .map(function(r) { return r.replace("; path=/; httponly","")}).join("; "))
             .expect('Content-Type', /application\/json/)
             .expect(201, done);
-        })
-        .catch((err) => done(err));
+        });
     });
 
     it('should fail when create account', (done) => {
       const payload = Object.assign({}, payloadBase);
       payload.description = null;
-      getCSRFToken()
-        .then((csrfToken) => {
+      agent.get('/api/session/token')
+        .expect(200)
+        .end((err, res) => {
+          if (err) return done(err);
+          const csrfToken = res.body.csrfToken;
           agent.post('/api/account')
             .send(payload)
             .set('x-csrf-token', csrfToken)
@@ -82,8 +85,7 @@ describe('Routing Account', () => {
               if (err) return done(err);
               done();
             });
-        })
-        .catch((err) => done(err));
+        });
     });
   });
 
