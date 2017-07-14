@@ -1,7 +1,9 @@
 'use strict';
 
 const bcrypt = require('bcryptjs');
-const md5 = require('md5');
+const md5 = require('crypto-js/md5');
+const sha256 = require('crypto-js/sha256');
+const base64 = require('crypto-js/enc-base64');
 const db = require('./../models/database');
 
 function User(data = {}) {
@@ -101,16 +103,14 @@ User.prototype.findByGoogle = function(google) {
 };
 
 User.prototype.hashPassword = function(password) {
-  return new Promise((resolve, reject) => {
-    bcrypt.hash(password.toString(), 10)
-      .then((hash) => resolve(hash))
-      .catch((err) => reject(err));
-  });
+  password = base64.stringify(sha256(password));
+  return bcrypt.hash(password, 10);
 };
 
 User.prototype.verifyPassword = function(password) {
   return new Promise((resolve, reject) => {
-    bcrypt.compare(password.toString(), this.props.passwd)
+    password = base64.stringify(sha256(password));
+    bcrypt.compare(password, this.props.passwd)
       .then((result) => {
         if (result === true) {
           return resolve();
@@ -127,7 +127,7 @@ User.prototype.setId = function() {
 };
 
 User.prototype.setAutoPassword = function() {
-  this.props.passwd = md5(new Date().toJSON() + 'gotMONEYapp' + new Date().getTime());
+  this.props.passwd = md5(sha256([Math.random().toString(), new Date().toISOString()].join('gotMONEYapp'))).toString();
 };
 
 User.prototype.create = function() {

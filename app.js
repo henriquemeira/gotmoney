@@ -13,8 +13,8 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const csrf = require('csurf');
 const favicon = require('serve-favicon');
-const SHA256 = require('crypto-js/sha256');
-const BASE64 = require('crypto-js/enc-base64');
+const sha256 = require('crypto-js/sha256');
+const base64 = require('crypto-js/enc-base64');
 const app = express();
 const sessionData = {
   name: 'gotmoney.sid',
@@ -64,7 +64,7 @@ app.use(csrf());
 require('./auth/authentication')(app);
 
 app.use((req, res, next) => {
-  res.set('X-Got-Money', BASE64.stringify(SHA256([Math.random().toString(), new Date().toISOString()].join(''))));
+  res.set('X-Got-Money', base64.stringify(sha256([Math.random().toString(), new Date().toISOString()].join(''))));
   res.locals.csrftoken = req.csrfToken();
   res.locals.session = req.session;
   next();
