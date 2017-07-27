@@ -3,7 +3,7 @@ sudo: false
 env:
   - NODE_ENV=test
 node_js:
-  - "6.9.4"
+  - "6.11.1"
 cache:
   directories:
     - node_modules
