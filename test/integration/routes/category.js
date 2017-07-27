@@ -28,14 +28,12 @@ function getCSRFToken() {
   return new Promise((resolve, reject) => {
     agent.get('/api/session/token')
       .expect(200)
-      .end((err, res) => {
-        if (err) return reject(err);
-        resolve(res.body.csrfToken);
-      });
+      .then((res) => resolve(res.body.csrfToken))
+      .catch((err) => reject(err));
   });
 }
 
-describe('Routing Category', () => {
+describe('Routing Category', function() {
   before(() => {
     sandbox.stub(mock_middleware.getMiddleware('authenticate'), 'handle').callsFake(mock_middleware.authenticate);
     //sandbox.stub(mock_middleware.getMiddleware('csrf'), 'handle').callsFake((req, res, next) => next());
@@ -53,13 +51,14 @@ describe('Routing Category', () => {
     it('should create category', (done) => {
       getCSRFToken()
         .then((csrfToken) => {
-          agent.post('/api/category')
+          return agent.post('/api/category')
             .send(payloadBase)
             .set('x-csrf-token', csrfToken)
             .set('Accept', 'application/json')
             .expect('Content-Type', /application\/json/)
-            .expect(201, done);
+            .expect(201);
         })
+        .then((res) => done())
         .catch((err) => done(err));
     });
 
@@ -68,19 +67,18 @@ describe('Routing Category', () => {
       payload.description = null;
       getCSRFToken()
         .then((csrfToken) => {
-          agent.post('/api/category')
+          return agent.post('/api/category')
             .send(payload)
             .set('x-csrf-token', csrfToken)
             .set('Accept', 'application/json')
             .expect('Content-Type', /application\/json/)
-            .expect(400)
-            .end((err, res) => {
-              expect(res.body).to.be.an('object')
-                .and.to.have.nested.property('message', 'Invalid data!');
-              expect(res.body).to.have.nested.property('error');
-              if (err) return done(err);
-              done();
-            });
+            .expect(400);
+        })
+        .then((res) => {
+          expect(res.body).to.be.an('object')
+            .and.to.have.nested.property('message', 'Invalid data!');
+          expect(res.body).to.have.nested.property('error');
+          return done();
         })
         .catch((err) => done(err));
     });
@@ -92,11 +90,11 @@ describe('Routing Category', () => {
         .set('Accept', 'application/json')
         .expect('Content-Type', /application\/json/)
         .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
+        .then((res) => {
           expect(res.body).to.be.an('array').that.is.not.empty;
-          done();
-        });
+          return done();
+        })
+        .catch((err) => done(err));
     });
   });
 
@@ -106,13 +104,14 @@ describe('Routing Category', () => {
       payload.description += new Date().getTime();
       getCSRFToken()
         .then((csrfToken) => {
-          agent.put('/api/category/' + payload.idcategory)
+          return agent.put('/api/category/' + payload.idcategory)
             .send(payload)
             .set('x-csrf-token', csrfToken)
             .set('Accept', 'application/json')
             .expect('Content-Type', /application\/json/)
-            .expect(200, done);
+            .expect(200);
         })
+        .then((res) => done())
         .catch((err) => done(err));
     });
 
@@ -121,19 +120,18 @@ describe('Routing Category', () => {
       payload.description = null;
       getCSRFToken()
         .then((csrfToken) => {
-          agent.put('/api/category/' + payload.idcategory)
+          return agent.put('/api/category/' + payload.idcategory)
             .send(payload)
             .set('x-csrf-token', csrfToken)
             .set('Accept', 'application/json')
             .expect('Content-Type', /application\/json/)
-            .expect(400)
-            .end((err, res) => {
-              expect(res.body).to.be.an('object')
-                .and.to.have.deep.property('message', 'Invalid data!');
-              expect(res.body).to.have.deep.property('error');
-              if (err) return done(err);
-              done();
-            });
+            .expect(400);
+        })
+        .then((res) => {
+          expect(res.body).to.be.an('object')
+            .and.to.have.deep.property('message', 'Invalid data!');
+          expect(res.body).to.have.deep.property('error');
+          return done();
         })
         .catch((err) => done(err));
     });
@@ -143,13 +141,14 @@ describe('Routing Category', () => {
       payload.idcategory = 999999999;
       getCSRFToken()
         .then((csrfToken) => {
-          agent.put('/api/category/' + payload.idcategory)
+          return agent.put('/api/category/' + payload.idcategory)
             .send(payload)
             .set('x-csrf-token', csrfToken)
             .set('Accept', 'application/json')
             .expect('Content-Type', /application\/json/)
-            .expect(404, done);
+            .expect(404);
         })
+        .then((res) => done())
         .catch((err) => done(err));
     });
   });
@@ -158,24 +157,26 @@ describe('Routing Category', () => {
     it('should delete category', (done) => {
       getCSRFToken()
         .then((csrfToken) => {
-          agent.delete('/api/category/' + payloadBase.idcategory)
+          return agent.delete('/api/category/' + payloadBase.idcategory)
             .set('x-csrf-token', csrfToken)
             .set('Accept', 'application/json')
             .expect('Content-Type', /application\/json/)
-            .expect(200, done);
+            .expect(200);
         })
+        .then((res) => done())
         .catch((err) => done(err));
     });
 
     it('should not find category to delete', (done) => {
       getCSRFToken()
         .then((csrfToken) => {
-          agent.delete('/api/category/' + 'A')
+          return agent.delete('/api/category/' + 'A')
             .set('x-csrf-token', csrfToken)
             .set('Accept', 'application/json')
             .expect('Content-Type', /application\/json/)
-            .expect(404, done);
+            .expect(404);
         })
+        .then((res) => done())
         .catch((err) => done(err));
     });
   });
