@@ -51,6 +51,7 @@ if (app.get('env') === 'production') {
   staticData.maxAge = 0;
 }
 
+app.enable('trust proxy');
 app.use(helmet());
 app.use(compression());
 app.use(favicon(path.join(__dirname, 'public', 'webapp', 'images', 'favicon.ico')));
