@@ -5,19 +5,17 @@
 @-webkit-keyframes spinner {
     to {-webkit-transform: rotate(360deg);}
 }
-.spinner {
-    /*min-width: 50px;
-    min-height: 50px;*/
-}
+.spinner {}
 .spinner:before {
-    content: 'Loading…';
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    content: 'Loading...';
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
     width: 100px;
     height: 100px;
-    margin-top: -15px;
-    margin-left: -15px;
+    margin: auto;
 }
 .spinner:not(:required):before {
     content: '';
