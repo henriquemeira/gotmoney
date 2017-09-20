@@ -17,7 +17,6 @@ sap.ui.define([
       // call the base component's init function
       UIComponent.prototype.init.apply(this, arguments);
 
-      this.setResourceBundle();
       this.setModels();
       this.getRouter().initialize();
 
@@ -42,22 +41,6 @@ sap.ui.define([
     setModels: function() {
       Models.editDefaultModel(this.getModel());
       this.setModel(Models.createDeviceModel(), 'device');
-    },
-
-    setResourceBundle: function() {
-      var that = this;
-      this._resourceBundle = {};
-      this.getModel('i18n').getResourceBundle()
-        .then(function(res) {
-          that._resourceBundle = res;
-        })
-        .catch(function(err) {
-          console.dir(err);
-        });
-    },
-
-    getResourceBundleSync: function() {
-      return this._resourceBundle;
     }
   });
 });

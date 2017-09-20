@@ -34,7 +34,7 @@ sap.ui.define([
    * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
    */
   BaseController.prototype.getResourceBundle = function() {
-    return this.getOwnerComponent().getResourceBundleSync();
+    return this.getOwnerComponent().getModel('i18n').getResourceBundle();
   };
 
 
