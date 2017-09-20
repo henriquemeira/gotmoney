@@ -60,7 +60,6 @@ sap.ui.define([
   /**
    * Convenience method for getting the last part of a Binding Path.
    * @public
-   * @returns {string} the last part of a Binding Path
    */
   BaseController.prototype.onFinishBackendOperation = function() {
     this.onNavBack();

@@ -40,8 +40,14 @@
         "sap.m": {},
         "sap.ui.layout": {},
         "sap.ui.unified": {},
-        "sap.tnt": {}
+        "sap.tnt": {},
+        "openui5.password": {},
+        "openui5.validator": {}
       }
+    },
+    "resourceRoots": {
+      "openui5.password": "./js/openui5/password/",
+      "openui5.validator": "./js/openui5/validator/"
     },
     "models": {
       "i18n": {
