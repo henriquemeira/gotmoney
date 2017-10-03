@@ -12,17 +12,18 @@
     <meta name="theme-color" content="#6699ff">
     <meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id" content="512998861746.apps.googleusercontent.com">
+    <link rel="stylesheet" type="text/css" href="/webapp/css/gotmoneyapp.min.css">
     <link rel="icon" type="image/ico" href="/webapp/images/favicon.ico">
     <link rel="icon" type="image/png" sizes="192x192" href="/webapp/images/pig-192x192.png">
     <link rel="manifest" href="/manifest.json">
     <title>GotMoney App - Gerenciador financeiro pessoal</title>
 </head>
-<body class="sapUiBody">
+<body class="sapUiBody" role="application">
 <div id="content" class="spinner"></div>
-<link rel="stylesheet" type="text/css" href="/webapp/css/gotmoneyapp.min.css">
-<script type="text/javascript">
+<script>
   //SAP OpenUI5
   function initUI5() {
+    'use strict';
     sap.ui.getCore().attachInit(function () {
       'use strict';
       sap.ui.require([
@@ -34,14 +35,15 @@
           manifestFirst: true,
           async: true
         }).then(function (oComponent) {
-          new Shell({
+          var shell = new Shell({
             app: new ComponentContainer({
               async: true,
               height: '100%',
               component: oComponent
             }),
             appWidthLimited: true
-          }).placeAt('content');
+          });
+          shell.placeAt('content');
         });
       });
     });

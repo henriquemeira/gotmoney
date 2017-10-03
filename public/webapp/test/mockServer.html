@@ -3,23 +3,27 @@
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-	<meta name=description
+	<meta name="description"
 		  content="GotMoney App - Gerenciador financeiro pessoal. Controle suas despesas online e sem custos!">
-	<meta name=keywords
+	<meta name="keywords"
 		  content="finan&ccedil;as, despesas, or&ccedil;amento, gerenciador, controle, planejamento, financeiro, pessoal, familiar, contas">
-	<meta name=author content="Mauricio Lauffer">
-	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta name="author" content="Mauricio Lauffer">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#6699ff">
 	<meta name="google-signin-scope" content="profile email">
 	<meta name="google-signin-client_id" content="512998861746.apps.googleusercontent.com">
-	<link rel=icon href="/webapp/images/favicon.ico" type="image/ico">
+	<link rel="stylesheet" type="text/css" href="/webapp/css/gotmoneyapp.min.css">
+	<link rel="icon" type="image/ico" href="/webapp/images/favicon.ico">
+	<link rel="icon" type="image/png" sizes="192x192" href="/webapp/images/pig-192x192.png">
+	<link rel="manifest" href="/manifest.json">
 	<title>GotMoney App - MockServer for Testing</title>
 </head>
-<body class="sapUiBody">
+<body class="sapUiBody" role="application">
 <div id="content" class="spinner"></div>
-<link rel="stylesheet" type="text/css" href="/webapp/css/gotmoneyapp.min.css">
-<script type="text/javascript">
+<script>
   //SAP OpenUI5
   function initUI5() {
+    'use strict';
     sap.ui.getCore().attachInit(function () {
       'use strict';
       sap.ui.require([
@@ -33,13 +37,15 @@
           manifestFirst: true,
           async: true
         }).then(function (oComponent) {
-          new Shell({
+          var shell = new Shell({
             app: new ComponentContainer({
-              height: "100%",
+              async: true,
+              height: '100%',
               component: oComponent
             }),
             appWidthLimited: true
-          }).placeAt("content");
+          });
+          shell.placeAt('content');
         });
       });
     });
@@ -48,7 +54,7 @@
 <script id="sap-ui-bootstrap"
         src="/webapp/js/resources/sap-ui-core.js"
         data-sap-ui-theme="sap_belize"
-        data-sap-ui-libs="sap.m, sap.ui.layout, sap.ui.unified"
+        data-sap-ui-libs="sap.m"
         data-sap-ui-bindingSyntax="complex"
         data-sap-ui-compatVersion="edge"
         data-sap-ui-preload="async"
