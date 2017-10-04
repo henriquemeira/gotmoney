@@ -16,11 +16,7 @@
 				<core:Item key="C" text="{i18n>Credit}" />
 			</Select>
 			<Label text="{i18n>Transaction.description}" required="true" />
-			<Input id="description" value="{path : 'description',
-                       type : 'sap.ui.model.type.String',
-                       constraints : {
-                       		minLength : 1
-                       }}" />
+			<Input id="description" value="{description}" />
 			<Label text="{i18n>Transaction.amount}" required="true" />
 			<Input id="amount" type="Number" value="{amount}" />
 			<Label text="{i18n>Transaction.payment}" />
@@ -39,6 +35,7 @@
 		</f:SimpleForm>
 		<footer>
 			<Toolbar>
+				<Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject" visible="false" press="onMessagePopoverPress"/>
 				<ToolbarSpacer />
 				<Button id="btSave" icon="sap-icon://save" text="{i18n>XBUT.save}" type="Emphasized" press="onSave" />
 				<Button id="btDelete" icon="sap-icon://delete" text="{i18n>XBUT.delete}" press="onDelete" />

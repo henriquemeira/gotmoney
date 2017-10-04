@@ -4,10 +4,10 @@ sap.ui.define([
   'sap/m/MessageToast',
   'sap/ui/model/json/JSONModel',
   'com/mlauffer/gotmoneyappui5/controller/BaseController',
-  'com/mlauffer/gotmoneyappui5/controller/Validator',
   'com/mlauffer/gotmoneyappui5/model/ObjectFactory',
-  'com/mlauffer/gotmoneyappui5/model/formatter'
-], function(jQuery, MessageBox, MessageToast, JSONModel, BaseController, Validator, ObjectFactory, formatter) {
+  'com/mlauffer/gotmoneyappui5/model/formatter',
+  'openui5/validator/Validator'
+], function(jQuery, MessageBox, MessageToast, JSONModel, BaseController, ObjectFactory, formatter, Validator) {
   'use strict';
 
   return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.Transaction', {
@@ -19,7 +19,8 @@ sap.ui.define([
         var oRouter = this.getRouter();
         oRouter.getRoute('transaction').attachMatched(this._onRouteMatched, this);
         oRouter.getRoute('transactionNew').attachMatched(this._onRouteMatchedNew, this);
-
+        this._initValidator();
+        this._initValidatorMultiple();
         this.getView().addEventDelegate({
           onAfterShow: function() {
             this.checkSession();
@@ -34,23 +35,20 @@ sap.ui.define([
 
 
     onSave: function(oEvent) {
+      //Validates UI5 Controls against the validation schema set before
       this.vibrate();
-      // Create new validator instance
-      var oValidator = new Validator();
-
-      // Validate input fields
-      oValidator.validate(this.getView().byId('form'));
-      if (!oValidator.isValid()) {
-        return;
-      }
-
-      this.getView().setBusy(true);
-      if (this.getView().getViewName() === 'com.mlauffer.gotmoneyappui5.view.Transaction') {
-        this._saveEdit(oEvent.getSource().getBindingContext());
+      this.getOwnerComponent().oMessageManager.removeAllMessages();
+      var isValid = false;
+      if (this.getView().byId('occurrence').getSelectedKey() === 'U') {
+        isValid = this._validator.validate();
       } else {
-        this._saveNew(oEvent);
+        isValid = this._validatorMultiple.validate();
       }
-      this.getView().setBusy(false);
+      if (isValid) {
+        this._onValidationSuccess(oEvent.getSource().getBindingContext());
+      } else {
+        this._onValidationError(this._validator.getErrors());
+      }
     },
 
 
@@ -340,6 +338,149 @@ sap.ui.define([
       }
       dueDate.setHours(12); //Workaround for date location, avoid D -1
       return dueDate.toJSON();
+    },
+
+
+    _initValidator: function() {
+      //This is the schema with all rules used to validate the UI5 Controls
+      var validationSchema = {
+        properties: {
+          iduser: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          idtransaction: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          idaccount: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          idparent: {
+            type: ['integer', 'null'],
+            maximum: 99999999999999999999
+          },
+          idstatus: {
+            type: 'integer',
+            maximum: 9
+          },
+          description: {
+            type: 'string',
+            minLength: 3,
+            maxLength: 100
+          },
+          amount: {
+            type: 'number',
+            default: 0,
+            minimum: 0,
+            maximum: 99999999999999999999
+          },
+          type: {
+            type: 'string',
+            maxLength: 1,
+            enum: ['C', 'D']
+          },
+          duedate: {
+            format: 'date'
+          },
+          tag: {
+            type: ['string', 'null'],
+            maxLength: 255
+          },
+          origin: {
+            type: 'string',
+            maxLength: 1,
+            enum: ['W', 'A']
+          }
+        }
+      };
+
+      //Initialize the OpenUI5 Validator object
+      this._validator = new Validator(this.getView(), validationSchema);
+    },
+
+
+    _initValidatorMultiple: function() {
+    //This is the schema with all rules used to validate the UI5 Controls
+      var validationSchema = {
+        properties: {
+          iduser: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          idtransaction: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          idaccount: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          idparent: {
+            type: ['integer', 'null'],
+            maximum: 99999999999999999999
+          },
+          idstatus: {
+            type: 'integer',
+            maximum: 9
+          },
+          description: {
+            type: 'string',
+            minLength: 3,
+            maxLength: 100
+          },
+          split: {
+            type: 'number',
+            minimum: 2
+          },
+          amount: {
+            type: 'number',
+            default: 0,
+            minimum: 0,
+            maximum: 99999999999999999999
+          },
+          type: {
+            type: 'string',
+            maxLength: 1,
+            enum: ['C', 'D']
+          },
+          startdate: {
+            format: 'date'
+          },
+          tag: {
+            type: ['string', 'null'],
+            maxLength: 255
+          },
+          origin: {
+            type: 'string',
+            maxLength: 1,
+            enum: ['W', 'A']
+          }
+        }
+      };
+
+      //Initialize the OpenUI5 Validator object
+      this._validatorMultiple = new Validator(this.getView(), validationSchema);
+    },
+
+    _onValidationSuccess: function(context) {
+      var oView = this.getView();
+      this.getMessagePopover().close();
+      oView.byId('btMessagePopover').setVisible(false);
+      this.getView().setBusy(true);
+      if (this.getView().getViewName() === 'com.mlauffer.gotmoneyappui5.view.Transaction') {
+        this._saveEdit(context);
+      } else {
+        this._saveNew();
+      }
+      this.getView().setBusy(false);
+    },
+
+    _onValidationError: function(validationResult) {
+      this.getOwnerComponent().oMessageManager.addMessages(validationResult.ui5ErrorMessageObjects);
+      this.getView().byId('btMessagePopover').setText(validationResult.ui5ErrorMessageObjects.length);
+      this.getView().byId('btMessagePopover').setVisible(true);
     }
   });
 });

@@ -5,17 +5,15 @@ sap.ui.define([
   'sap/ui/model/json/JSONModel',
   'sap/ui/core/ValueState',
   'com/mlauffer/gotmoneyappui5/controller/BaseController',
-  'com/mlauffer/gotmoneyappui5/controller/Validator',
-  'com/mlauffer/gotmoneyappui5/controller/ZString',
   'com/mlauffer/gotmoneyappui5/model/ObjectFactory',
-  'com/mlauffer/gotmoneyappui5/model/formatter'
-], function(jQuery, MessageBox, MessageToast, JSONModel, ValueState, BaseController, Validator, ZString, ObjectFactory,
-    formatter) {
+  'com/mlauffer/gotmoneyappui5/model/formatter',
+  'openui5/validator/Validator'
+], function(jQuery, MessageBox, MessageToast, JSONModel, ValueState, BaseController,
+  ObjectFactory, formatter, Validator) {
   'use strict';
 
   return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.User', {
     formatter: formatter,
-    ZString: ZString,
 
     onInit: function() {
       try {
@@ -23,8 +21,11 @@ sap.ui.define([
         var oRouter = this.getRouter();
         oRouter.getRoute('profile').attachMatched(this._onRouteMatched, this);
         oRouter.getRoute('signup').attachMatched(this._onRouteMatchedNew, this);
-
+        this._initValidator();
         this.getView().addEventDelegate({
+          onBeforeShow: function() {
+            this._clearValueState();
+          },
           onAfterShow: function() {
             this.checkSession();
           }
@@ -38,36 +39,14 @@ sap.ui.define([
 
 
     onSave: function(oEvent) {
+      //Validates UI5 Controls against the validation schema set before
       this.vibrate();
-      var oView = this.getView();
-      // Create new validator instance
-      var oValidator = new Validator();
-
-      // Validate input fields
-      oValidator.validate(oView.byId('form'));
-      if (!oValidator.isValid()) {
-        return;
+      this.getOwnerComponent().oMessageManager.removeAllMessages();
+      if (this._validator.validate()) {
+        this._onValidationSuccess(oEvent.getSource().getBindingContext());
+      } else {
+        this._onValidationError(this._validator.getErrors());
       }
-
-      if (oView.byId('pwd').getValue()) {
-        if (oView.byId('pwd').getValue() === oView.byId('pwdRepeat').getValue()) {
-          oView.byId('pwd').setValueState(ValueState.None);
-          oView.byId('pwdRepeat').setValueState(ValueState.None);
-        } else {
-          oView.byId('pwd').setValueState(ValueState.Error);
-          oView.byId('pwdRepeat').setValueState(ValueState.Error);
-          MessageToast.show(this.getResourceBundle().getText('Error.passwordNotEqual'));
-          return;
-        }
-      }
-
-      this.getView().setBusyIndicatorDelay(0);
-      this.getView().setBusy(true);
-      //oEvent.getSource().getEnabled(false);
-      if (this.getView().getViewName() === 'com.mlauffer.gotmoneyappui5.view.User') {
-        this._saveEdit(oEvent.getSource().getBindingContext());
-      }
-      //oEvent.getSource().getEnabled(true);
     },
 
 
@@ -171,6 +150,67 @@ sap.ui.define([
         mPayload.birthdate.setHours(12); //Workaround for date location, avoid D -1
       }
       return mPayload;
+    },
+
+
+    _initValidator: function() {
+      //This is the schema with all rules used to validate the UI5 Controls
+      var validationSchema = {
+        properties: {
+          iduser: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          name: {
+            type: 'string',
+            minLength: 3,
+            maxLength: 80
+          },
+          gender: {
+            type: 'string',
+            enum: ['F', 'M'],
+            maxLength: 1
+          },
+          birthdate: {
+            format: 'date'
+          },
+          email: {
+            type: 'string',
+            format: 'email',
+            minLength: 3,
+            maxLength: 60
+          },
+          alert: {
+            type: 'boolean'
+          }
+        }
+      };
+
+      //Initialize the OpenUI5 Validator object
+      this._validator = new Validator(this.getView(), validationSchema);
+    },
+
+    _onValidationSuccess: function(context) {
+      var oView = this.getView();
+      this.getMessagePopover().close();
+      oView.byId('btMessagePopover').setVisible(false);
+      oView.setBusy(true);
+      if (oView.getViewName() === 'com.mlauffer.gotmoneyappui5.view.User') {
+        this._saveEdit(context);
+      }
+    },
+
+    _onValidationError: function(validationResult) {
+      this.getOwnerComponent().oMessageManager.addMessages(validationResult.ui5ErrorMessageObjects);
+      this.getView().byId('btMessagePopover').setText(validationResult.ui5ErrorMessageObjects.length);
+      this.getView().byId('btMessagePopover').setVisible(true);
+    },
+
+    _clearValueState: function() {
+      var controls = ['name', 'gender', 'birthdate', 'email'];
+      this.clearValueState(controls);
+      this.getMessagePopover().close();
+      this.getView().byId('btMessagePopover').setVisible(false);
     }
   });
 });

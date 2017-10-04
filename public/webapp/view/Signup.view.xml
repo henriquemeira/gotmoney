@@ -1,5 +1,5 @@
 <mvc:View controllerName="com.mlauffer.gotmoneyappui5.controller.Signup"
-		  xmlns:f="sap.ui.layout.form" xmlns:mvc="sap.ui.core.mvc"
+		  xmlns:f="sap.ui.layout.form" xmlns:mvc="sap.ui.core.mvc" xmlns:ui5="openui5.password"
 		  xmlns:core="sap.ui.core" xmlns="sap.m" busyIndicatorDelay="0">
 	<Page id="page" title="{i18n>Signup.title}" showNavButton="true" navButtonPress="onNavBack">
 		<Panel headerText="{i18n>Signup.social}">
@@ -18,20 +18,9 @@
 						  columnsL="1" columnsM="1">
 				<core:Title text="{i18n>User.personalData}" />
 				<Label text="{i18n>User.email}" required="true" />
-				<Input id="email" type="Email"
-					   value="{path : 'user>/email',
-                       type : '.ZString',
-                       constraints : {
-                       		minLength : 1,
-                       		email : true
-                       }}" />
+				<Input id="email" type="Email" value="{user>/email}" />
 				<Label text="{i18n>User.name}" required="true" />
-				<Input id="name"
-					   value="{path : 'user>/name',
-                       type : 'sap.ui.model.type.String',
-                       constraints : {
-                       		minLength : 1
-                       }}" />
+				<Input id="name" value="{user>/name}" />
 				<Label text="{i18n>User.sex}" required="true" />
 				<Select id="sex" selectedKey="{user>/sex}">
 					<core:Item key="F" text="{i18n>User.female}" />
@@ -44,32 +33,16 @@
 
 				<core:Title text="{i18n>User.security}" />
 				<Label text="{i18n>User.password}" required="true" />
-				<Input id="pwd" type="Password"
-					   value="{path : 'user>/pwd',
-                       type : 'sap.ui.model.type.String',
-                       constraints : {
-                       		minLength : 6
-                       }}" />
+				<Input id="pwd" type="Password" value="{user>/pwd}" />
 				<Label text="{i18n>User.passwordRepeat}" required="true" />
-				<Input id="pwdRepeat" type="Password"
-					   value="{path : 'user>/pwdRepeat',
-                       type : 'sap.ui.model.type.String',
-                       constraints : {
-                       		minLength : 6
-                       }}" />
-				<Label text="{i18n>User.captcha}" required="true" />
-				<Input visible="false" id="captcha"
-					   value="{path : 'user>/captcha',
-                       type : 'sap.ui.model.type.String',
-                       constraints : {
-                       		minLength : 1
-                       }}" />
+				<Input id="pwdRepeat" type="Password" value="{user>/pwdRepeat}" />
 				<Label text="{i18n>User.terms}" required="true" />
 				<CheckBox id="terms" state="{user>/terms}" text="{i18n>User.termsAgree}" />
 			</f:SimpleForm>
 		</Panel>
 		<footer>
 			<Toolbar>
+				<Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject" visible="false" press="onMessagePopoverPress"/>
 				<ToolbarSpacer />
 				<Button id="btSave" icon="sap-icon://save" text="{i18n>XBUT.createAppAccount}" type="Emphasized" press="onSave" />
 			</Toolbar>

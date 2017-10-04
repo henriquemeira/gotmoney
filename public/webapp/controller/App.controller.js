@@ -9,7 +9,7 @@ sap.ui.define([
   'com/mlauffer/gotmoneyappui5/controller/FacebookLogin',
   'com/mlauffer/gotmoneyappui5/controller/GoogleLogin'
 ], function(jQuery, MessageBox, MessageToast, Fragment, ValueState, ShellHeadUserItem, BaseController, FacebookLogin,
-            GoogleLogin) {
+  GoogleLogin) {
   'use strict';
 
   return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.App', {

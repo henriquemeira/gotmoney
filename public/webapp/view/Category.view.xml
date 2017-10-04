@@ -8,15 +8,11 @@
                       columnsL="1" columnsM="1">
             <core:Title text="{i18n>General.edit}"/>
             <Label text="{i18n>Category.description}" required="true"/>
-            <Input id="description"
-                   value="{path : 'description',
-                       type : 'sap.ui.model.type.String',
-                       constraints : {
-                       		minLength : 1
-                       }}"/>
+            <Input id="description" value="{description}"/>
         </f:SimpleForm>
         <footer>
             <Toolbar>
+                <Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject" visible="false" press="onMessagePopoverPress"/>
                 <ToolbarSpacer/>
                 <Button id="btSave" icon="sap-icon://save" text="{i18n>XBUT.save}" type="Emphasized" press="onSave"/>
                 <Button id="btDelete" icon="sap-icon://delete" text="{i18n>XBUT.delete}" press="onDelete"/>
