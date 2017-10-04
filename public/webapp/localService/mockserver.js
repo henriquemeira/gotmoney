@@ -1,11 +1,11 @@
 sap.ui.define([
   'jquery.sap.global',
-  'sap/ui/core/util/MockServer'
-], function(jQuery, MockServer) {
+  'sap/ui/core/util/MockServer',
+  'sap/ui/model/json/JSONModel'
+], function(jQuery, MockServer, JSONModel) {
   'use strict';
 
   var oMockServer;
-  var _sAppModulePath = 'fiori/md/';
 
   return {
     /**
@@ -17,8 +17,6 @@ sap.ui.define([
 
     init: function() {
       var oUriParameters = jQuery.sap.getUriParameters();
-      var sErrorParam = oUriParameters.get('errorType');
-      var iErrorCode = sErrorParam === 'badRequest' ? 400 : 500;
       var oMockServer = new MockServer({
         rootUri: '/'
       });
@@ -29,15 +27,8 @@ sap.ui.define([
       var sPath = jQuery.sap.getModulePath('com.mlauffer.gotmoneyappui5.localService');
       //oMockServer.simulate(sPath + '/metadata.xml', sPath + '/mockdata', true);
 
-      var oModel = sap.ui.model.json.JSONModel(sPath + '/mockdata/mock.json');
-      console.dir(oModel);
-      console.dir(oModel.getData());
-      console.dir(oModel.getJSON());
-
+      var oModel = new JSONModel(sPath + '/mockdata/mock.json');
       oModel.loadData(sPath + '/mockdata/mock.json', false);
-      console.dir(oModel);
-      console.dir(oModel.getData());
-      console.dir(oModel.getJSON());
 
       // handling mocking a function import call step
       var aRequests = oMockServer.getRequests();
@@ -76,9 +67,6 @@ sap.ui.define([
       oMockServer.start();
       jQuery.sap.log.info('Incoming request for FindUpcomingMeetups');
       console.log('Running the app with mock data');
-      console.dir(oMockServer);
-      console.dir(oMockServer.getMetadata());
-      console.dir(oMockServer.getRequests());
     },
 
     /**
