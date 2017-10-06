@@ -4,10 +4,8 @@ sap.ui.define([
   'sap/ui/core/mvc/Controller',
   'sap/ui/core/routing/History',
   'sap/m/BusyDialog',
-  'sap/m/MessageBox',
-  'sap/m/MessageItem',
-  'sap/m/MessagePopover'
-], function(jQuery, ValueState, Controller, History, BusyDialog, MessageBox, MessageItem, MessagePopover) {
+  'sap/m/MessageBox'
+], function(jQuery, ValueState, Controller, History, BusyDialog, MessageBox) {
   'use strict';
 
   var _initialData = {
@@ -19,7 +17,9 @@ sap.ui.define([
     }
   };
 
-  var BaseController = Controller.extend('com.mlauffer.gotmoneyappui5.controller.BaseController', {});
+  var BaseController = Controller.extend('com.mlauffer.gotmoneyappui5.controller.BaseController', {
+    _messagePopover: null
+  });
 
   /**
    * Convenience method for accessing the router in every controller of the application.
@@ -49,18 +49,9 @@ sap.ui.define([
   BaseController.prototype.getMessagePopover = function() {
     //Initialize the Message Popover used to display the errors
     if (!this._messagePopover) {
-      this._messagePopover = new MessagePopover({
-        items: {
-          path: 'message>/',
-          template: new MessageItem({
-            description: '{message>description}',
-            type: '{message>type}',
-            title: '{message>message}',
-            groupName: '{message>target}'
-          })
-        }
-      });
-      this._messagePopover.setModel(this.getOwnerComponent().oMessageManager.getMessageModel(), 'message');
+      this._messagePopover = sap.ui.xmlfragment(this.getView().getId(), 'com.mlauffer.gotmoneyappui5.view.MessagePopover', this);
+      this.getView().addDependent(this._messagePopover);
+
     }
     return this._messagePopover;
   };
@@ -68,6 +59,7 @@ sap.ui.define([
 
   BaseController.prototype.clearValueState = function(controlIds) {
     var that = this;
+    this.getOwnerComponent().oMessageManager.removeAllMessages();
     if (controlIds) {
       controlIds.forEach(function(controlId) {
         var control = that.getView().byId(controlId);
