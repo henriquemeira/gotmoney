@@ -3,3 +3,6 @@
 [![Greenkeeper badge](https://badges.greenkeeper.io/mauriciolauffer/gotmoney.svg)](https://greenkeeper.io/)
 
 GotMoney!
+
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/mauriciolauffer/gotmoney.svg)](https://greenkeeper.io/)
