@@ -1,10 +1,13 @@
 sap.ui.define([
   'jquery.sap.global',
+  'sap/ui/core/ValueState',
   'sap/ui/core/mvc/Controller',
   'sap/ui/core/routing/History',
   'sap/m/BusyDialog',
-  'sap/m/MessageBox'
-], function(jQuery, Controller, History, BusyDialog, MessageBox) {
+  'sap/m/MessageBox',
+  'sap/m/MessageItem',
+  'sap/m/MessagePopover'
+], function(jQuery, ValueState, Controller, History, BusyDialog, MessageBox, MessageItem, MessagePopover) {
   'use strict';
 
   var _initialData = {
@@ -34,7 +37,61 @@ sap.ui.define([
    * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
    */
   BaseController.prototype.getResourceBundle = function() {
-    return this.getOwnerComponent().getResourceBundleSync();
+    return this.getOwnerComponent().getModel('i18n').getResourceBundle();
+  };
+
+
+  /**
+   * Convenience method for getting the resource bundle.
+   * @public
+   * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
+   */
+  BaseController.prototype.getMessagePopover = function() {
+    //Initialize the Message Popover used to display the errors
+    if (!this._messagePopover) {
+      this._messagePopover = new MessagePopover({
+        items: {
+          path: 'message>/',
+          template: new MessageItem({
+            description: '{message>description}',
+            type: '{message>type}',
+            title: '{message>message}',
+            groupName: '{message>target}'
+          })
+        }
+      });
+      this._messagePopover.setModel(this.getOwnerComponent().oMessageManager.getMessageModel(), 'message');
+    }
+    return this._messagePopover;
+  };
+
+
+  BaseController.prototype.clearValueState = function(controlIds) {
+    var that = this;
+    if (controlIds) {
+      controlIds.forEach(function(controlId) {
+        var control = that.getView().byId(controlId);
+        if (control) {
+          if (control.setValueState) {
+            control.setValueState(ValueState.None);
+          }
+          if (control.setValueStateText) {
+            control.setValueStateText('');
+          }
+        }
+      });
+    }
+  };
+
+
+  /**
+   * Event handler  for navigating back.
+   * It checks if there is a history entry. If yes, history.go(-1) will happen.
+   * If not, it will replace the current entry of the browser history with the master route.
+   * @public
+   */
+  BaseController.prototype.onMessagePopoverPress = function(oEvent) {
+    this.getMessagePopover().toggle(oEvent.getSource());
   };
 
 
@@ -60,7 +117,6 @@ sap.ui.define([
   /**
    * Convenience method for getting the last part of a Binding Path.
    * @public
-   * @returns {string} the last part of a Binding Path
    */
   BaseController.prototype.onFinishBackendOperation = function() {
     this.onNavBack();
@@ -80,7 +136,6 @@ sap.ui.define([
 
 
   BaseController.prototype._ajaxFail = function(oResult, textStatus, jqXHR) {
-    console.log('ERRORRRRRRRRRRRR AJAX');
     this.vibrate();
     var sText = this.getResourceBundle().getText('Error.internalServerError');
     //var sDetail = this.getResourceBundle().getText("Error.noDetails");
@@ -199,6 +254,24 @@ sap.ui.define([
     if (navigator.vibrate) {
       navigator.vibrate(50);
     }
+  };
+
+  BaseController.prototype.getToken = function() {
+    jQuery.ajax({
+      url: '/api/session/token',
+      method: 'GET',
+      contentType: 'application/json'
+    })
+      .done(function(result) {
+        jQuery.ajaxSetup({
+          beforeSend: function(xhr) {
+            xhr.setRequestHeader('x-csrf-token', result.csrfToken);
+          }
+        });
+      })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+        //jqXHR
+      });
   };
 
   BaseController.prototype._loadBackendData = function() {

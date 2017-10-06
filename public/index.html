@@ -17,42 +17,48 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/webapp/images/pig-192x192.png">
     <link rel="manifest" href="/manifest.json">
     <title>GotMoney App - Gerenciador financeiro pessoal</title>
-    <script type="text/javascript" id="sap-ui-bootstrap"
-            src="https://openui5.hana.ondemand.com/1.46.7/resources/sap-ui-core.js" data-sap-ui-theme="sap_belize"
-            data-sap-ui-libs="sap.m" data-sap-ui-bindingSyntax="complex"
-            data-sap-ui-preload="async" data-sap-ui-compatVersion="edge" data-sap-ui-frameOptions="deny"
-            data-sap-ui-resourceroots='{"com.mlauffer.gotmoneyappui5": "./webapp/"}'></script>
 </head>
-<body class="sapUiBody">
+<body class="sapUiBody" role="application">
 <div id="content" class="spinner"></div>
-<script type="text/javascript">
+<script>
   //SAP OpenUI5
-  sap.ui.getCore().attachInit(function() {
+  function initUI5() {
     'use strict';
-    sap.ui.require([
-      'sap/m/Shell',
-      'sap/ui/core/ComponentContainer'
-    ], function(Shell, ComponentContainer) {
-      sap.ui.component({
-        name: 'com.mlauffer.gotmoneyappui5',
-        manifestFirst: true,
-        async: true
-      }).then(function(oComponent) {
-        new Shell({
-          app: new ComponentContainer({
-            height: '100%',
-            component: oComponent
-          }),
-          appWidthLimited: true
-        }).placeAt('content');
+    sap.ui.getCore().attachInit(function () {
+      'use strict';
+      sap.ui.require([
+        'sap/m/Shell',
+        'sap/ui/core/ComponentContainer'
+      ], function (Shell, ComponentContainer) {
+        sap.ui.component({
+          name: 'com.mlauffer.gotmoneyappui5',
+          manifestFirst: true,
+          async: true
+        }).then(function (oComponent) {
+          var shell = new Shell({
+            app: new ComponentContainer({
+              async: true,
+              height: '100%',
+              component: oComponent
+            }),
+            appWidthLimited: true
+          });
+          shell.placeAt('content');
+        });
       });
     });
-  });
+  }
 </script>
-<script type="text/javascript" src="/webapp/js/gotmoneyapp.min.js" async defer></script>
-<script type="text/javascript" src="/webapp/js/lockr.min.js" async defer></script>
-<script type="text/javascript" src="https://apis.google.com/js/platform.js?onload=onLoadGoogleClient" async defer></script>
-<script type="text/javascript" id="facebook-jssdk" src="https://connect.facebook.net/en_US/sdk.js" async defer></script>
+<script id="sap-ui-bootstrap"
+        src="https://openui5.hana.ondemand.com/1.48.6/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_belize" data-sap-ui-libs="sap.m" data-sap-ui-bindingSyntax="complex"
+        data-sap-ui-preload="async" data-sap-ui-compatVersion="edge" data-sap-ui-frameOptions="deny"
+        data-sap-ui-resourceroots='{"com.mlauffer.gotmoneyappui5": "./webapp/"}'
+        async defer onload="initUI5();"></script>
+<script src="/webapp/js/gotmoneyapp.min.js" async defer></script>
+<script src="/webapp/js/lockr.min.js" async defer></script>
+<script src="https://apis.google.com/js/platform.js?onload=onLoadGoogleClient" async defer></script>
+<script id="facebook-jssdk" src="https://connect.facebook.net/en_US/sdk.js" async defer></script>
 <noscript>
     <div id="noScriptMessageEN">GotMoney cannot be displayed! JavaScript is not enabled. Please enable JavaScript in
         your browser and try again...

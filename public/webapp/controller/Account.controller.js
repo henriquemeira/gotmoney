@@ -4,10 +4,10 @@ sap.ui.define([
   'sap/m/MessageToast',
   'sap/ui/model/json/JSONModel',
   'com/mlauffer/gotmoneyappui5/controller/BaseController',
-  'com/mlauffer/gotmoneyappui5/controller/Validator',
   'com/mlauffer/gotmoneyappui5/model/formatter',
-  'com/mlauffer/gotmoneyappui5/model/ObjectFactory'
-], function(jQuery, MessageBox, MessageToast, JSONModel, BaseController, Validator, formatter, ObjectFactory) {
+  'com/mlauffer/gotmoneyappui5/model/ObjectFactory',
+  'openui5/validator/Validator'
+], function(jQuery, MessageBox, MessageToast, JSONModel, BaseController, formatter, ObjectFactory, Validator) {
   'use strict';
 
   return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.Account', {
@@ -19,8 +19,11 @@ sap.ui.define([
         var oRouter = this.getRouter();
         oRouter.getRoute('account').attachMatched(this._onRouteMatched, this);
         oRouter.getRoute('accountNew').attachMatched(this._onRouteMatchedNew, this);
-
+        this._initValidator();
         this.getView().addEventDelegate({
+          onBeforeShow: function() {
+            this._clearValueState();
+          },
           onAfterShow: function() {
             this.checkSession();
           }
@@ -33,20 +36,13 @@ sap.ui.define([
     },
 
     onSave: function(oEvent) {
+      //Validates UI5 Controls against the validation schema set before
       this.vibrate();
-      // Create new validator instance
-      var oValidator = new Validator();
-      // Validate input fields
-      oValidator.validate(this.getView().byId('form'));
-      if (!oValidator.isValid()) {
-        return;
-      }
-
-      this.getView().setBusy(true);
-      if (this.getView().getViewName() === 'com.mlauffer.gotmoneyappui5.view.Account') {
-        this._saveEdit(oEvent.getSource().getBindingContext());
+      this.getOwnerComponent().oMessageManager.removeAllMessages();
+      if (this._validator.validate()) {
+        this._onValidationSuccess(oEvent.getSource().getBindingContext());
       } else {
-        this._saveNew(oEvent);
+        this._onValidationError(this._validator.getErrors());
       }
     },
 
@@ -240,6 +236,78 @@ sap.ui.define([
       var bShow = (this.getView().byId('idtype').getSelectedKey() === '2');
       this.getView().byId('invoiceday').setVisible(bShow);
       this.getView().byId('invoicedayLabel').setVisible(bShow);
+    },
+
+
+    _initValidator: function() {
+      //This is the schema with all rules used to validate the UI5 Controls
+      var validationSchema = {
+        properties: {
+          iduser: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          idaccount: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          idtype: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          description: {
+            type: 'string',
+            minLength: 3,
+            maxLength: 50
+          },
+          creditlimit: {
+            type: 'number',
+            default: 0,
+            minimum: 0,
+            maximum: 99999999999999999999
+          },
+          balance: {
+            type: 'number',
+            default: 0,
+            maximum: 99999999999999999999
+          },
+          opendate: {
+            format: 'date'
+          },
+          duedate: {
+            type: ['integer', 'null'],
+            maximum: 31
+          }
+        }
+      };
+
+      //Initialize the OpenUI5 Validator object
+      this._validator = new Validator(this.getView(), validationSchema);
+    },
+
+    _onValidationSuccess: function(context) {
+      var oView = this.getView();
+      this.getMessagePopover().close();
+      oView.byId('btMessagePopover').setVisible(false);
+      this.getView().setBusy(true);
+      if (this.getView().getViewName() === 'com.mlauffer.gotmoneyappui5.view.Account') {
+        this._saveEdit(context);
+      } else {
+        this._saveNew();
+      }
+    },
+
+    _onValidationError: function(validationResult) {
+      this.getOwnerComponent().oMessageManager.addMessages(validationResult.ui5ErrorMessageObjects);
+      this.getView().byId('btMessagePopover').setText(validationResult.ui5ErrorMessageObjects.length);
+      this.getView().byId('btMessagePopover').setVisible(true);
+    },
+
+    _clearValueState: function() {
+      var controls = ['idtype', 'description', 'creditlimit', 'balance', 'opendate', 'duedate'];
+      this.clearValueState(controls);
+      this.getMessagePopover().close();
+      this.getView().byId('btMessagePopover').setVisible(false);
     }
   });
 });

@@ -3,29 +3,31 @@ sap.ui.define([
   'sap/m/MessageBox',
   'sap/m/MessageToast',
   'sap/ui/model/json/JSONModel',
+  'sap/ui/core/message/ControlMessageProcessor',
   'sap/ui/core/ValueState',
   'com/mlauffer/gotmoneyappui5/controller/BaseController',
   'com/mlauffer/gotmoneyappui5/controller/FacebookLogin',
   'com/mlauffer/gotmoneyappui5/controller/GoogleLogin',
-  'com/mlauffer/gotmoneyappui5/controller/Validator',
-  'com/mlauffer/gotmoneyappui5/controller/ZString',
   'com/mlauffer/gotmoneyappui5/model/ObjectFactory',
-  'com/mlauffer/gotmoneyappui5/model/formatter'
-], function(jQuery, MessageBox, MessageToast, JSONModel, ValueState, BaseController, FacebookLogin, GoogleLogin,
-    Validator, ZString, ObjectFactory, formatter) {
+  'com/mlauffer/gotmoneyappui5/model/formatter',
+  'openui5/validator/Validator'
+], function(jQuery, MessageBox, MessageToast, JSONModel, ControlMessageProcessor,
+  ValueState, BaseController, FacebookLogin, GoogleLogin, ObjectFactory, formatter, Validator) {
   'use strict';
 
   return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.Signup', {
     formatter: formatter,
-    ZString: ZString,
 
     onInit: function() {
       try {
         var that = this;
         this.getView().setModel(new JSONModel(), 'user');
         this.getRouter().getRoute('signup').attachMatched(this._onRouteMatchedNew, this);
-
+        this._initValidator();
         this.getView().addEventDelegate({
+          onBeforeShow: function() {
+            this._clearValueState();
+          },
           onAfterShow: function() {
             var oGoogleLogin = new GoogleLogin();
             oGoogleLogin.renderButton(that, that.getView().byId('btGoogle').getDomRef().id);
@@ -40,34 +42,13 @@ sap.ui.define([
 
 
     onSave: function(oEvent) {
+      //Validates UI5 Controls against the validation schema set before
       this.vibrate();
-      var oView = this.getView();
-      // Create new validator instance
-      var oValidator = new Validator();
-
-      // Validate input fields
-      oValidator.validate(oView.byId('form'));
-      if (!oValidator.isValid()) {
-        return;
-      }
-
-      if (oView.byId('pwd').getValue()) {
-        if (oView.byId('pwd').getValue() === oView.byId('pwdRepeat').getValue()) {
-          oView.byId('pwd').setValueState(ValueState.None);
-          oView.byId('pwdRepeat').setValueState(ValueState.None);
-        } else {
-          oView.byId('pwd').setValueState(ValueState.Error);
-          oView.byId('pwdRepeat').setValueState(ValueState.Error);
-          MessageToast.show(this.getResourceBundle().getText('Error.passwordNotEqual'));
-          return;
-        }
-      }
-
-      this.getView().setBusy(true);
-      if (this.getView().getViewName() === 'com.mlauffer.gotmoneyappui5.view.User') {
-        this._saveEdit(oEvent);
+      this.getOwnerComponent().oMessageManager.removeAllMessages();
+      if (this._validator.validate()) {
+        this._onValidationSuccess(oEvent.getSource().getBindingContext());
       } else {
-        this._saveNew(oEvent);
+        this._onValidationError(this._validator.getErrors());
       }
     },
 
@@ -182,6 +163,66 @@ sap.ui.define([
         mPayload.birthdate.setHours(12); //Workaround for date location, avoid D -1
       }
       return mPayload;
+    },
+
+
+    _initValidator: function() {
+      //This is the schema with all rules used to validate the UI5 Controls
+      var validationSchema = {
+        properties: {
+          pwd: {
+            type: 'string',
+            minLength: 6
+          },
+          pwdRepeat: {
+            type: 'string',
+            const: { '$data': '1/pwd' }
+          },
+          name: {
+            type: 'string',
+            minLength: 3
+          },
+          email: {
+            type: 'string',
+            format: 'email',
+            minLength: 0
+          },
+          birthdate: {
+            format: 'date'
+          },
+          terms: {
+            type: 'boolean'
+          }
+        }
+      };
+
+      //Initialize the OpenUI5 Validator object
+      this._validator = new Validator(this.getView(), validationSchema);
+    },
+
+    _onValidationSuccess: function(context) {
+      var oView = this.getView();
+      this.getMessagePopover().close();
+      oView.byId('btMessagePopover').setVisible(false);
+      oView.setBusy(true);
+      if (oView.getViewName() === 'com.mlauffer.gotmoneyappui5.view.User') {
+        this._saveEdit(context);
+      } else {
+        this._saveNew();
+      }
+    },
+
+    _onValidationError: function(validationResult) {
+      this.getOwnerComponent().oMessageManager.addMessages(validationResult.ui5ErrorMessageObjects);
+      this.getView().byId('btMessagePopover').setText(validationResult.ui5ErrorMessageObjects.length);
+      this.getView().byId('btMessagePopover').setVisible(true);
+    },
+
+    _clearValueState: function() {
+      var controls = ['pwd', 'pwdRepeat', 'name', 'email', 'birthdate', 'terms'];
+      this.clearValueState(controls);
+      this.getMessagePopover().close();
+      this.getView().byId('btMessagePopover').setVisible(false);
     }
   });
 });

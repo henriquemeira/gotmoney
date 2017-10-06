@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const Ajv = require('ajv');
 function getSchema(id, required) {
   return {

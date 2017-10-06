@@ -40,16 +40,20 @@
         "sap.m": {},
         "sap.ui.layout": {},
         "sap.ui.unified": {},
-        "sap.tnt": {}
+        "sap.tnt": {},
+        "openui5.password": {},
+        "openui5.validator": {}
       }
+    },
+    "resourceRoots": {
+      "openui5.password": "./js/openui5/password/",
+      "openui5.validator": "./js/openui5/validator/"
     },
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "async": true,
         "settings": {
-          "bundleName": "com.mlauffer.gotmoneyappui5.i18n.i18n",
-          "async": true
+          "bundleName": "com.mlauffer.gotmoneyappui5.i18n.i18n"
         }
       },
       "": {

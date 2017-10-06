@@ -1,10 +1,10 @@
 sap.ui.define([
+  'jquery.sap.global',
+  'sap/ui/core/message/ControlMessageProcessor',
   'sap/ui/core/UIComponent',
   'sap/ui/Device',
-  'sap/ui/model/BindingMode',
-  'sap/ui/model/json/JSONModel',
   'com/mlauffer/gotmoneyappui5/model/models'
-], function(UIComponent, Device, BindingMode, JSONModel, Models) {
+], function(jQuery, ControlMessageProcessor, UIComponent, Device, Models) {
   'use strict';
 
   return UIComponent.extend('com.mlauffer.gotmoneyappui5.Component', {
@@ -17,9 +17,12 @@ sap.ui.define([
       // call the base component's init function
       UIComponent.prototype.init.apply(this, arguments);
 
-      this.setResourceBundle();
       this.setModels();
       this.getRouter().initialize();
+
+      this.oMessageProcessor = new ControlMessageProcessor();
+      this.oMessageManager = sap.ui.getCore().getMessageManager();
+      this.oMessageManager.registerMessageProcessor(this.oMessageProcessor);
     },
 
 
@@ -38,22 +41,6 @@ sap.ui.define([
     setModels: function() {
       Models.editDefaultModel(this.getModel());
       this.setModel(Models.createDeviceModel(), 'device');
-    },
-
-    setResourceBundle: function() {
-      var that = this;
-      this._resourceBundle = {};
-      this.getModel('i18n').getResourceBundle()
-        .then(function(res) {
-          that._resourceBundle = res;
-        })
-        .catch(function(err) {
-          console.dir(err);
-        });
-    },
-
-    getResourceBundleSync: function() {
-      return this._resourceBundle;
     }
   });
 });

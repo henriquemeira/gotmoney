@@ -10,12 +10,7 @@
 			<Label text="{i18n>User.email}" required="true" />
 			<Input id="email" type="Email" enabled="false" value="{email}" />
 			<Label text="{i18n>User.name}" required="true" />
-			<Input id="name"
-				   value="{path : 'name',
-                       type : 'sap.ui.model.type.String',
-                       constraints : {
-                       		minLength : 1
-                       }}" />
+			<Input id="name" value="{name}" />
 			<Label text="{i18n>User.sex}" required="true" />
 			<Select id="sex" selectedKey="{gender}">
 				<core:Item key="F" text="{i18n>Female}" />
@@ -38,6 +33,7 @@
 		</f:SimpleForm>
 		<footer>
 			<Toolbar>
+				<Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject" visible="false" press="onMessagePopoverPress"/>
 				<ToolbarSpacer />
 				<Button id="btSave" icon="sap-icon://save" text="{i18n>XBUT.save}" type="Emphasized" press="onSave" />
 			</Toolbar>

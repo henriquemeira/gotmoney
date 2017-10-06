@@ -34,8 +34,8 @@ sap.ui.define([
 
     paymentTooltip: function(sValue) {
       return ((sValue === 1 || sValue === true)) ?
-        this.getOwnerComponent().getResourceBundleSync().getText('Transaction.status.paid') :
-        this.getOwnerComponent().getResourceBundleSync().getText('Transaction.status.awaiting');
+        this.getResourceBundle().getText('Transaction.status.paid') :
+        this.getResourceBundle().getText('Transaction.status.awaiting');
     },
 
     accountTypeIcon: function(sId) {
@@ -58,12 +58,12 @@ sap.ui.define([
     },
 
     accountTypeName: function(sId) {
-      return this.getOwnerComponent().getResourceBundleSync().getText('Account.Type.' + sId);
+      return this.getResourceBundle().getText('Account.Type.' + sId);
     },
 
     accountName: function(sValue) {
+      var sDesc = sValue;
       try {
-        var sDesc = sValue;
         var oModel = this.getView().getModel();
         if (oModel) {
           var nItems = oModel.getData().User.Account.length;

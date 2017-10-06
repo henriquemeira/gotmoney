@@ -4,9 +4,9 @@ sap.ui.define([
   'sap/m/MessageToast',
   'sap/ui/model/json/JSONModel',
   'com/mlauffer/gotmoneyappui5/controller/BaseController',
-  'com/mlauffer/gotmoneyappui5/controller/Validator',
-  'com/mlauffer/gotmoneyappui5/model/ObjectFactory'
-], function(jQuery, MessageBox, MessageToast, JSONModel, BaseController, Validator, ObjectFactory) {
+  'com/mlauffer/gotmoneyappui5/model/ObjectFactory',
+  'openui5/validator/Validator'
+], function(jQuery, MessageBox, MessageToast, JSONModel, BaseController, ObjectFactory, Validator) {
   'use strict';
 
   return BaseController.extend('com.mlauffer.gotmoneyappui5.controller.Category', {
@@ -16,8 +16,11 @@ sap.ui.define([
         var oRouter = this.getRouter();
         oRouter.getRoute('category').attachMatched(this._onRouteMatched, this);
         oRouter.getRoute('categoryNew').attachMatched(this._onRouteMatchedNew, this);
-
+        this._initValidator();
         this.getView().addEventDelegate({
+          onBeforeShow: function() {
+            this._clearValueState();
+          },
           onAfterShow: function() {
             this.checkSession();
           }
@@ -31,21 +34,13 @@ sap.ui.define([
 
 
     onSave: function(oEvent) {
+      //Validates UI5 Controls against the validation schema set before
       this.vibrate();
-      // Create new validator instance
-      var oValidator = new Validator();
-
-      // Validate input fields
-      oValidator.validate(this.getView().byId('form'));
-      if (!oValidator.isValid()) {
-        return;
-      }
-
-      this.getView().setBusy(true);
-      if (this.getView().getViewName() === 'com.mlauffer.gotmoneyappui5.view.Category') {
-        this._saveEdit(oEvent.getSource().getBindingContext());
+      this.getOwnerComponent().oMessageManager.removeAllMessages();
+      if (this._validator.validate()) {
+        this._onValidationSuccess(oEvent.getSource().getBindingContext());
       } else {
-        this._saveNew(oEvent);
+        this._onValidationError(this._validator.getErrors());
       }
     },
 
@@ -100,7 +95,6 @@ sap.ui.define([
 
 
     _saveNew: function() {
-      //TODO: Validation
       var that = this;
       var mPayload = this._getPayload();
       mPayload.idcategory = jQuery.now();
@@ -123,7 +117,6 @@ sap.ui.define([
 
 
     _saveEdit: function(oContext) {
-      //TODO: Validation
       var that = this;
       var mPayload = this._getPayload();
       mPayload.idcategory = oContext.getProperty('idcategory');
@@ -208,6 +201,56 @@ sap.ui.define([
       var mPayload = ObjectFactory.buildCategory();
       mPayload.description = oView.byId('description').getValue();
       return mPayload;
+    },
+
+
+    _initValidator: function() {
+      //This is the schema with all rules used to validate the UI5 Controls
+      var validationSchema = {
+        properties: {
+          iduser: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          idcategory: {
+            type: 'integer',
+            maximum: 99999999999999999999
+          },
+          description: {
+            type: 'string',
+            minLength: 3,
+            maxLength: 50
+          }
+        }
+      };
+
+      //Initialize the OpenUI5 Validator object
+      this._validator = new Validator(this.getView(), validationSchema);
+    },
+
+    _onValidationSuccess: function(context) {
+      var oView = this.getView();
+      this.getMessagePopover().close();
+      oView.byId('btMessagePopover').setVisible(false);
+      this.getView().setBusy(true);
+      if (this.getView().getViewName() === 'com.mlauffer.gotmoneyappui5.view.Category') {
+        this._saveEdit(context);
+      } else {
+        this._saveNew();
+      }
+    },
+
+    _onValidationError: function(validationResult) {
+      this.getOwnerComponent().oMessageManager.addMessages(validationResult.ui5ErrorMessageObjects);
+      this.getView().byId('btMessagePopover').setText(validationResult.ui5ErrorMessageObjects.length);
+      this.getView().byId('btMessagePopover').setVisible(true);
+    },
+
+    _clearValueState: function() {
+      var controls = ['description'];
+      this.clearValueState(controls);
+      this.getMessagePopover().close();
+      this.getView().byId('btMessagePopover').setVisible(false);
     }
   });
 });
