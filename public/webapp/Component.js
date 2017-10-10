@@ -18,11 +18,11 @@ sap.ui.define([
       UIComponent.prototype.init.apply(this, arguments);
 
       this.setModels();
-      this.getRouter().initialize();
-
       this.oMessageProcessor = new ControlMessageProcessor();
       this.oMessageManager = sap.ui.getCore().getMessageManager();
       this.oMessageManager.registerMessageProcessor(this.oMessageProcessor);
+      this.setModel(this.oMessageManager.getMessageModel(), 'message');
+      this.getRouter().initialize();
     },
 
 

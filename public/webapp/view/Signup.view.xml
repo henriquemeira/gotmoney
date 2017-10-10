@@ -42,7 +42,10 @@
 		</Panel>
 		<footer>
 			<Toolbar>
-				<Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject" visible="false" press="onMessagePopoverPress"/>
+				<Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject"
+						text="{=${message>/}.length}"
+						visible="{=${message>/}.length > 0}"
+						press="onMessagePopoverPress"/>
 				<ToolbarSpacer />
 				<Button id="btSave" icon="sap-icon://save" text="{i18n>XBUT.createAppAccount}" type="Emphasized" press="onSave" />
 			</Toolbar>

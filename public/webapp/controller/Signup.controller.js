@@ -23,6 +23,7 @@ sap.ui.define([
         var that = this;
         this.getView().setModel(new JSONModel(), 'user');
         this.getRouter().getRoute('signup').attachMatched(this._onRouteMatchedNew, this);
+        this.getOwnerComponent().oMessageManager.registerObject(this.getView(), true);
         this._initValidator();
         this.getView().addEventDelegate({
           onBeforeShow: function() {
@@ -156,7 +157,7 @@ sap.ui.define([
       mPayload.birthdate = oView.byId('birthdate').getDateValue();
       mPayload.alert = oView.byId('alert').getState();
       mPayload.tec = oView.byId('terms').getSelected();
-      mPayload.captcha = oView.byId('captcha').getValue();
+      //mPayload.captcha = oView.byId('captcha').getValue();
       mPayload.lastchange = jQuery.now();
       //mPayload.lastsync : null
       if (mPayload.birthdate) {
@@ -191,7 +192,8 @@ sap.ui.define([
             format: 'date'
           },
           terms: {
-            type: 'boolean'
+            type: 'boolean',
+            const: true
           }
         }
       };
@@ -203,7 +205,6 @@ sap.ui.define([
     _onValidationSuccess: function(context) {
       var oView = this.getView();
       this.getMessagePopover().close();
-      oView.byId('btMessagePopover').setVisible(false);
       oView.setBusy(true);
       if (oView.getViewName() === 'com.mlauffer.gotmoneyappui5.view.User') {
         this._saveEdit(context);
@@ -212,17 +213,13 @@ sap.ui.define([
       }
     },
 
-    _onValidationError: function(validationResult) {
-      this.getOwnerComponent().oMessageManager.addMessages(validationResult.ui5ErrorMessageObjects);
-      this.getView().byId('btMessagePopover').setText(validationResult.ui5ErrorMessageObjects.length);
-      this.getView().byId('btMessagePopover').setVisible(true);
+    _onValidationError: function(errors) {
+      this.getOwnerComponent().oMessageManager.addMessages(errors);
     },
 
     _clearValueState: function() {
       var controls = ['pwd', 'pwdRepeat', 'name', 'email', 'birthdate', 'terms'];
       this.clearValueState(controls);
-      this.getMessagePopover().close();
-      this.getView().byId('btMessagePopover').setVisible(false);
     }
   });
 });

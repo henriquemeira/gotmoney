@@ -22,6 +22,9 @@ sap.ui.define([
         this._initValidator();
         this._initValidatorMultiple();
         this.getView().addEventDelegate({
+          onBeforeShow: function() {
+            this._clearValueState();
+          },
           onAfterShow: function() {
             this.checkSession();
           }
@@ -39,15 +42,18 @@ sap.ui.define([
       this.vibrate();
       this.getOwnerComponent().oMessageManager.removeAllMessages();
       var isValid = false;
+      var errors = null;
       if (this.getView().byId('occurrence').getSelectedKey() === 'U') {
         isValid = this._validator.validate();
+        errors = this._validator.getErrors();
       } else {
         isValid = this._validatorMultiple.validate();
+        errors = this._validatorMultiple.getErrors();
       }
       if (isValid) {
         this._onValidationSuccess(oEvent.getSource().getBindingContext());
       } else {
-        this._onValidationError(this._validator.getErrors());
+        this._onValidationError(errors);
       }
     },
 
@@ -387,11 +393,6 @@ sap.ui.define([
           tag: {
             type: ['string', 'null'],
             maxLength: 255
-          },
-          origin: {
-            type: 'string',
-            maxLength: 1,
-            enum: ['W', 'A']
           }
         }
       };
@@ -451,11 +452,6 @@ sap.ui.define([
           tag: {
             type: ['string', 'null'],
             maxLength: 255
-          },
-          origin: {
-            type: 'string',
-            maxLength: 1,
-            enum: ['W', 'A']
           }
         }
       };
@@ -465,9 +461,7 @@ sap.ui.define([
     },
 
     _onValidationSuccess: function(context) {
-      var oView = this.getView();
       this.getMessagePopover().close();
-      oView.byId('btMessagePopover').setVisible(false);
       this.getView().setBusy(true);
       if (this.getView().getViewName() === 'com.mlauffer.gotmoneyappui5.view.Transaction') {
         this._saveEdit(context);
@@ -477,10 +471,13 @@ sap.ui.define([
       this.getView().setBusy(false);
     },
 
-    _onValidationError: function(validationResult) {
-      this.getOwnerComponent().oMessageManager.addMessages(validationResult.ui5ErrorMessageObjects);
-      this.getView().byId('btMessagePopover').setText(validationResult.ui5ErrorMessageObjects.length);
-      this.getView().byId('btMessagePopover').setVisible(true);
+    _onValidationError: function(errors) {
+      this.getOwnerComponent().oMessageManager.addMessages(errors);
+    },
+
+    _clearValueState: function() {
+      var controls = ['description', 'amount', 'type', 'duedate', 'startdate', 'tag', 'split'];
+      this.clearValueState(controls);
     }
   });
 });

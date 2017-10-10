@@ -193,24 +193,19 @@ sap.ui.define([
     _onValidationSuccess: function(context) {
       var oView = this.getView();
       this.getMessagePopover().close();
-      oView.byId('btMessagePopover').setVisible(false);
       oView.setBusy(true);
       if (oView.getViewName() === 'com.mlauffer.gotmoneyappui5.view.User') {
         this._saveEdit(context);
       }
     },
 
-    _onValidationError: function(validationResult) {
-      this.getOwnerComponent().oMessageManager.addMessages(validationResult.ui5ErrorMessageObjects);
-      this.getView().byId('btMessagePopover').setText(validationResult.ui5ErrorMessageObjects.length);
-      this.getView().byId('btMessagePopover').setVisible(true);
+    _onValidationError: function(errors) {
+      this.getOwnerComponent().oMessageManager.addMessages(errors);
     },
 
     _clearValueState: function() {
       var controls = ['name', 'gender', 'birthdate', 'email'];
       this.clearValueState(controls);
-      this.getMessagePopover().close();
-      this.getView().byId('btMessagePopover').setVisible(false);
     }
   });
 });
