@@ -28,10 +28,10 @@ ga('send', 'pageview');
 //Facebook SDK
 window.fbAsyncInit = function() {
   'use strict';
+  var appId = (/localhost/.test(location.href)) ? '542787052549338' : '182002078627839';
   FB.init({
-    //appId: '182002078627839', //PRD
-    appId: '542787052549338', //DEV
+    appId: appId,
     xfbml: true,
-    version: 'v2.9'
+    version: 'v2.10'
   });
 };
