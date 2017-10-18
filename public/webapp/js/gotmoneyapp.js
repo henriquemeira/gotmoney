@@ -21,7 +21,7 @@ gtag('config', 'UA-11465363-7');
 //Facebook SDK
 window.fbAsyncInit = function() {
   'use strict';
-  var appId = (/gotmoneyapp.com/.test(location.hostname)) ? '542787052549338' : '182002078627839';
+  var appId = (/gotmoneyapp.com/.test(location.hostname)) ? '182002078627839' : '542787052549338';
   FB.init({
     appId: appId,
     xfbml: true,
