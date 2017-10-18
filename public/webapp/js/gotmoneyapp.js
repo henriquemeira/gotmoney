@@ -10,20 +10,13 @@ function onLoadGoogleClient() {
 }
 
 //GOOGLE ANALYTICS
-(function(i, s, o, g, r, a, m) {
+window.dataLayer = window.dataLayer || [];
+function gtag() {
   'use strict';
-  i['GoogleAnalyticsObject'] = r;
-  i[r] = i[r] || function() {
-    (i[r].q = i[r].q || []).push(arguments);
-  }, i[r].l = 1 * new Date();
-  a = s.createElement(o), m = s.getElementsByTagName(o)[0];
-  a.async = 1;
-  a.src = g;
-  m.parentNode.insertBefore(a, m);
-})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-ga('create', 'UA-11465363-7', 'auto');
-ga('send', 'pageview');
-
+  window.dataLayer.push(arguments);
+}
+gtag('js', new Date());
+gtag('config', 'UA-11465363-7');
 
 //Facebook SDK
 window.fbAsyncInit = function() {
