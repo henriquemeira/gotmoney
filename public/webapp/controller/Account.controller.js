@@ -35,6 +35,10 @@ sap.ui.define([
       }
     },
 
+    onAfterRendering: function() {
+      window.loadEtoroAds(this.getView().byId('etoroAds').getId());
+    },
+
     onSave: function(oEvent) {
       //Validates UI5 Controls against the validation schema set before
       this.vibrate();

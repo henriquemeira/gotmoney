@@ -49,7 +49,8 @@ sap.ui.define([
   BaseController.prototype.getMessagePopover = function() {
     //Initialize the Message Popover used to display the errors
     if (!this._messagePopover) {
-      this._messagePopover = sap.ui.xmlfragment(this.getView().getId(), 'com.mlauffer.gotmoneyappui5.view.MessagePopover', this);
+      this._messagePopover = sap.ui.xmlfragment(this.getView().getId(),
+                                                'com.mlauffer.gotmoneyappui5.view.MessagePopover', this);
       this.getView().addDependent(this._messagePopover);
 
     }

@@ -1,5 +1,5 @@
 <mvc:View controllerName="com.mlauffer.gotmoneyappui5.controller.TransactionList"
-          xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" busyIndicatorDelay="0">
+          xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" busyIndicatorDelay="0">
     <Page id="transactionListPage" title="{i18n>Transaction.overdue}" showNavButton="true" navButtonPress="onNavBack">
         <Table id="transactionTable" items="{/User/Transaction}" updateFinished="onUpdateFinished">
             <headerToolbar>
@@ -38,6 +38,7 @@
                 </ColumnListItem>
             </items>
         </Table>
+        <core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
         <footer>
             <Toolbar>
                 <ToolbarSpacer />

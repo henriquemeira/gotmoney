@@ -15,6 +15,7 @@
                 <Text text="{i18n>Terms.p5}"/>
             </VBox>
         </Panel>
+        <core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
         <footer>
             <core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.IndexFooter" type="XML"/>
         </footer>

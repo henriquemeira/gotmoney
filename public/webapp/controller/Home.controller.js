@@ -28,6 +28,10 @@ sap.ui.define([
       }
     },
 
+    onAfterRendering: function() {
+      window.loadEtoroAds(this.getView().byId('etoroAds').getId());
+    },
+
     onAccount: function() {
       this.vibrate();
       this.getRouter().navTo('accountList');

@@ -22,6 +22,10 @@ sap.ui.define([
       }
     },
 
+    onAfterRendering: function() {
+      window.loadEtoroAds(this.getView().byId('etoroAds').getId());
+    },
+
     onItemPress: function(oEvent) {
       this.vibrate();
       this.getRouter().navTo('account', {
