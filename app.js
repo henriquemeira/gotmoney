@@ -23,7 +23,7 @@ const sessionData = {
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: true,
+    secure: process.env.COOKIE_SECURE,
     maxAge: 7 * 24 * 60 * 60 * 1000
   }
 };
@@ -47,7 +47,6 @@ if (app.get('env') === 'production') {
   app.use(morgan('combined'));
 } else {
   app.use(morgan('dev'));
-  sessionData.cookie.secure = false;
   staticData.maxAge = 0;
 }
 
