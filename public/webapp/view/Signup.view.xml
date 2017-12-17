@@ -40,6 +40,7 @@
 				<CheckBox id="terms" state="{user>/terms}" text="{i18n>User.termsAgree}" />
 			</f:SimpleForm>
 		</Panel>
+		<core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
 		<footer>
 			<Toolbar>
 				<Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject"

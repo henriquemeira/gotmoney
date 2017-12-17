@@ -20,6 +20,7 @@
 			<Label id="invoicedayLabel" text="{i18n>Account.invoiceDay}" visible="false" required="true" />
 			<Input id="invoiceday" type="Number" visible="false" value="{account>/duedate}" />
 		</f:SimpleForm>
+		<core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
 		<footer>
 			<Toolbar>
 				<Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject"

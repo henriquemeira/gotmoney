@@ -1,11 +1,7 @@
 'use strict';
 
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
 const db = require('../../../models/database');
-const expect = chai.expect;
-
-chai.use(chaiAsPromised);
+const { expect } = require('chai');
 
 describe('Database', () => {
   describe('ENV variables', () => {
@@ -20,59 +16,73 @@ describe('Database', () => {
   });
 
   describe('#executePromise()', () => {
-    it('should execute SQL command', () => {
+    it('should execute SQL command', async () => {
       const sql = 'SELECT 1 AS res';
-      return expect(db.executePromise(sql, [])).to.eventually.be.fulfilled
-        .and.be.an('array')
-        .and.to.have.deep.nested.property('[0].res', 1);
+      const result = await db.executePromise(sql, []);
+      expect(result).to.be.an('array').and.to.have.deep.nested.property('[0].res', 1);
     });
 
-    it('should execute SQL command with parameters', () => {
+    it('should execute SQL command with parameters', async () => {
       const sql = 'SELECT ? + ? AS res';
       const parameters = [5, 10];
-      return expect(db.executePromise(sql, parameters)).to.eventually.be.fulfilled
-        .and.be.an('array')
-        .and.to.have.deep.nested.property('[0].res', 15);
+      const result = await db.executePromise(sql, parameters);
+      expect(result).to.be.an('array').and.to.have.deep.nested.property('[0].res', 15);
     });
 
-    it('should execute SQL command and return empty array', () => {
+    it('should execute SQL command and return empty array', async () => {
       const sql = 'SELECT * FROM accounttypes WHERE 1 = 2';
-      return expect(db.executePromise(sql, [])).to.eventually.be.fulfilled
-        .and.be.an('array');
+      const result = await db.executePromise(sql, []);
+      expect(result).to.be.an('array');
     });
 
-    it('should execute SQL command with error', () => {
+    it('should execute SQL command with error', async () => {
       const sql = 'SELECT ? + ?';
       const parameters = ['a'];
-      return expect(db.executePromise(sql, parameters)).to.eventually.be.rejectedWith(Error);
+      try {
+        await db.executePromise(sql, parameters);
+        expect(1).to.equal(2); //Should not be executed
+
+      } catch (err) {
+        expect(err).to.be.an('error');
+      }
     });
   });
 
   describe('#queryPromise()', () => {
-    it('should execute SQL command', () => {
+    it('should execute SQL command', async () => {
       const sql = 'SELECT 1 AS res';
-      return expect(db.queryPromise(sql, [])).to.eventually.be.fulfilled
-        .and.be.an('array')
-        .and.to.have.deep.nested.property('[0].res', 1);
+      const result = await db.queryPromise(sql, []);
+      expect(result).to.be.an('array').and.to.have.deep.nested.property('[0].res', 1);
     });
 
-    it('should execute SQL command with parameters', () => {
+    it('should execute SQL command with parameters', async () => {
       const sql = 'SELECT ? + ? AS res';
       const parameters = [5, 10];
-      return expect(db.queryPromise(sql, parameters)).to.eventually.be.fulfilled
-        .and.be.an('array')
-        .and.to.have.deep.nested.property('[0].res', 15);
+      const result = await db.queryPromise(sql, parameters);
+      expect(result).to.be.an('array').and.to.have.deep.nested.property('[0].res', 15);
     });
 
-    it('should execute SQL command and return error for not found', () => {
+    it('should execute SQL command and return error for not found', async () => {
       const sql = 'SELECT * FROM accounttypes WHERE 1 = 2';
-      return expect(db.queryPromise(sql, [])).to.eventually.be.rejectedWith(Error);
+      try {
+        await db.queryPromise(sql, []);
+        expect(1).to.equal(2); //Should not be executed
+
+      } catch (err) {
+        expect(err).to.be.an('error');
+      }
     });
 
-    it('should execute SQL command with error', () => {
+    it('should execute SQL command with error', async () => {
       const sql = 'SELECT ? + ?';
       const parameters = ['a'];
-      return expect(db.queryPromise(sql, parameters)).to.eventually.be.rejectedWith(Error);
+      try {
+        await db.queryPromise(sql, parameters);
+        expect(1).to.equal(2); //Should not be executed
+
+      } catch (err) {
+        expect(err).to.be.an('error');
+      }
     });
   });
 });

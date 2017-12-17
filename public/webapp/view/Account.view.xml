@@ -21,6 +21,7 @@
 				   visible="false" required="true" />
 			<Input id="invoiceday" type="Number" visible="false" value="{duedate}" />
 		</f:SimpleForm>
+		<core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
 		<footer>
 			<Toolbar>
 				<Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject"
