@@ -1,11 +1,12 @@
 {
   "name": "gotmoneyapp",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "GotMoney App",
   "author": "Mauricio Lauffer",
   "private": true,
   "devDependencies": {
     "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.0",
     "eslint": "^4.13.1",
     "grunt": "^1.0.1",
