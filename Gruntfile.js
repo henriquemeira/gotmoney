@@ -15,7 +15,7 @@ module.exports = function(grunt) {
               '!**/test/**'
             ]
           },
-          dest: 'build',
+          dest: 'public/webapp',
           compress: true
         },
         components: true
