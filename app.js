@@ -41,7 +41,7 @@ sessionData.store = new MongoStore({
 });
 
 // Clear all sessions when starting the app
-sessionData.store.clear();
+sessionData.store.clear(() => true);
 
 if (app.get('env') === 'production') {
   app.use(morgan('combined'));
