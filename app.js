@@ -59,7 +59,7 @@ app.use(cookieParser(sessionData.secret));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session(sessionData));
-app.use(csrf());
+app.use(csrf({ cookie: true }));
 
 require('./auth/authentication')(app);
 
