@@ -1,6 +1,6 @@
 {
   "name": "gotmoneyapp",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "GotMoney App",
   "author": "Mauricio Lauffer",
   "private": true,
@@ -23,7 +23,6 @@
     "body-parser": "^1.18.2",
     "compression": "^1.7.1",
     "connect-mongo": "^2.0.0",
-    "cookie-parser": "^1.4.3",
     "crypto-js": "^3.1.9-1",
     "csurf": "^1.9.0",
     "dotenv": "^4.0.0",
