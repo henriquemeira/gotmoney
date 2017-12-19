@@ -36,7 +36,7 @@ User.prototype.getProperties = function() {
 
 User.prototype.findById = function(iduser) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM users2 WHERE iduser = ?';
+    const sql = 'SELECT * FROM users WHERE iduser = ?';
     const parameters = [iduser];
     db.executePromise(sql, parameters)
       .then((result) => {
@@ -53,7 +53,7 @@ User.prototype.findById = function(iduser) {
 
 User.prototype.findByEmail = function(email) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM users2 WHERE email = ?';
+    const sql = 'SELECT * FROM users WHERE email = ?';
     const parameters = [email];
     db.executePromise(sql, parameters)
       .then((result) => {
@@ -70,7 +70,7 @@ User.prototype.findByEmail = function(email) {
 
 User.prototype.findByFacebook = function(facebook) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM users2 WHERE facebook = ?';
+    const sql = 'SELECT * FROM users WHERE facebook = ?';
     const parameters = [facebook];
     db.executePromise(sql, parameters)
       .then((result) => {
@@ -87,7 +87,7 @@ User.prototype.findByFacebook = function(facebook) {
 
 User.prototype.findByGoogle = function(google) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM users2 WHERE google = ?';
+    const sql = 'SELECT * FROM users WHERE google = ?';
     const parameters = [google];
     db.executePromise(sql, parameters)
       .then((result) => {
@@ -138,7 +138,7 @@ User.prototype.create = function() {
         this.props.active = 1;
         this.props.createdon = new Date();
         const fields = 'iduser, name, gender, birthdate, email, createdon, passwd, active, alert, facebook, google, twitter';
-        const sql = 'INSERT INTO users2 (' + fields + ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const sql = 'INSERT INTO users (' + fields + ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         const parameters = [this.props.iduser, this.props.name, this.props.gender, this.props.birthdate,
                             this.props.email, this.props.createdon, this.props.passwd, this.props.active,
                             this.props.alert, this.props.facebook, this.props.google, this.props.twitter];
@@ -151,7 +151,7 @@ User.prototype.create = function() {
 
 User.prototype.update = function() {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE users2 SET name = ?, gender = ?, birthdate = ?, alert = ? WHERE iduser = ?';
+    const sql = 'UPDATE users SET name = ?, gender = ?, birthdate = ?, alert = ? WHERE iduser = ?';
     const parameters = [this.props.name, this.props.gender, this.props.birthdate, this.props.alert, this.props.iduser];
     db.executePromise(sql, parameters)
       .then(() => resolve())
@@ -162,7 +162,7 @@ User.prototype.update = function() {
 
 User.prototype.updateFacebook = function() {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE users2 SET facebook = ? WHERE iduser = ?';
+    const sql = 'UPDATE users SET facebook = ? WHERE iduser = ?';
     const parameters = [this.props.facebook, this.props.iduser];
     db.executePromise(sql, parameters)
       .then(() => resolve())
@@ -173,7 +173,7 @@ User.prototype.updateFacebook = function() {
 
 User.prototype.updateGoogle = function() {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE users2 SET google = ? WHERE iduser = ?';
+    const sql = 'UPDATE users SET google = ? WHERE iduser = ?';
     const parameters = [this.props.google, this.props.iduser];
     db.executePromise(sql, parameters)
       .then(() => resolve())
@@ -184,7 +184,7 @@ User.prototype.updateGoogle = function() {
 
 User.prototype.updatePassword = function() {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE users2 SET passwd = ? WHERE iduser = ?';
+    const sql = 'UPDATE users SET passwd = ? WHERE iduser = ?';
     const parameters = [this.props.passwd, this.props.iduser];
     db.executePromise(sql, parameters)
       .then(() => resolve())
@@ -195,7 +195,7 @@ User.prototype.updatePassword = function() {
 
 User.prototype.delete = function() {
   return new Promise((resolve, reject) => {
-    const sql = 'DELETE FROM users2 WHERE iduser = ?';
+    const sql = 'DELETE FROM users WHERE iduser = ?';
     const parameters = [this.props.iduser];
     db.executePromise(sql, parameters)
       .then(() => resolve())
