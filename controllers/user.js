@@ -11,7 +11,7 @@ function User(data = {}) {
 }
 
 User.prototype.setProperties = function({iduser, name, gender, birthdate, email, createdon, passwd, alert, facebook,
-  google, twitter, lastchange}) {
+                                         google, twitter, lastchange}) {
   this.props = {
     iduser: iduser,
     name: name,
@@ -184,12 +184,14 @@ User.prototype.updateGoogle = function() {
 
 User.prototype.updatePassword = function() {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE users SET passwd = ? WHERE iduser = ?';
-    const parameters = [this.props.passwd, this.props.iduser];
-    db.executePromise(sql, parameters)
+    this.hashPassword(this.props.passwd)
+      .then((hash) => {
+        const sql = 'UPDATE users SET passwd = ? WHERE iduser = ?';
+        const parameters = [hash, this.props.iduser];
+        return db.executePromise(sql, parameters);
+      })
       .then(() => resolve())
       .catch((err) => reject(err));
-
   });
 };
 
