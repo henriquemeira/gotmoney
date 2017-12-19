@@ -2,7 +2,6 @@
 
 require('dotenv').load();
 const path = require('path');
-const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 const helmet = require('helmet');
@@ -21,11 +20,7 @@ const sessionData = {
   secret: process.env.SESSION_SECRET + Math.random().toString(),
   resave: false,
   saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    secure: process.env.COOKIE_SECURE,
-    maxAge: 7 * 24 * 60 * 60 * 1000
-  }
+  cookie: {}
 };
 const staticData = {
   maxAge: 7 * 24 * 60 * 60 * 1000
@@ -40,8 +35,8 @@ sessionData.store = new MongoStore({
         process.env.SESSION_PARAMETERS].join('')
 });
 
-// Clear all sessions when starting the app
-sessionData.store.clear();
+//Clear all sessions when starting the app
+sessionData.store.clear(() => true);
 
 if (app.get('env') === 'production') {
   app.use(morgan('combined'));
@@ -54,12 +49,11 @@ app.enable('trust proxy');
 app.use(helmet());
 app.use(compression());
 app.use(favicon(path.join(__dirname, 'public', 'webapp', 'images', 'favicon.ico')));
-app.use(express.static('public', staticData));
-app.use(cookieParser(sessionData.secret));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.static('public', staticData));
 app.use(session(sessionData));
-app.use(csrf());
+app.use(csrf({ cookie: false }));
 
 require('./auth/authentication')(app);
 

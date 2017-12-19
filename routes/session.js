@@ -47,7 +47,7 @@ router.put('/recovery', validator.isValidRecovery(), (req, res, next) => {
       return userFound.updatePassword();
     })
     .then(() => {
-      mailer.sendNewUser(payload.email, password)
+      mailer.sendRecoveryPassword(payload.email, password)
         .then(() => console.log('Email sent!'))
         .catch((err) => console.error(err));
       res.status(200).json({});
