@@ -167,7 +167,6 @@ User.prototype.updateFacebook = function() {
     db.executePromise(sql, parameters)
       .then(() => resolve())
       .catch((err) => reject(err));
-
   });
 };
 
@@ -178,7 +177,6 @@ User.prototype.updateGoogle = function() {
     db.executePromise(sql, parameters)
       .then(() => resolve())
       .catch((err) => reject(err));
-
   });
 };
 

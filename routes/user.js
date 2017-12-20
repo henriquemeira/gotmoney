@@ -30,13 +30,23 @@ router.get('/:id', (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.put('/:id', validator.isValidUpdate(), (req, res, next) => {
+router.put('/:id', validator.isValidUpdate(), async (req, res, next) => {
   const payload = req.body;
   payload.iduser = req.user.iduser;
   const user = new User(payload);
-  user.update()
-    .then(() => res.status(200).json({}))
-    .catch((err) => next(err));
+
+  try {
+    await user.update();
+    if (payload.passwdold && payload.passwd) {
+      const userFound = await user.findByEmail(payload.email);
+      await userFound.verifyPassword(payload.passwdold);
+      await user.updatePassword();
+    }
+    res.status(200).json({});
+
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

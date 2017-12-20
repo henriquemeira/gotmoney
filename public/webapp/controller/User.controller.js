@@ -143,6 +143,7 @@ sap.ui.define([
       var mPayload = ObjectFactory.buildUser();
       //iduser : null,
       mPayload.email = oView.byId('email').getValue();
+      mPayload.passwdold = oView.byId('pwdOld').getValue();
       mPayload.passwd = oView.byId('pwd').getValue();
       mPayload.name = oView.byId('name').getValue();
       mPayload.gender = oView.byId('sex').getSelectedKey();
@@ -186,6 +187,18 @@ sap.ui.define([
           },
           alert: {
             type: 'boolean'
+          },
+          pwdOld: {
+            type: 'string',
+            maxLength: 100
+          },
+          pwd: {
+            type: 'string',
+            maxLength: 100
+          },
+          pwdRepeat: {
+            type: 'string',
+            const: { '$data': '1/pwd' }
           }
         }
       };
