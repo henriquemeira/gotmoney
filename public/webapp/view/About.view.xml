@@ -9,7 +9,6 @@
                 <Text text="{i18n>About.p2}"/>
             </VBox>
         </Panel>
-        <core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
         <footer>
             <core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.IndexFooter" type="XML"/>
         </footer>

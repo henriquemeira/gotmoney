@@ -28,7 +28,6 @@
 			<Label text="{i18n>User.passwordRepeat}" />
 			<Input id="pwdRepeat" type="Password" value="{pwdRepeat}" />
 		</f:SimpleForm>
-		<core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
 		<footer>
 			<Toolbar>
 				<Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject"

@@ -4,7 +4,6 @@
 		<List id="list" items="{/User/Category}">
 			<StandardListItem title="{description}" type="Navigation" press="onItemPress" />
 		</List>
-		<core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
 		<footer>
 			<Toolbar>
 				<ToolbarSpacer />

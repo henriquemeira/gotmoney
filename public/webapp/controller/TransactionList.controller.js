@@ -29,7 +29,6 @@ sap.ui.define([
     },
 
     onAfterRendering: function() {
-      window.loadEtoroAds(this.getView().byId('etoroAds').getId());
       if (this.getView().getViewName() === 'com.mlauffer.gotmoneyappui5.view.TransactionList') {
         var oDataRange = new DateRange({ startDate: new Date()});
         this.getView().byId('transactionTable').getBinding('items').filter([]);
