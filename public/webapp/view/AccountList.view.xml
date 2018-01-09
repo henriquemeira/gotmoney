@@ -6,7 +6,6 @@
 				description="{path: 'idtype', formatter: '.formatter.accountTypeName'}"
 				icon="{path: 'idtype', formatter: '.formatter.accountTypeIcon'}" press="onItemPress" />
 		</List>
-		<core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
 		<footer>
 			<Toolbar>
 				<ToolbarSpacer />

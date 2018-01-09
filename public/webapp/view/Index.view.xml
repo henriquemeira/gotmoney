@@ -41,7 +41,6 @@
                 </l:BlockLayoutCell>
             </l:BlockLayoutRow>
         </l:BlockLayout>
-        <core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
         <footer>
             <core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.IndexFooter" type="XML"/>
         </footer>

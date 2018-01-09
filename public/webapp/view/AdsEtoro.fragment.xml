@@ -1,3 +1,0 @@
-<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
-    <HBox id="etoroAds" height="100px" justifyContent="Center" class="sapUiMediumMarginTop"/>
-</core:FragmentDefinition>

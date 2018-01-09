@@ -41,7 +41,6 @@
 				<core:Item key="{idcategory}" text="{description}" />
 			</MultiComboBox>
 		</f:SimpleForm>
-		<core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
 		<footer>
 			<Toolbar>
 				<Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject"

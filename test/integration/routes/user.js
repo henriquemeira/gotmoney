@@ -62,7 +62,7 @@ describe('Routing User', () => {
   });
 
   describe('PUT /api/user/:id', () => {
-    it('should update user', (done) => {
+    it('should update user, no password', (done) => {
       const payload = Object.assign({}, payloadBase);
       payload.name += new Date().getTime();
       getCSRFToken()
@@ -73,10 +73,25 @@ describe('Routing User', () => {
             .set('Accept', 'application/json')
             .expect('Content-Type', /application\/json/)
             .expect(200)
-            .end((err, res) => {
-              if (err) return done(err);
-              done();
-            });
+            .end((err, res) => { return (err) ? done(err) : done(); });
+        })
+        .catch((err) => done(err));
+    });
+
+    it('should update user and password', (done) => {
+      const payload = Object.assign({}, payloadBase);
+      payload.name += new Date().getTime();
+      payload.passwdold = payload.passwd;
+      payload.passwd = '1234567890';
+      getCSRFToken()
+        .then((csrfToken) => {
+          agent.put('/api/user/' + payload.iduser)
+            .send(payload)
+            .set('x-csrf-token', csrfToken)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /application\/json/)
+            .expect(200)
+            .end((err, res) => { return (err) ? done(err) : done(); });
         })
         .catch((err) => done(err));
     });
@@ -96,8 +111,53 @@ describe('Routing User', () => {
               expect(res.body).to.be.an('object')
                 .and.to.have.deep.property('message', 'Invalid data!');
               expect(res.body).to.have.deep.property('error');
-              if (err) return done(err);
-              done();
+              return (err) ? done(err) : done();
+            });
+        })
+        .catch((err) => done(err));
+    });
+
+    it('should fail update password, old password invalid', (done) => {
+      const payload = Object.assign({}, payloadBase);
+      payload.name += new Date().getTime();
+      payload.passwdold = '1234567890XXX';
+      payload.passwd = 'A123456B';
+      getCSRFToken()
+        .then((csrfToken) => {
+          agent.put('/api/user/' + payload.iduser)
+            .send(payload)
+            .set('x-csrf-token', csrfToken)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /application\/json/)
+            .expect(500)
+            .end((err, res) => {
+              expect(res.body).to.be.an('object')
+                .and.to.have.deep.property('message', 'Invalid password!');
+              expect(res.body).to.have.deep.property('error');
+              return (err) ? done(err) : done();
+            });
+        })
+        .catch((err) => done(err));
+    });
+
+    it('should fail update password, new password invalid', (done) => {
+      const payload = Object.assign({}, payloadBase);
+      payload.name += new Date().getTime();
+      payload.passwdold = payload.passwd;
+      payload.passwd = 'A';
+      getCSRFToken()
+        .then((csrfToken) => {
+          agent.put('/api/user/' + payload.iduser)
+            .send(payload)
+            .set('x-csrf-token', csrfToken)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /application\/json/)
+            .expect(400)
+            .end((err, res) => {
+              expect(res.body).to.be.an('object')
+                .and.to.have.deep.property('message', 'Invalid data!');
+              expect(res.body).to.have.deep.property('error');
+              return (err) ? done(err) : done();
             });
         })
         .catch((err) => done(err));

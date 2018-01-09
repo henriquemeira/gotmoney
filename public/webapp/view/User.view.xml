@@ -20,18 +20,14 @@
 			<DatePicker id="birthdate" dateValue="{path:'birthdate', formatter:'.formatter.dateFromJSON'}" />
 			<Label text="{i18n>User.notification}" />
 			<Switch id="alert" state="{path:'alert', formatter:'.formatter.numeralBoolean'}" />
-
-			<f:SimpleForm visible="false">
-				<core:Title text="{i18n>User.security}" />
-				<Label text="{i18n>User.passwordOld}" required="true" />
-				<Input id="pwdOld" type="Password" value="{pwdOld}" />
-				<Label text="{i18n>User.passwordNew}" required="true" />
-				<Input id="pwd" type="Password" value="{pwd}" />
-				<Label text="{i18n>User.passwordRepeat}" required="true" />
-				<Input id="pwdRepeat" type="Password" value="{pwdRepeat}" />
-			</f:SimpleForm>
+			<core:Title text="{i18n>User.security}" />
+			<Label text="{i18n>User.passwordOld}" />
+			<Input id="pwdOld" type="Password" value="{pwdOld}" />
+			<Label text="{i18n>User.passwordNew}" />
+			<Input id="pwd" type="Password" value="{pwd}" />
+			<Label text="{i18n>User.passwordRepeat}" />
+			<Input id="pwdRepeat" type="Password" value="{pwdRepeat}" />
 		</f:SimpleForm>
-		<core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
 		<footer>
 			<Toolbar>
 				<Button id="btMessagePopover" icon="sap-icon://message-popup" type="Reject"

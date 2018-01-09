@@ -50,7 +50,6 @@
 				</ColumnListItem>
 			</items>
 		</Table>
-		<core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
 		<footer>
 			<Toolbar>
 				<ToolbarSpacer />

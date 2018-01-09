@@ -60,6 +60,5 @@
                 </tileContent>
             </GenericTile>
         </Panel>
-        <core:Fragment fragmentName="com.mlauffer.gotmoneyappui5.view.AdsEtoro" type="XML"/>
     </Page>
 </mvc:View>
