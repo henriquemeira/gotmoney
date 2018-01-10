@@ -219,7 +219,7 @@ sap.ui.define([
         }
       })
         .done(function() {
-          MessageBox.show(that.getResourceBundle().getText('Success.passwordRecovery'));
+          MessageBox.success(that.getResourceBundle().getText('Success.passwordRecovery'));
           that.onCloseRecovery();
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
