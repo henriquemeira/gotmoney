@@ -102,15 +102,19 @@ User.prototype.findByGoogle = function(google) {
   });
 };
 
+User.prototype._preHashPassword = function(password) {
+  return base64.stringify(sha256(password));
+};
+
 User.prototype.hashPassword = function(password) {
-  password = base64.stringify(sha256(password));
-  return bcrypt.hash(password, 10);
+  const preHashPassword = this._preHashPassword(password);
+  return bcrypt.hash(preHashPassword, 10);
 };
 
 User.prototype.verifyPassword = function(password) {
   return new Promise((resolve, reject) => {
-    password = base64.stringify(sha256(password));
-    bcrypt.compare(password, this.props.passwd)
+    const preHashPassword = this._preHashPassword(password);
+    bcrypt.compare(preHashPassword, this.props.passwd)
       .then((result) => {
         if (result === true) {
           return resolve();
@@ -184,6 +188,7 @@ User.prototype.updatePassword = function() {
   return new Promise((resolve, reject) => {
     this.hashPassword(this.props.passwd)
       .then((hash) => {
+        this.props.passwd = hash;
         const sql = 'UPDATE users SET passwd = ? WHERE iduser = ?';
         const parameters = [hash, this.props.iduser];
         return db.executePromise(sql, parameters);
