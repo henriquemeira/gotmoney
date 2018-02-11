@@ -70,7 +70,8 @@
     "rootView": {
       "viewName": "com.mlauffer.gotmoneyappui5.view.App",
       "id": "rootApp",
-      "type": "XML"
+      "type": "XML",
+      "async": true
     },
     "routing": {
       "config": {
