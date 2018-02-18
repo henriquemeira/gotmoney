@@ -52,7 +52,8 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "com.mlauffer.gotmoneyappui5.i18n.i18n"
+          "bundleName": "com.mlauffer.gotmoneyappui5.i18n.i18n",
+          "async": true
         }
       },
       "": {

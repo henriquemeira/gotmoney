@@ -1,9 +1,10 @@
 'use strict';
 
-var cacheName = 'GotMoneyApp-PWA-v05';
-var filesToCache = [
+const cacheName = 'GotMoneyApp-PWA-v13';
+const filesToCache = [
   '/',
   '/index.html',
+  '/index-ws.html',
   '/manifest.json',
   '/webapp/Component.js',
   '/webapp/Component-preload.js',
@@ -25,27 +26,64 @@ var filesToCache = [
   '/webapp/images/google.png',
   '/webapp/js/gotmoneyapp.min.js',
   '/webapp/js/lockr.js',
-  '/webapp/js/resources/sap-ui-core.js',
+
+
+  /*'/webapp/js/resources/sap-ui-core.js',
   '/webapp/js/resources/sap-ui-version.json',
   '/webapp/js/resources/sap/ui/core/library-preload.js',
   '/webapp/js/resources/sap/ui/core/messagebundle.properties',
   '/webapp/js/resources/sap/ui/core/messagebundle_en.properties',
+  '/webapp/js/resources/sap/ui/core/messagebundle_en_US.properties',
   '/webapp/js/resources/sap/ui/core/themes/sap_belize/library.css',
   '/webapp/js/resources/sap/ui/core/themes/base/fonts/SAP-icons.woff2',
   '/webapp/js/resources/sap/m/library-preload.js',
   '/webapp/js/resources/sap/m/messagebundle.properties',
   '/webapp/js/resources/sap/m/messagebundle_en.properties',
+  '/webapp/js/resources/sap/m/messagebundle_en_US.properties',
   '/webapp/js/resources/sap/m/themes/sap_belize/library.css',
   '/webapp/js/resources/sap/ui/layout/library-preload.js',
   '/webapp/js/resources/sap/ui/layout/messagebundle.properties',
   '/webapp/js/resources/sap/ui/layout/messagebundle_en.properties',
+  '/webapp/js/resources/sap/ui/layout/messagebundle_en_US.properties',
+  '/webapp/js/resources/sap/ui/layout/themes/sap_belize/library-parameters.json',
   '/webapp/js/resources/sap/ui/layout/themes/sap_belize/library.css',
   '/webapp/js/resources/sap/ui/unified/library-preload.js',
   '/webapp/js/resources/sap/ui/unified/messagebundle.properties',
   '/webapp/js/resources/sap/ui/unified/messagebundle_en.properties',
+  '/webapp/js/resources/sap/ui/unified/messagebundle_en_US.properties',
+  '/webapp/js/resources/sap/ui/unified/themes/sap_belize/library-parameters.json',
   '/webapp/js/resources/sap/ui/unified/themes/sap_belize/library.css',
   '/webapp/js/resources/sap/tnt/library-preload.js',
-  '/webapp/js/resources/sap/tnt/themes/sap_belize/library.css'
+  '/webapp/js/resources/sap/tnt/themes/sap_belize/library.css',*/
+
+
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap-ui-core.js',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap-ui-version.json',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/core/library-preload.js',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/core/messagebundle.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/core/messagebundle_en.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/core/messagebundle_en_US.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/core/themes/sap_belize/library.css',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/core/themes/base/fonts/SAP-icons.woff2',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/m/library-preload.js',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/m/messagebundle.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/m/messagebundle_en.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/m/messagebundle_en_US.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/m/themes/sap_belize/library.css',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/layout/library-preload.js',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/layout/messagebundle.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/layout/messagebundle_en.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/layout/messagebundle_en_US.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/layout/themes/sap_belize/library-parameters.json',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/layout/themes/sap_belize/library.css',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/unified/library-preload.js',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/unified/messagebundle.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/unified/messagebundle_en.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/unified/messagebundle_en_US.properties',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/unified/themes/sap_belize/library-parameters.json',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/ui/unified/themes/sap_belize/library.css',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/tnt/library-preload.js',
+  'https://openui5.hana.ondemand.com/1.52.3/resources/sap/tnt/themes/sap_belize/library.css'
 ];
 
 self.addEventListener('install', function(evt) {
@@ -75,7 +113,7 @@ self.addEventListener('activate', function(evt) {
   return self.clients.claim();
 });
 
-/*self.addEventListener('fetch', function(evt) {
+self.addEventListener('fetch', function(evt) {
   evt.respondWith(
     caches.match(evt.request)
       .then(function(resp) {
@@ -93,7 +131,7 @@ self.addEventListener('activate', function(evt) {
       //return caches.match('/sw-test/gallery/myLittleVader.jpg');
       })
   );
-});*/
+});
 
 self.addEventListener('fetch', function(evt) {
   'use strict';
